@@ -1,0 +1,177 @@
+/*
+ * ToolList — a section as a headed group of compact rows.
+ *
+ * Optimised for scanning, not for visual weight: the goal is to see an
+ * entire practice area's tooling without scrolling or clicking.
+ */
+
+.tool-group {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  padding: 24px 24px 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--orange);
+}
+
+.tool-group-head h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--ink);
+}
+
+.tool-group-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.tool-group-summary {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-3);
+  margin: 12px 0 4px;
+}
+
+.tool-group-empty {
+  font-size: 13px;
+  color: var(--ink-3);
+  font-style: italic;
+  padding: 14px 0 18px;
+  margin: 0;
+}
+
+/* ─── Rows ────────────────────────────────────────────────────────── */
+
+.tool-rows {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+}
+
+.tool-rows li + li {
+  border-top: 1px solid var(--rule-soft);
+}
+
+.tool-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.14s ease, padding-left 0.14s ease;
+}
+
+.tool-row--live:hover {
+  background: var(--orange-bg);
+  padding-left: 10px;
+  text-decoration: none;
+}
+
+.tool-row--inert {
+  opacity: 0.62;
+  cursor: default;
+}
+
+.tool-row-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tool-row-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-row-ext {
+  width: 11px;
+  height: 11px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.tool-row--live:hover .tool-row-ext {
+  color: var(--orange);
+}
+
+.tool-row-desc {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+.tool-row-status {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  background: var(--surface-2);
+  color: var(--ink-3);
+}
+
+.tool-row-status--live {
+  background: var(--green-bg);
+  color: var(--green-text);
+}
+
+.tool-row-status--development {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+
+.tool-row-status--planned {
+  background: var(--blue-bg);
+  color: var(--blue-text);
+}
+
+.tool-row-arrow {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--rule);
+  transition: transform 0.16s ease, color 0.16s ease;
+}
+
+.tool-row--live:hover .tool-row-arrow {
+  transform: translateX(3px);
+  color: var(--orange);
+}
+
+.tool-row--inert .tool-row-arrow {
+  visibility: hidden;
+}
+
+@media (max-width: 520px) {
+  .tool-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .tool-row-arrow {
+    display: none;
+  }
+}
