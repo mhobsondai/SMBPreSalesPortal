@@ -1,0 +1,167 @@
+/*
+ * SectionGrid — navigable groupings, at any depth.
+ *
+ * Two variants so nesting depth is legible without reading the
+ * breadcrumb: `primary` (charcoal) for top-level practice areas on the
+ * landing page, `nested` (light) for everything below.
+ */
+
+.section-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.section-grid--primary {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.section-grid--nested {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.section-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+
+.section-card:hover {
+  text-decoration: none;
+  transform: translateY(-3px);
+}
+
+/* ─── Primary (top level) ─────────────────────────────────────────── */
+
+.section-card--primary {
+  background: var(--charcoal);
+  color: var(--white);
+  padding: 36px 32px 28px;
+  min-height: 280px;
+}
+
+.section-card--primary::before {
+  content: '';
+  position: absolute;
+  top: -90px;
+  right: -90px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(232, 89, 12, 0.18) 0%, transparent 65%);
+  pointer-events: none;
+  opacity: 0.7;
+  transition: opacity 0.22s ease;
+}
+
+.section-card--primary:hover {
+  box-shadow: 0 10px 36px rgba(26, 26, 46, 0.28);
+}
+
+.section-card--primary:hover::before {
+  opacity: 1;
+}
+
+.section-card--primary .section-card-title {
+  color: var(--white);
+  font-size: 28px;
+}
+
+.section-card--primary .section-card-desc {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.section-card--primary .section-card-foot {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.section-card--primary .section-card-meta {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ─── Nested ──────────────────────────────────────────────────────── */
+
+.section-card--nested {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  padding: 28px;
+  min-height: 220px;
+}
+
+.section-card--nested:hover {
+  border-color: var(--orange);
+  box-shadow: 0 6px 28px rgba(26, 26, 46, 0.1);
+}
+
+.section-card--nested .section-card-title {
+  color: var(--ink);
+  font-size: 22px;
+}
+
+.section-card--nested .section-card-desc {
+  color: var(--ink-2);
+}
+
+.section-card--nested .section-card-foot {
+  border-top-color: var(--rule-soft);
+}
+
+.section-card--nested .section-card-meta {
+  color: var(--ink-3);
+}
+
+/* ─── Shared internals ────────────────────────────────────────────── */
+
+.section-card-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--orange);
+  position: relative;
+}
+
+.section-card-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  margin: 0;
+  position: relative;
+}
+
+.section-card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+  position: relative;
+}
+
+.section-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid;
+  position: relative;
+}
+
+.section-card-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.section-card-arrow {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--orange);
+  transition: transform 0.2s ease;
+}
+
+.section-card:hover .section-card-arrow {
+  transform: translateX(4px);
+}

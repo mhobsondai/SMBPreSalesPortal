@@ -1,0 +1,5 @@
+.landing-header {
+  padding-bottom: 36px;
+  margin-bottom: 48px;
+  border-bottom: 2px solid var(--rule);
+}

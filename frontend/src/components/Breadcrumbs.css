@@ -1,0 +1,37 @@
+.crumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  margin-bottom: 28px;
+}
+
+.crumbs-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.crumbs-sep {
+  margin: 0 10px;
+  color: var(--rule);
+}
+
+.crumbs a {
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.crumbs a:hover {
+  color: var(--orange);
+  text-decoration: none;
+}
+
+.crumbs [aria-current='page'] {
+  color: var(--ink-2);
+}

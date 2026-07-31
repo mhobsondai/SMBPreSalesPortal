@@ -1,0 +1,124 @@
+/* TopBar — global navigation header. */
+
+.topbar {
+  position: relative;
+  z-index: 10;
+  background: var(--white);
+  border-bottom: 2px solid var(--orange);
+  box-shadow: 0 1px 8px rgba(26, 26, 46, 0.06);
+}
+
+.topbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--orange);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.brand-mark::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.brand-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--rule);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+
+.brand-app {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink-2);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.topbar-link {
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.topbar-link:hover {
+  color: var(--orange);
+  text-decoration: none;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 14px 5px 5px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.user-chip:hover {
+  border-color: var(--orange);
+  background: var(--orange-bg);
+  text-decoration: none;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  font-family: var(--font-display);
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .topbar-inner { padding: 0 20px; }
+  .topbar-right { gap: 18px; }
+  .user-name { display: none; }
+}

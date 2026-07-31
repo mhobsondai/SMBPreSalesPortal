@@ -1,0 +1,48 @@
+/*
+ * SMB Pre-Sales Portal — Design tokens
+ * Single source of truth for colour, type, and rule values.
+ * Carried forward from the PDD Authoring design system.
+ */
+
+:root {
+  /* Core palette */
+  --charcoal: #1a1a2e;
+  --charcoal-2: #252540;
+  --charcoal-3: #32324f;
+
+  /* Orange accent */
+  --orange: #e8590c;
+  --orange-light: #ff6b1a;
+  --orange-bg: #fff0e8;
+  --orange-muted: #7a2e06;
+
+  /* Content backgrounds */
+  --white: #ffffff;
+  --surface: #f5f5f8;
+  --surface-2: #ededf2;
+
+  /* Text */
+  --ink: #0f0f1a;
+  --ink-2: #3d3d5c;
+  --ink-3: #7a7a9a;
+
+  /* Rules */
+  --rule: #d8d8e8;
+  --rule-soft: #eaeaf2;
+
+  /* Status */
+  --green: #1a7a4a;
+  --green-bg: #e0f5ec;
+  --green-text: #0d4a2c;
+  --blue: #1a56a0;
+  --blue-bg: #e0ebfa;
+  --blue-text: #0d2d5c;
+  --amber: #b45309;
+  --amber-bg: #fef3c7;
+  --amber-text: #78350f;
+
+  /* Typography */
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
