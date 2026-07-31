@@ -21,7 +21,12 @@ from datetime import datetime, timezone
 
 import azure.functions as func
 
-from shared.auth import ClientPrincipal, json_response, require_auth
+from shared.auth import (
+    ClientPrincipal,
+    check_organisation,
+    json_response,
+    require_auth,
+)
 from shared.display_name import name_from_upn
 
 logging.basicConfig(level=logging.INFO)
@@ -56,6 +61,17 @@ def me(req: func.HttpRequest, principal: ClientPrincipal) -> func.HttpResponse:
     the database lookup (and just-in-time user provisioning) goes.
     """
     del req
+
+    # Re-run the policy purely to surface *why* this caller was allowed.
+    # require_auth has already enforced it; this is a diagnostic read, and
+    # it is what /health panel 2 displays.
+    #
+    # `authorised_by` starting "tenant:" means the tid claim is arriving
+    # and the email-domain fallback in check_organisation is redundant.
+    # "domain:" means claims are absent and the fallback is load-bearing —
+    # removing it would 403 every user. See AD-07.
+    result = check_organisation(principal)
+
     return json_response(
         {
             "user_id": principal.user_id,
@@ -63,5 +79,8 @@ def me(req: func.HttpRequest, principal: ClientPrincipal) -> func.HttpResponse:
             "display_name": name_from_upn(principal.user_details),
             "roles": list(principal.user_roles),
             "identity_provider": principal.identity_provider,
+            "authorised_by": result.reason,
+            "tenant_claim_present": principal.tenant_id is not None,
+            "claim_count": len(principal.claims),
         }
     )
