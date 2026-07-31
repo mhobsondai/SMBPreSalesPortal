@@ -1,0 +1,117 @@
+[
+  {
+    "name": "empty",
+    "grandDays": 0,
+    "grandHours": 0,
+    "catDays": [
+      0,
+      0,
+      0
+    ],
+    "lines": [],
+    "fmtDays": "0",
+    "fmtHours": "0"
+  },
+  {
+    "name": "single fact small",
+    "grandDays": 1.5,
+    "grandHours": 11.25,
+    "catDays": [
+      1.5,
+      0,
+      0
+    ],
+    "lines": [
+      "Fact · Small: 1 × 1.5 = 1.5 days"
+    ],
+    "fmtDays": "1.5",
+    "fmtHours": "11.25"
+  },
+  {
+    "name": "mixed",
+    "grandDays": 26.5,
+    "grandHours": 198.75,
+    "catDays": [
+      9.5,
+      8,
+      9
+    ],
+    "lines": [
+      "Fact · Small: 3 × 1.5 = 4.5 days",
+      "Fact · Large: 2 × 2.5 = 5 days",
+      "Dimension · SCD: 4 × 2 = 8 days",
+      "Source Ingestion · SQL: 5 × 1 = 5 days",
+      "Source Ingestion · API: 2 × 2 = 4 days"
+    ],
+    "fmtDays": "26.5",
+    "fmtHours": "198.75"
+  },
+  {
+    "name": "all ones",
+    "grandDays": 13,
+    "grandHours": 97.5,
+    "catDays": [
+      6,
+      3,
+      4
+    ],
+    "lines": [
+      "Fact · Small: 1 × 1.5 = 1.5 days",
+      "Fact · Medium: 1 × 2 = 2 days",
+      "Fact · Large: 1 × 2.5 = 2.5 days",
+      "Dimension · NoSCD: 1 × 1 = 1 days",
+      "Dimension · SCD: 1 × 2 = 2 days",
+      "Source Ingestion · SQL: 1 × 1 = 1 days",
+      "Source Ingestion · API: 1 × 2 = 2 days",
+      "Source Ingestion · Excel: 1 × 1 = 1 days"
+    ],
+    "fmtDays": "13",
+    "fmtHours": "97.5"
+  },
+  {
+    "name": "hpd 8",
+    "grandDays": 20,
+    "grandHours": 160,
+    "catDays": [
+      20,
+      0,
+      0
+    ],
+    "lines": [
+      "Fact · Medium: 10 × 2 = 20 days"
+    ],
+    "fmtDays": "20",
+    "fmtHours": "160"
+  },
+  {
+    "name": "hpd 0",
+    "grandDays": 20,
+    "grandHours": 0,
+    "catDays": [
+      20,
+      0,
+      0
+    ],
+    "lines": [
+      "Fact · Medium: 10 × 2 = 20 days"
+    ],
+    "fmtDays": "20",
+    "fmtHours": "0"
+  },
+  {
+    "name": "fractional",
+    "grandDays": 2.5,
+    "grandHours": 18.75,
+    "catDays": [
+      1.5,
+      1,
+      0
+    ],
+    "lines": [
+      "Fact · Small: 1 × 1.5 = 1.5 days",
+      "Dimension · NoSCD: 1 × 1 = 1 days"
+    ],
+    "fmtDays": "2.5",
+    "fmtHours": "18.75"
+  }
+]

@@ -1,0 +1,159 @@
+/*
+ * Shared chrome for tool pages (/tools/*).
+ *
+ * Extracted when the second tool landed. Anything a third tool would
+ * also need belongs here; anything specific to one tool stays in its own
+ * stylesheet. Keeping the header, tabs, panels and buttons common is
+ * what stops each tool drifting into its own look.
+ */
+
+/* ─── Header ──────────────────────────────────────────────────────── */
+
+.tool-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+  padding-bottom: 32px;
+  margin-bottom: 28px;
+  border-bottom: 2px solid var(--rule);
+}
+
+.tool-header-meta {
+  text-align: right;
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.8;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.tool-header-meta strong { color: var(--ink); font-weight: 600; }
+
+/* ─── Tabs ────────────────────────────────────────────────────────── */
+
+.tool-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 28px;
+}
+
+.tool-tab {
+  padding: 10px 20px 12px;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-3);
+  cursor: pointer;
+  position: relative;
+  margin-bottom: -1px;
+}
+
+.tool-tab:hover { color: var(--ink); }
+.tool-tab.is-active { color: var(--ink); font-weight: 600; }
+
+.tool-tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: var(--orange);
+}
+
+/* ─── Panels ──────────────────────────────────────────────────────── */
+
+.panel {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.panel-note {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin: 0 0 16px;
+  line-height: 1.55;
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────────── */
+
+.btn:disabled {
+  background: var(--surface-2);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--rule);
+  padding: 8px 16px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+
+/* ─── Output block (copy-ready values) ────────────────────────────── */
+
+.output-panel { border-left: 3px solid var(--orange); }
+
+.output-block {
+  background: var(--surface);
+  border: 1px solid var(--rule-soft);
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--ink-2);
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.output-empty { color: var(--ink-3); font-style: italic; }
+
+/* ─── Notices ─────────────────────────────────────────────────────── */
+
+.notice {
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  margin-bottom: 24px;
+  border-left: 3px solid;
+}
+
+.notice--info {
+  background: var(--green-bg);
+  color: var(--green-text);
+  border-left-color: var(--green);
+}
+
+@media (max-width: 900px) {
+  .tool-header { grid-template-columns: 1fr; }
+  .tool-header-meta { text-align: left; }
+}

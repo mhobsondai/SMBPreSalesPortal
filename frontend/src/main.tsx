@@ -8,6 +8,7 @@ import { Landing } from './pages/Landing';
 import { SectionPage } from './pages/SectionPage';
 import { HealthCheck } from './pages/HealthCheck';
 import { AssessmentScoringEngine } from './pages/tools/AssessmentScoringEngine';
+import { FabricDataCalculator } from './pages/tools/FabricDataCalculator';
 import { NotFound } from './pages/NotFound';
 import './styles/tokens.css';
 import './styles/base.css';
@@ -47,6 +48,10 @@ createRoot(rootElement).render(
             <Route
               path="/tools/assessment-scoring"
               element={<AssessmentScoringEngine />}
+            />
+            <Route
+              path="/tools/fabric-data-calculator"
+              element={<FabricDataCalculator />}
             />
             <Route path="/health" element={<HealthCheck />} />
             <Route path="*" element={<NotFound />} />

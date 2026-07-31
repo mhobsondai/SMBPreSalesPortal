@@ -172,8 +172,9 @@ export const SECTIONS: Section[] = [
           {
             id: 'fabric-data-calculator',
             title: 'Data Calculator',
-            description: 'Size capacity and storage from workload inputs.',
-            status: 'development'
+            description: 'Estimate delivery days and hours from the day-factor model.',
+            status: 'live',
+            to: '/tools/fabric-data-calculator'
           },
           {
             id: 'fabric-quote-generator',

@@ -27,6 +27,7 @@ import {
 } from '../../lib/scoring/assessmentScoring';
 import { GaugeRing } from './GaugeRing';
 import { SCurveChart } from './SCurveChart';
+import '../../styles/tool.css';
 import './AssessmentScoringEngine.css';
 
 type Tab = 'process' | 'methodology';
@@ -112,7 +113,7 @@ export function AssessmentScoringEngine() {
 
         {tab === 'process' ? (
           <>
-            <div className="privacy-note">
+            <div className="notice notice--info">
               <strong>Stays on this device.</strong> Scoring runs entirely in
               your browser — the response you paste is never uploaded, stored or
               logged. Closing the tab discards it.
@@ -440,15 +441,15 @@ function TemplateValues({ results }: { results: ScoringResult }) {
   }
 
   return (
-    <div className="panel template-panel">
-      <div className="template-head">
+    <div className="panel output-panel">
+      <div className="panel-head">
         <h3 className="panel-title">Template-ready values</h3>
         <button type="button" className="btn-ghost" onClick={copy}>
           {copied ? 'Copied' : 'Copy all'}
         </button>
       </div>
       <p className="panel-note">Paste directly into the assessment output document.</p>
-      <pre className="template-block">{lines.join('\n')}</pre>
+      <pre className="output-block">{lines.join('\n')}</pre>
     </div>
   );
 }

@@ -1,0 +1,253 @@
+/*
+ * Fabric Data Calculator — page-specific styles.
+ * Shared tool chrome lives in styles/tool.css.
+ */
+
+.settings-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+}
+
+.settings-panel label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.setting-input {
+  width: 84px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+}
+
+.setting-input:focus { border-color: var(--orange); }
+
+.reset-btn { margin-left: auto; }
+
+/* ─── Category groups ─────────────────────────────────────────────── */
+
+.cat { margin-bottom: 18px; }
+
+.cat-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-bottom: none;
+}
+
+.cat-dot { width: 8px; height: 8px; background: var(--orange); flex-shrink: 0; }
+
+.cat-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.cat-sub {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+}
+
+.cat-body { border: 1px solid var(--rule); background: var(--white); }
+
+/* ─── Rows ────────────────────────────────────────────────────────── */
+
+.est-row {
+  display: grid;
+  grid-template-columns: 1fr 96px 108px 92px 92px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.est-row + .est-row { border-top: 1px solid var(--rule-soft); }
+
+.est-row--head {
+  background: var(--surface);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.est-row--head span {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.est-row .r, .est-row--head .r { text-align: right; }
+
+.item-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+
+.factor-chip {
+  justify-self: start;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  padding: 3px 9px;
+}
+
+.num-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.num-input:focus { border-color: var(--orange); }
+.num-input::placeholder { color: var(--ink-3); font-weight: 400; }
+
+.cell-days, .cell-hours {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cell-days { color: var(--sec-dfg); }
+.cell-hours { color: var(--amber-light); }
+.cell-zero { color: var(--rule) !important; font-weight: 400; }
+
+.est-row--subtotal {
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  grid-template-columns: 1fr 96px 108px 92px 92px;
+}
+
+.subtotal-label {
+  grid-column: 1 / 4;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ─── Totals ──────────────────────────────────────────────────────── */
+
+.totals-panel { border-left: 3px solid var(--orange); }
+
+.totals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.total-box {
+  text-align: center;
+  padding: 24px 16px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.total-num {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.total-box--days .total-num { color: var(--sec-dfg); }
+.total-box--hours .total-num { color: var(--amber-light); }
+
+.total-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-3);
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.total-note { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+
+/* ─── Breakdown bars ──────────────────────────────────────────────── */
+
+.breakdown { margin-top: 20px; }
+
+.bd-row { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.bd-label { width: 140px; font-size: 12.5px; font-weight: 500; color: var(--ink-2); }
+.bd-track { flex: 1; height: 16px; background: var(--surface-2); overflow: hidden; }
+.bd-fill { height: 100%; background: var(--sec-dfg); min-width: 2px; }
+.bd-val {
+  width: 80px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sec-dfg);
+}
+
+.bd-note { font-size: 11.5px; color: var(--ink-3); margin: 12px 0 0; font-style: italic; }
+
+/* ─── Rate card ───────────────────────────────────────────────────── */
+
+.rate-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.rate-table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--rule);
+}
+
+.rate-table th.r, .rate-table td.r { text-align: right; }
+
+.rate-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule-soft);
+  color: var(--ink-2);
+}
+
+.rate-cat { font-family: var(--font-display); font-weight: 700; color: var(--ink) !important; }
+
+.rate-factor {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--sec-dfg) !important;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .est-row, .est-row--subtotal { grid-template-columns: 1fr 76px 84px; }
+  .est-row .r-hours, .est-row--head .r-hours { display: none; }
+  .subtotal-label { grid-column: 1 / 3; }
+  .totals-grid { grid-template-columns: 1fr; }
+  .settings-panel { flex-wrap: wrap; }
+  .reset-btn { margin-left: 0; }
+}
