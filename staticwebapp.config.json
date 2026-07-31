@@ -18,9 +18,9 @@
     { "route": "/login", "redirect": "/.auth/login/aad", "statusCode": 302 },
     { "route": "/logout", "redirect": "/.auth/logout", "statusCode": 302 },
     { "route": "/me", "rewrite": "/.auth/me" },
-    { "route": "/.auth/login/github", "statusCode": 404 },
-    { "route": "/.auth/login/twitter", "statusCode": 404 },
-    { "route": "/*", "allowedRoles": ["authenticated", "anonymous"] }
+
+    { "//": "STEP 2 (after login is verified): change allowedRoles below to [\"authenticated\"] only. That gates the static bundle to the tenant, which is the main reason for the Standard SKU. Left open for this deploy so a misconfigured auth block cannot lock everyone out.",
+      "route": "/*", "allowedRoles": ["authenticated", "anonymous"] }
   ],
 
   "responseOverrides": {
