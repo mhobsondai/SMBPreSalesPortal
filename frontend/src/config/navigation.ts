@@ -3,29 +3,43 @@
  *
  * ## The model
  *
- * A `Section` is any navigable page. It may contain:
- *   - `children` — further sections (another level of navigation)
- *   - `tiles`    — leaf links to actual tools
- *   - both, if a section has its own tools *and* sub-sections
+ * A `Section` is a grouping. It may contain:
+ *   - `children` — sub-sections
+ *   - `tiles`    — links to actual tools
+ *   - both
  *
- * The tree is walked by path, so **depth is unlimited and adding a level
- * requires no code change** — no new route, no new component, no new CSS.
- * `/area/data-ai/sap-bi-platforms/crystal/whatever` resolves as long as
- * the slugs exist here.
+ * ## How it renders
  *
- * That matters because the shape of this portal isn't known yet. Sections
- * will be added and reorganised as tools appear, and none of that should
- * require touching the router.
+ * Top-level sections (practice areas) are cards on the landing page.
+ * **Everything below renders inline** on that practice area's page as
+ * headed groups of compact list rows — no further navigation.
+ *
+ * That is deliberate. An earlier design gave every sub-section its own
+ * page, which meant three clicks to reach a tool and a lot of near-empty
+ * pages. With dozens of tools coming, the cost of that navigation
+ * outweighs the tidiness. One click from the landing page now reaches
+ * every tool in a practice area.
+ *
+ * Sub-sections remain individually addressable (`/area/data-ai/assessments`)
+ * because the resolver walks the tree — useful if a group ever grows
+ * large enough to deserve its own page. Nothing links there today.
  *
  * ## Adding things
  *
  * A new tool → append a `Tile` to the right section's `tiles`.
  * A new grouping → append a `Section` to the right section's `children`.
+ * Neither needs a route, a component, or CSS.
  *
  * ## Slugs are URLs
  *
  * They appear in bookmarks people share. Renaming one breaks links, so
  * choose deliberately and prefer adding over renaming.
+ *
+ * ## Tile IDs must be globally unique
+ *
+ * Two sections may both hold a "Quote Generator"; their ids must differ
+ * (`sap-quote-generator`, `fabric-quote-generator`). Ids are React keys
+ * and will become analytics identifiers.
  */
 
 export type TileStatus = 'live' | 'development' | 'planned';
@@ -44,7 +58,7 @@ export interface Tile {
 export interface Section {
   /** URL segment. Unique among its siblings. */
   slug: string;
-  /** Short label for cards, breadcrumbs and menus. */
+  /** Short label for cards, group headings and breadcrumbs. */
   name: string;
   /**
    * Page headline, split so the second part carries the orange accent.
@@ -61,7 +75,7 @@ function placeholder(id: string, subject: string): Tile {
   return {
     id: `${id}-placeholder`,
     title: 'App in development',
-    description: `The first ${subject} tool is being built. This tile will become a live link when it ships.`,
+    description: `The first ${subject} tool is being built.`,
     status: 'development'
   };
 }
@@ -88,31 +102,84 @@ export const SECTIONS: Section[] = [
     name: 'Data & AI',
     headline: ['Data', '& AI'],
     summary:
-      'Microsoft Fabric, Power BI, Foundry, SAP BusinessObjects and Crystal Server pre-sales tooling — assessments, migration sizing and solution design.',
+      'Microsoft Fabric, Power BI, Foundry, SAP BusinessObjects and Crystal Server pre-sales tooling — assessments, sizing and quote generation.',
     children: [
       {
-        slug: 'self-assessments',
-        name: 'Self-Assessments',
-        headline: ['Self-', 'Assessments'],
+        slug: 'assessments',
+        name: 'Assessments',
+        headline: ['Assessments'],
         summary:
-          'Structured questionnaires clients complete themselves, producing the input for sizing, health checks and scoping conversations.',
-        tiles: [placeholder('self-assessments', 'self-assessment')]
+          'Client-facing maturity assessment, its scoring and insight tooling, and the clinic format that follows.',
+        tiles: [
+          {
+            id: 'client-link',
+            title: 'Client Link',
+            description:
+              'Enhanced Maturity Assessment — the client-facing questionnaire.',
+            status: 'live',
+            href: 'https://codestonecloudbusiness.com/enhanced-maturity-assessment/'
+          },
+          {
+            id: 'assessment-scoring-engine',
+            title: 'Assessment Scoring Engine',
+            description: 'Scores completed maturity assessments.',
+            status: 'development'
+          },
+          {
+            id: 'insight-spark-engine',
+            title: 'Insight Spark Engine',
+            description: 'Turns assessment results into talking points and themes.',
+            status: 'development'
+          },
+          {
+            id: 'data-ai-clinic',
+            title: 'Data and AI Clinic',
+            description: 'Clinic session format and supporting collateral.',
+            status: 'development'
+          }
+        ]
       },
       {
-        slug: 'sap-bi-platforms',
-        name: 'SAP BI Platforms',
-        headline: ['SAP BI', 'Platforms'],
+        slug: 'sap-bi-platform',
+        name: 'SAP BI Platform',
+        headline: ['SAP BI', 'Platform'],
         summary:
-          'SAP BusinessObjects and Crystal Server — health checks, upgrade and migration sizing, effort estimation and quote generation.',
-        tiles: [placeholder('sap-bi', 'SAP BI Platforms')]
+          'SAP BusinessObjects and Crystal Server — estate assessment, effort estimation and quote generation.',
+        tiles: [
+          {
+            id: 'sap-presales-install-assessment',
+            title: 'Pre-Sales Install Assessment',
+            description: 'Capture an existing estate ahead of scoping.',
+            status: 'development'
+          },
+          {
+            id: 'sap-quote-generator',
+            title: 'Quote Generator',
+            description: 'Produce a LabMat quote and scope from an assessment.',
+            status: 'development'
+          }
+        ]
       },
       {
-        slug: 'microsoft-platforms',
-        name: 'Microsoft Platforms',
-        headline: ['Microsoft', 'Platforms'],
+        slug: 'fabric-platform',
+        name: 'Fabric Platform',
+        headline: ['Fabric', 'Platform'],
         summary:
-          'Microsoft Fabric, Power BI and Foundry — capacity sizing, workload assessment, migration planning and solution design.',
-        tiles: [placeholder('microsoft-platforms', 'Microsoft Platforms')]
+          'Microsoft Fabric capacity sizing and quote generation.',
+        tiles: [
+          {
+            id: 'fabric-data-calculator',
+            title: 'Data Calculator',
+            description: 'Size capacity and storage from workload inputs.',
+            status: 'development'
+          },
+          {
+            id: 'fabric-quote-generator',
+            title: 'Quote Generator',
+            description: 'Produce a quote and scope from calculator output.',
+            status: 'development'
+          }
+        ]
       }
     ]
   }
