@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "name": "Kermit T Frog",
+    "company": "Muppets Inc",
+    "jobFunction": "Executive/Senior Leadership",
+    "email": "k.frog@muppets.com"
+  },
+  "overall": 13.889286,
+  "overallBand": "Reactive with Risks",
+  "sCurve": "Reactive & Ad Hoc",
+  "sections": {
+    "dfg": 3.25,
+    "ids": 21.714286,
+    "air": 24.928571,
+    "va": 10
+  },
+  "sectionBands": {
+    "dfg": "Critical Risk",
+    "ids": "Fragmented Adoption",
+    "air": "Early Exploration",
+    "va": "Low Value, Low Response"
+  },
+  "questions": [
+    {
+      "key": "data_prep",
+      "score": 5
+    },
+    {
+      "key": "data_access",
+      "score": 5
+    },
+    {
+      "key": "tool_penalty",
+      "score": 0
+    },
+    {
+      "key": "decision_support",
+      "score": 10
+    },
+    {
+      "key": "trust",
+      "score": 21.428571
+    },
+    {
+      "key": "agility",
+      "score": 35.714286
+    },
+    {
+      "key": "ai_alignment",
+      "score": 12
+    },
+    {
+      "key": "ai_adoption",
+      "score": 35.714286
+    },
+    {
+      "key": "ai_governance",
+      "score": 40
+    },
+    {
+      "key": "ai_capability",
+      "score": 12
+    },
+    {
+      "key": "value_impact",
+      "score": 10
+    },
+    {
+      "key": "scalability",
+      "score": 10
+    },
+    {
+      "key": "speed",
+      "score": 10
+    }
+  ],
+  "unmatched": [],
+  "_note": "Reference output from the original standalone HTML prototype. The TypeScript port must reproduce these numbers exactly. If a methodology change makes this fixture wrong, regenerate it in the same commit and state why in the message."
+}

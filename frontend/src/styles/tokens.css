@@ -41,6 +41,21 @@
   --amber-bg: #fef3c7;
   --amber-text: #78350f;
 
+  --red: #c0392b;
+  --red-bg: #fdecea;
+  --red-text: #7d2018;
+  --amber-light: #d97706;
+
+  /*
+   * Assessment section accents. Four hues that stay distinguishable on
+   * the light surface and in greyscale print — assessment output often
+   * ends up in a printed document.
+   */
+  --sec-dfg: #0a4d68;
+  --sec-ids: #1a7a4a;
+  --sec-air: #c2410c;
+  --sec-va:  #7c3aed;
+
   /* Typography */
   --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-body: 'DM Sans', system-ui, sans-serif;

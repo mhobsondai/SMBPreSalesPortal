@@ -7,6 +7,7 @@ import { AuthGate } from './components/AuthGate';
 import { Landing } from './pages/Landing';
 import { SectionPage } from './pages/SectionPage';
 import { HealthCheck } from './pages/HealthCheck';
+import { AssessmentScoringEngine } from './pages/tools/AssessmentScoringEngine';
 import { NotFound } from './pages/NotFound';
 import './styles/tokens.css';
 import './styles/base.css';
@@ -41,6 +42,12 @@ createRoot(rootElement).render(
                 time, so nesting depth never requires a router change.
                 See config/navigation.ts. */}
             <Route path="/area/*" element={<SectionPage />} />
+            {/* Tools live at /tools/<slug>. Each is referenced from a
+                Tile in config/navigation.ts. */}
+            <Route
+              path="/tools/assessment-scoring"
+              element={<AssessmentScoringEngine />}
+            />
             <Route path="/health" element={<HealthCheck />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

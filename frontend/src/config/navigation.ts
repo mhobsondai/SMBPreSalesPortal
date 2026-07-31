@@ -122,8 +122,10 @@ export const SECTIONS: Section[] = [
           {
             id: 'assessment-scoring-engine',
             title: 'Assessment Scoring Engine',
-            description: 'Scores completed maturity assessments.',
-            status: 'development'
+            description:
+              'Score a completed maturity response into template-ready values.',
+            status: 'live',
+            to: '/tools/assessment-scoring'
           },
           {
             id: 'insight-spark-engine',
