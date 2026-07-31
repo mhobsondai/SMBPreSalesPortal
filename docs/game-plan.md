@@ -1,8 +1,11 @@
 # SMB Pre-Sales Portal — Development Game Plan
 
-**Status:** v0.1 scaffold complete and compiling. Tenant issuer wired in.
-Static Web App created and linked to the GitHub repo.
-**Blocker:** Entra app registration + deployment-workflow reconciliation.
+**Status:** v0.1 scaffold complete and compiling. **Standard** SKU, custom
+Entra authentication pinned to the Codestone tenant. App registration
+created, client ID and secret in place.
+**Phase 0 complete** — deployed, login verified end to end, static bundle
+tenant-gated. One follow-up open: dropping the email-domain fallback,
+pending confirmation that the `tid` claim arrives (AD-07).
 
 ---
 
@@ -14,63 +17,68 @@ end to end before writing another line of feature code.
 | # | Task | Effort |
 |---|------|--------|
 | 0.1 | ~~Create GitHub repo~~ — done. Push this folder into it | 10 min |
-| 0.2 | Entra app registration (self-service, daicodestone) | 20 min |
-| 0.3 | Fix `app_location`/`api_location`/`output_location` in Azure's workflow | 10 min |
-| 0.4 | Add client ID/secret to SWA settings, push, deploy | 30 min |
+| 0.2 | ~~Entra app registration~~ — not needed on Free SKU | — |
+| 0.3 | Replace Azure's workflow with `docs/workflow-reference.yml` | 10 min |
+| 0.4 | Push and deploy | 15 min |
 | 0.5 | Verify `/health` returns green | 15 min |
 
-### 0.2 — Entra app registration
+### 0.2 — No app registration required (Free SKU)
 
-Self-service under `daicodestone.onmicrosoft.com`.
+The service-defined `aad` provider uses Microsoft's own registration, so
+there is nothing to create and no client ID or secret to configure.
 
-1. Entra admin centre → **App registrations** → New registration
-   - Name: `SMB Pre-Sales Portal`
-   - Supported account types: **Accounts in this organizational directory only**
-   - Redirect URI (Web): `https://<swa-hostname>/.auth/login/aad/callback`
-     — the SWA already exists, so take the hostname from
-     Azure Portal → your Static Web App → Overview → URL.
-2. Record the **Application (client) ID**. The tenant ID is already
-   wired into `staticwebapp.config.json`
-   (`2e99fe9c-8eeb-485a-83e3-6c4179eded6d`).
-3. **Certificates & secrets** → New client secret → record the *value*
-   (not the ID). Set a calendar reminder for expiry.
-4. **Token configuration** → add optional claim `email` and `preferred_username`
-   to the ID token. Improves the display name without a Graph call.
+**The trade:** that provider accepts any Microsoft account from any
+tenant. The organisational boundary is enforced in
+`api/shared/auth.py` instead — read AD-06 in `decisions.md` before
+putting anything sensitive in this app.
 
-### 0.3 — Fix Azure's generated workflow
+Optionally tighten the policy without a redeploy via SWA →
+Configuration → Application settings:
 
-Our duplicate workflow file has been removed — Azure's generated one is
-the single deploy path. It needs three path corrections before it will
-build this repo. Full detail in **`docs/workflow-settings.md`**; the short
-version:
+| Setting | Default |
+|---|---|
+| `ALLOWED_TENANT_IDS` | `2e99fe9c-8eeb-485a-83e3-6c4179eded6d` |
+| `ALLOWED_EMAIL_DOMAINS` | `codestone.com,daicodestone.onmicrosoft.com` |
 
-```yaml
-          app_location: "frontend"
-          api_location: "api"
-          output_location: "dist"
-```
+### 0.3 — Replace Azure's generated workflow
+
+Azure's default workflow cannot build this repo: wrong paths, and the
+Oryx container's glibc is too old for Rollup 4 (Vite 5's bundler).
+
+Copy `docs/workflow-reference.yml` over
+`.github/workflows/azure-static-web-apps-<name>.yml`, substituting the
+real hostname-suffixed secret name. It builds the frontend on the Actions
+runner and hands the SWA action a finished `dist/`.
+
+Full explanation and a symptom→cause table in
+**`docs/workflow-settings.md`**.
+
+Commit `frontend/package-lock.json` — `npm ci` requires it.
 
 ### 0.4 — Wiring
 
-- `staticwebapp.config.json`: tenant issuer already set — no change needed.
-- SWA → Configuration → Application settings: add `AAD_CLIENT_ID` and
-  `AAD_CLIENT_SECRET`.
-- GitHub deployment token: handled in 0.3 above.
-- Add the real redirect URI to the app registration once the hostname exists.
+Nothing to configure. No `auth` block, no client secret, no tenant
+issuer. Commit `frontend/package-lock.json` and the replaced workflow,
+push to `main`.
 
 ### 0.5 — Verification checklist
 
 - [ ] Anonymous visit to `/` shows the sign-in screen, not a blank page
-- [ ] Sign-in redirects to the Codestone login, returns to `/`
-- [ ] Landing shows your first name
+- [ ] Sign-in with your Codestone account returns to `/` and shows your name
 - [ ] `/area/data-ai` renders the placeholder tile
-- [ ] `/health` shows a green API response with your UPN
-- [ ] Direct hit on `/api/me` in an incognito window returns 401/redirect
+- [ ] `/health` shows all three panels green
 - [ ] Deep link `/area/erp` works on hard refresh (navigationFallback)
 
-**Gotcha:** run locally with `swa start` on port **4280**, not `vite` on
-5173. Vite alone cannot serve `/.auth/me`, so AuthGate will show
-"Authentication unavailable".
+**The one that matters most — test the 403 path:**
+
+- [ ] Sign in with a personal Microsoft account (or any non-Codestone
+      address) in a private window. You must land on the **Access denied**
+      screen, not the portal.
+
+If that test lets you through, the API is not enforcing the policy —
+check that `/api/me` is reachable at all (a missing API returns a network
+error, and `AuthGate` correctly fails closed rather than admitting you,
+but the symptom looks similar). `/health` panel 3 distinguishes the two.
 
 ---
 
@@ -90,6 +98,17 @@ Only after Phase 0 is green.
 ---
 
 ## Phase 2 — First real tool (≈ 1–2 weeks)
+
+**Upgrade to Standard SKU first (~$9/app/month).** Restore the `auth`
+block with the tenant issuer. Everything in Phase 2 involves commercial
+logic or client inputs, and AD-06 residual risk 1 says that must not sit
+on the Free tier. Runbook: `docs/upgrade-to-standard.md` — ~30 minutes,
+no application code changes.
+
+**Do it before Phase 3 regardless**, or key user records on UPN rather
+than `userId` — the upgrade may change `userId` values, which would
+orphan rows in any table keyed on them.
+
 
 Pick **one** tool and build it all the way through. The second tool is
 cheap; the first one is where the patterns get set.
@@ -145,17 +164,17 @@ saved estimates, run history, audit trail. Not before.
 
 | Risk | Impact | Mitigation |
 |------|--------|-----------|
-| App registration is under Codestone tenant governance (AD-05) | Slows every auth change | Get Application Developer role, or agree an SLA with Craig Stevens |
-| Client secret expiry | Total outage, hard to diagnose | Calendar reminder at 11 months; or move to certificate auth |
-| Every Codestone account can sign in | Wider audience than intended | Add Entra app-role gating if the portal should be pre-sales only |
-| Free SWA tier limits (100 MB body, 0.5 GB storage, no SLA) | Tool failures under load | Standard tier is ~£7/month — budget for it at Phase 2 |
+| **Free SKU: static assets served to any signed-in Microsoft account** (AD-06) | Frontend bundle is effectively public | Keep all logic and data server-side behind `/api/*`. Upgrade to Standard before Phase 2 |
+| Domain fallback weaker than tenant pinning (AD-06) | Ex-employee with a personal MSA on a `@codestone.com` address could pass | Upgrade to Standard; `tid` becomes reliable and the fallback can be dropped |
+| No SLA on Free tier | Unannounced downtime | Acceptable for a scaffold; not for a tool in a live bid |
+| Free tier quotas: 100 GB bandwidth, 0.5 GB storage | Site stops being served when exceeded | Monitor; Standard raises both |
 | Functions 230 s timeout | Long AI generations fail | Durable Functions or async job pattern |
-
----
+| Oryx/glibc breakage recurs on dependency bumps | Build fails | Frontend is built on the Actions runner — insulated. Don't revert to Oryx builds |
 
 ## Immediate next action
 
-Create the Entra app registration (single-tenant, redirect URI
-`https://<swa-hostname>/.auth/login/aad/callback`), then add
-`AAD_CLIENT_ID` and `AAD_CLIENT_SECRET` to the SWA's Application settings.
-**≈ 20 minutes.**
+Commit and push: the updated `staticwebapp.config.json` (no `auth`
+block), `api/shared/auth.py`, the frontend changes, and
+`frontend/package-lock.json`. Then run the 403 test in step 0.5 —
+sign in with a non-Codestone Microsoft account and confirm you're
+turned away. **≈ 15 minutes.**

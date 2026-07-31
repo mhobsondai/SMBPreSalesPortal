@@ -19,8 +19,8 @@
     { "route": "/logout", "redirect": "/.auth/logout", "statusCode": 302 },
     { "route": "/me", "rewrite": "/.auth/me" },
 
-    { "//": "STEP 2 (after login is verified): change allowedRoles below to [\"authenticated\"] only. That gates the static bundle to the tenant, which is the main reason for the Standard SKU. Left open for this deploy so a misconfigured auth block cannot lock everyone out.",
-      "route": "/*", "allowedRoles": ["authenticated", "anonymous"] }
+    { "//": "Static bundle is tenant-gated. An anonymous request 401s, which responseOverrides turns into a redirect to the Microsoft login — so the JS bundle is never served to an unauthenticated visitor. This is the main reason for the Standard SKU; do not loosen it without reading AD-07.",
+      "route": "/*", "allowedRoles": ["authenticated"] }
   ],
 
   "responseOverrides": {

@@ -4,8 +4,15 @@ Internal Codestone portal giving SMB pre-sales staff a single, authenticated
 entry point to practice-area tooling.
 
 **Stack:** React 18 + TypeScript + Vite frontend, Python Azure Functions API,
-deployed as an Azure Static Web App (free tier) with Entra ID authentication
-against the Codestone directory (tenant `2e99fe9c-…eded6d`).
+deployed as an Azure Static Web App (**Standard** SKU) with custom Entra
+authentication pinned to the Codestone tenant.
+
+> **Security note.** Authentication is enforced by the SWA platform via a
+> dedicated Entra app registration; `api/shared/auth.py` independently
+> re-checks the tenant on every request. Two follow-ups remain open —
+> `/*` is not yet restricted to authenticated users, so **do not put
+> commercial logic or client data in the frontend bundle** until it is.
+> See `docs/decisions.md` AD-07.
 
 ---
 
@@ -18,14 +25,14 @@ SMB-PreSales-Portal/
 ├── api/                       # Python Functions API
 │   ├── function_app.py        # routing only — /api/health, /api/me
 │   └── shared/
-│       ├── auth.py            # client-principal decoding + require_auth
+│       ├── auth.py            # principal decoding + tenant policy + require_auth
 │       └── display_name.py
 └── frontend/
     └── src/
         ├── config/practices.ts    # ← the navigation tree lives here
         ├── components/            # AuthGate, TopBar, TileGrid
         ├── lib/                   # auth, api client, hooks
-        ├── pages/                 # SignIn, Landing, PracticeAreaPage, HealthCheck
+        ├── pages/                 # SignIn, AccessDenied, Landing, PracticeAreaPage, HealthCheck
         └── styles/                # tokens.css, base.css
 ```
 
@@ -80,9 +87,13 @@ The tenant issuer is already set. Remaining:
 
 | Setting                      | Where                          |
 | ---------------------------- | ------------------------------ |
-| `AAD_CLIENT_ID`              | SWA → Configuration → Application settings |
-| `AAD_CLIENT_SECRET`          | SWA → Configuration → Application settings |
-| Redirect URI                 | Entra app registration → Authentication |
-| Workflow build paths         | `.github/workflows/azure-static-web-apps-*.yml` |
+| Workflow build paths | `.github/workflows/azure-static-web-apps-*.yml` — see `docs/workflow-settings.md` |
+| `AAD_CLIENT_ID` | SWA → Settings → Environment variables |
+| `AAD_CLIENT_SECRET` | SWA → Settings → Environment variables |
+| `ALLOWED_TENANT_IDS` *(optional)* | SWA → Settings → Environment variables |
+| `ALLOWED_EMAIL_DOMAINS` *(optional)* | SWA → Settings → Environment variables |
+
+Redirect URI on the app registration must be
+`https://<swa-hostname>/.auth/login/aad/callback`, platform **Web**.
 
 See `docs/game-plan.md` for the full sequence.

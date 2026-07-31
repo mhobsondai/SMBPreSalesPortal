@@ -56,3 +56,68 @@ open to every Codestone account, not just pre-sales. If that audience is
 too wide once tools hold client data, add Entra app-role gating
 (`allowedRoles` per route in `staticwebapp.config.json`). Cheap now,
 awkward later.
+
+## AD-06 — SUPERSEDED by AD-07 (Free SKU workaround)
+
+*Retained for context. The app was briefly on the Free SKU, where custom
+authentication is unavailable and the service-defined `aad` provider
+accepts any Microsoft account from any tenant. The organisational
+boundary was enforced solely in `api/shared/auth.py`. That constraint no
+longer applies — see AD-07.*
+
+## AD-07 — Standard SKU with custom Entra authentication
+
+**Date:** 31 July 2026.
+
+**Decision.** Upgraded to the Standard SWA SKU and restored the `auth`
+block, pinning authentication to the Codestone tenant
+(`2e99fe9c-8eeb-485a-83e3-6c4179eded6d`) via a dedicated app
+registration.
+
+**Effect.** Adding a custom registration disables all service-defined
+providers, so `authenticated` now means "signed in against our tenant".
+The AD-06 residual risks are resolved or resolvable:
+
+| AD-06 risk | Status |
+|---|---|
+| 1. Static assets served to any signed-in Microsoft account | Resolved once `/*` is restricted — see "Outstanding" below |
+| 2. Domain fallback weaker than tenant pinning | Resolvable — drop the fallback after verifying the `tid` claim arrives |
+| 3. Public Codestone-branded login page | Resolved — outsiders are stopped at the Microsoft login |
+| 4. No SLA | Resolved |
+
+**The tenant check in `api/shared/auth.py` stays.** It is now belt and
+braces rather than the only defence, and that is the point: platform auth
+is configuration, and configuration drifts. A merge that drops the `auth`
+block would silently reopen the app while the route rules still read
+`allowedRoles: ["authenticated"]` and still look correct. The code check
+fails closed and is covered by tests.
+
+### Outstanding — two follow-ups, deliberately deferred
+
+Both were held back from the deploy that introduced the `auth` block, so
+that a single change could be verified in isolation. Changing auth
+configuration and access rules simultaneously makes a failure impossible
+to diagnose, and a redirect loop on a portal you're locked out of is an
+unpleasant place to start debugging.
+
+1. ~~**Restrict `/*` to `["authenticated"]`.**~~ **Done** — 31 July 2026,
+   after login was confirmed working end to end. The static bundle is
+   now tenant-gated; AD-06 residual risk 1 is closed.
+2. **Drop the email-domain fallback** in `check_organisation`. Only
+   after `/health` panel 2 shows a `tenant:` reason on the live site.
+
+### Root cause of the deployment difficulty (for the record)
+
+Sign-in looped silently for some hours. Cause: the client ID and client
+secret came from **two different app registrations**. Entra accepted the
+authorize request because the client ID was valid, issued a token, and
+SWA's callback then failed the exchange against a secret belonging to a
+different client — producing a 302 back to `/.auth/login/aad` with
+`Set-Cookie: Nonce=deleted` and no error message anywhere.
+
+Compounding it, the loop is self-sustaining: each restart issues a fresh
+nonce, so the returning token is always bound to a stale one. Retrying
+without clearing cookies fails regardless of what has been fixed.
+
+Both are now documented in `docs/upgrade-to-standard.md` as traps 4 and
+5, with a symptom→cause table.

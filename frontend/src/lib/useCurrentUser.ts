@@ -11,14 +11,12 @@ export interface SessionUser {
 }
 
 /**
- * The signed-in user for the current session.
+ * The signed-in user, from the SWA principal (/.auth/me).
  *
- * Sourced from the SWA principal (/.auth/me) — the security answer to
- * "is this person signed in?". Cached for the lifetime of the app.
- *
- * When the API grows a profile store, add a second hook backed by
- * /api/me for the *data* identity. Keep the two distinct: one answers a
- * security question, the other a data question.
+ * Answers "is someone signed in?" only. On the Free SKU that is a much
+ * weaker statement than it sounds — any Microsoft account can reach this
+ * state. Whether they are *allowed* here is answered by /api/me, which
+ * AuthGate calls separately.
  */
 export function useCurrentUser(): UseQueryResult<SessionUser | null> {
   return useQuery({
