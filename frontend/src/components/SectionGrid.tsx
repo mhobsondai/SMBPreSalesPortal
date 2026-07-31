@@ -12,28 +12,24 @@ interface SectionGridProps {
   sections: Section[];
   /** Trail of the *parent*, so child hrefs can be built. */
   parentTrail: Section[];
-  /**
-   * Top-level sections get the heavier charcoal treatment on the landing
-   * page; nested ones use the lighter card so the hierarchy reads at a
-   * glance rather than requiring the breadcrumb.
-   */
-  variant?: 'primary' | 'nested';
 }
 
-export function SectionGrid({
-  sections,
-  parentTrail,
-  variant = 'nested'
-}: SectionGridProps) {
+/**
+ * Practice-area cards for the landing page.
+ *
+ * Only top-level sections are rendered as cards. Sub-sections render
+ * inline on the practice-area page as lists — see ToolList and
+ * config/navigation.ts for why.
+ */
+export function SectionGrid({ sections, parentTrail }: SectionGridProps) {
   return (
-    <div className={`section-grid section-grid--${variant}`}>
+    <div className="section-grid">
       {sections.map((section, index) => (
         <SectionCard
           key={section.slug}
           section={section}
           index={index}
           href={sectionHref([...parentTrail, section])}
-          variant={variant}
         />
       ))}
     </div>
@@ -43,13 +39,11 @@ export function SectionGrid({
 function SectionCard({
   section,
   index,
-  href,
-  variant
+  href
 }: {
   section: Section;
   index: number;
   href: string;
-  variant: 'primary' | 'nested';
 }) {
   const live = countLiveTiles(section);
   const total = countAllTiles(section);
@@ -69,7 +63,7 @@ function SectionCard({
   return (
     <Link
       to={href}
-      className={`section-card section-card--${variant} reveal reveal-${Math.min(index + 2, 5)}`}
+      className={`section-card reveal reveal-${Math.min(index + 2, 5)}`}
     >
       <div className="section-card-index">{String(index + 1).padStart(2, '0')}</div>
       <h3 className="section-card-title">{section.name}</h3>

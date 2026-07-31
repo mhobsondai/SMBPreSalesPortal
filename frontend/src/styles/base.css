@@ -222,7 +222,7 @@ button {
   font-size: 12.5px;
 }
 
-/* ─── Empty state (shared by SectionPage and TileGrid) ─────────────── */
+/* ─── Empty state ─────────────────────────────────────────────────── */
 
 .empty {
   padding: 72px 24px;

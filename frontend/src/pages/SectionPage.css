@@ -24,6 +24,18 @@
   font-weight: 600;
 }
 
+/*
+ * Groups sit side by side on wide screens so a whole practice area is
+ * visible at once — the point of flattening the navigation. They stack
+ * below ~840px viewport width.
+ */
+.tool-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
 @media (max-width: 900px) {
   .section-header {
     grid-template-columns: 1fr;

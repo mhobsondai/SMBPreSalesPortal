@@ -29,7 +29,7 @@ export function Landing() {
           <span className="section-meta">{SECTIONS.length} areas</span>
         </div>
 
-        <SectionGrid sections={SECTIONS} parentTrail={[]} variant="primary" />
+        <SectionGrid sections={SECTIONS} parentTrail={[]} />
       </main>
 
       <footer className="page-footer">
