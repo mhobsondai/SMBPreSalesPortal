@@ -19,17 +19,31 @@ route rules would still say ``authenticated`` and still look correct.
 These checks are code, they are covered by tests, and they fail closed.
 They cost one dictionary lookup per request. Keep them.
 
-## The email-domain fallback
+## The email-domain fallback is permanent — do not "tidy" it away
 
 ``check_organisation`` accepts either a matching ``tid`` claim or a
-matching email domain. On Standard the ``tid`` claim should always be
-present, making the domain fallback redundant — and it is the weaker of
-the two tests (see AD-06 residual risk 2).
+matching email domain.
 
-**Do not remove it until you have confirmed on the live site that
-/health panel 2 reports a ``tenant:`` reason rather than a ``domain:``
-one.** Removing it while claims are absent 403s every user, including
-whoever is trying to fix it.
+**Verified on the live site (31 July 2026): the ``tid`` claim does not
+arrive.** The SWA client-principal header carries only
+``identityProvider``, ``userId``, ``userDetails`` and ``userRoles`` — no
+claims collection — so ``principal.tenant_id`` is always ``None`` and the
+domain check is the only branch that ever fires.
+
+Removing it would deny every user, including whoever is trying to fix it,
+with a redeploy as the only recovery path. ``/health`` panel 2 shows
+which branch is live; it will read ``domain:codestone.com``.
+
+**This is not a weakness.** The domain check is only ever reached by a
+caller who has *already* completed tenant-pinned authentication against
+our Entra app registration. It cannot be used to get in — it is a second
+assertion about someone the platform has already vouched for. The
+scenario AD-06 worried about (a personal Microsoft account on a verified
+``@codestone.com`` address) cannot reach this code at all, because such
+an account cannot pass the tenant-pinned sign-in.
+
+The ``tid`` branch is retained because it costs nothing, and because
+future SWA versions may populate claims.
 
 Reference:
 https://learn.microsoft.com/en-us/azure/static-web-apps/user-information
