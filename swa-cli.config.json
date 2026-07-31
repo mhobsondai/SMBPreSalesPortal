@@ -1,0 +1,15 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "smb-presales-portal": {
+      "appLocation": "frontend",
+      "apiLocation": "api",
+      "outputLocation": "dist",
+      "appBuildCommand": "npm run build",
+      "apiLanguage": "python",
+      "apiVersion": "3.11",
+      "run": "npm run dev --prefix frontend",
+      "appDevserverUrl": "http://localhost:5173"
+    }
+  }
+}
