@@ -152,7 +152,8 @@ export const SECTIONS: Section[] = [
             id: 'sap-presales-install-assessment',
             title: 'Pre-Sales Install Assessment',
             description: 'Capture an existing estate ahead of scoping.',
-            status: 'development'
+            status: 'live',
+            to: '/tools/sap-install-assessment'
           },
           {
             id: 'sap-quote-generator',

@@ -9,6 +9,7 @@ import { SectionPage } from './pages/SectionPage';
 import { HealthCheck } from './pages/HealthCheck';
 import { AssessmentScoringEngine } from './pages/tools/AssessmentScoringEngine';
 import { FabricDataCalculator } from './pages/tools/FabricDataCalculator';
+import { SapInstallAssessment } from './pages/tools/SapInstallAssessment';
 import { NotFound } from './pages/NotFound';
 import './styles/tokens.css';
 import './styles/base.css';
@@ -52,6 +53,10 @@ createRoot(rootElement).render(
             <Route
               path="/tools/fabric-data-calculator"
               element={<FabricDataCalculator />}
+            />
+            <Route
+              path="/tools/sap-install-assessment"
+              element={<SapInstallAssessment />}
             />
             <Route path="/health" element={<HealthCheck />} />
             <Route path="*" element={<NotFound />} />

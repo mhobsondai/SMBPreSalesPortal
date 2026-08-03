@@ -153,7 +153,318 @@
   border-left-color: var(--green);
 }
 
+.notice--warn {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+  border-left-color: var(--amber);
+}
+
+.notice--data {
+  background: var(--blue-bg);
+  color: var(--blue-text);
+  border-left-color: var(--blue);
+}
+
+/* ─── Vertical tab rail ───────────────────────────────────────────────
+ *
+ * Added with the third tool. Horizontal `.tool-tabs` stops working past
+ * about five tabs, and a per-environment assessment has upwards of
+ * fifteen. The rail nests one level so repeated groups (an environment, a
+ * workstream) read as a group rather than a prefixed flat list.
+ */
+
+.tool-split {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.tool-rail {
+  position: sticky;
+  top: 24px;
+  border-right: 1px solid var(--rule);
+  padding-right: 16px;
+}
+
+.tool-rail-section {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  margin: 20px 0 8px 10px;
+}
+
+.tool-rail-section:first-child { margin-top: 0; }
+
+.tool-rail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  padding: 8px 10px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.tool-rail-item:hover { color: var(--ink); background: var(--surface); }
+
+.tool-rail-item.is-active {
+  color: var(--ink);
+  font-weight: 600;
+  border-left-color: var(--orange);
+  background: var(--orange-bg);
+}
+
+.tool-rail-item--nested { padding-left: 22px; font-size: 13px; }
+
+.tool-rail-group {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tool-rail-group-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 9px 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.tool-rail-group-head:hover { background: var(--surface); }
+
+.tool-rail-caret {
+  font-size: 9px;
+  color: var(--ink-3);
+  width: 10px;
+  flex: none;
+}
+
+/* Completeness marker. Ring = untouched, part-filled = in progress,
+ * solid = every applicable field answered. Deliberately not a tick: a tick
+ * reads as "verified", and nothing here has been verified. */
+.tool-rail-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+  margin-left: auto;
+  border: 1.5px solid var(--rule);
+}
+
+.tool-rail-dot.is-partial { border-color: var(--amber); background: var(--amber-bg); }
+.tool-rail-dot.is-complete { border-color: var(--green); background: var(--green); }
+
+/* ─── Form / guidance split ───────────────────────────────────────────
+ *
+ * Half the width is reserved for guidance. Tools driven by a client
+ * conversation need the screenshot beside the question, not behind a
+ * tooltip — the person filling this in may not know the system.
+ */
+
+.tool-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.guidance-pane {
+  position: sticky;
+  top: 24px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 20px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+
+.guidance-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  margin: 0 0 12px;
+}
+
+.guidance-steps {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.guidance-empty {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-3);
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.guidance-figure { margin: 0 0 16px; }
+
+.guidance-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  background: var(--white);
+}
+
+.guidance-figure figcaption {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* Placeholder box, sized to the declared slot so the layout does not jump
+ * when the real screenshot is dropped in. */
+.guidance-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--rule);
+  background: var(--white);
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 12px;
+}
+
+.guidance-placeholder--half { aspect-ratio: 4 / 3; }
+.guidance-placeholder--full { aspect-ratio: 3 / 2; }
+.guidance-placeholder--wide { aspect-ratio: 16 / 7; }
+
+/* ─── Form vocabulary ─────────────────────────────────────────────────
+ *
+ * Phase 2 step 2 of the game plan: establish this once so every
+ * subsequent tool reuses it rather than inventing its own inputs.
+ */
+
+.field { margin-bottom: 20px; }
+
+.field-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.field-hint {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.field-input,
+.field-textarea,
+.field-select {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  padding: 9px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.field-input:focus,
+.field-textarea:focus,
+.field-select:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.field-textarea { min-height: 88px; resize: vertical; line-height: 1.6; }
+
+.field-suffix {
+  display: flex;
+  align-items: stretch;
+}
+
+.field-suffix .field-input { border-right: none; }
+
+.field-suffix-unit {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+/* Segmented control — used for yes/no and short enumerations. Reads as one
+ * question with two answers rather than two independent checkboxes. */
+.seg { display: flex; }
+
+.seg-option {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  margin-left: -1px;
+  padding: 9px 12px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.seg-option:first-child { margin-left: 0; }
+.seg-option:hover { border-color: var(--ink-3); position: relative; z-index: 1; }
+
+.seg-option.is-selected {
+  background: var(--orange-bg);
+  border-color: var(--orange);
+  color: var(--orange-muted);
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 1200px) {
+  .tool-workspace { grid-template-columns: minmax(0, 1fr); }
+  .guidance-pane { position: static; max-height: none; }
+}
+
 @media (max-width: 900px) {
   .tool-header { grid-template-columns: 1fr; }
   .tool-header-meta { text-align: left; }
+  .tool-split { grid-template-columns: minmax(0, 1fr); }
+  .tool-rail {
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 0 0 16px;
+  }
 }

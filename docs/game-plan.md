@@ -9,8 +9,33 @@ authenticated users, API enforcing the tenant policy independently.
 Anonymous visitors are redirected to the Microsoft login without
 receiving the JS bundle. Both AD-07 follow-ups closed.
 
-**Next: Phase 1 (shell polish) or straight to Phase 2 (first real tool).**
-Phase 1 is optional; Phase 2 is where the value is.
+**Phase 2 in progress.** Three tools shipped:
+
+- Assessment Scoring Engine (Assessments) — client-side only, AD-08
+- Fabric Data Calculator (Fabric Platform) — AD-09
+- SAP Pre-Sales Install Assessment (SAP BI Platform) — AD-11
+
+The first two were converted from standalone HTML prototypes with their
+arithmetic pinned against reference fixtures. The third had no prototype:
+it is built from `Blank Install Assessment.docx`, captures rather than
+calculates, and pins its field-visibility rules and export contract
+instead.
+
+`styles/tool.css` now also holds the vertical tab rail, the form/guidance
+split and the shared form vocabulary. A test runner arrived with the third
+tool — `npm test`, 111 tests, AD-10.
+
+**Next: the SAP Quote Generator.** It is the best-placed of the two because
+its input contract already exists — the install assessment emits versioned
+JSON — and the domain rules are already encoded in the SAP BIA LabMat
+skill.
+
+Two open items carried forward from AD-11, both small:
+
+| Item | Effort |
+|---|---|
+| Client-side `.docx` export matching the source document | ~0.5 day |
+| Confirm with Natasha Keskin whether contact details in `localStorage` on a synced browser profile needs anything recorded | 15 min |
 
 ---
 
@@ -123,10 +148,13 @@ without needing a database first.
 
 Sequence:
 
-1. **Route + tile** — add the tile to `practices.ts` with `status: 'live'`,
-   add `/tools/<slug>` to `main.tsx`. (1 h)
-2. **Input form** — establish the shared form component vocabulary now;
-   every subsequent tool reuses it. (1 day)
+1. **Route + tile** — add the tile to `config/navigation.ts` with
+   `status: 'live'` and a `to`, add `/tools/<slug>` to `main.tsx`. (1 h)
+2. ~~**Input form** — establish the shared form component vocabulary~~ —
+   **done** with the install assessment. Labels, hints, inputs, the
+   GB-suffixed number field and the segmented yes/no control are in
+   `styles/tool.css`; `FieldControl` in `SapInstallAssessment.tsx` renders a
+   declarative field model against them. Reuse both.
 3. **API endpoint** — `POST /api/tools/<slug>`, add `shared/tools/<slug>.py`.
    Keep `function_app.py` as routing only. (1 day)
 4. **File handling** — decide upload strategy before writing code:
@@ -176,8 +204,21 @@ saved estimates, run history, audit trail. Not before.
 
 ## Immediate next action
 
-Commit and push: the updated `staticwebapp.config.json` (no `auth`
-block), `api/shared/auth.py`, the frontend changes, and
-`frontend/package-lock.json`. Then run the 403 test in step 0.5 —
-sign in with a non-Codestone Microsoft account and confirm you're
-turned away. **≈ 15 minutes.**
+Supply the guidance copy and screenshots for the install assessment. Every
+slot is declared and renders a labelled placeholder at its intended size —
+drop a PNG into `frontend/public/guidance/sap-install/` and set `src` (plus
+`caption` and `steps`) on the matching slot in
+`config/sapInstallAssessmentModel.ts`. No code change needed.
+
+Slots awaiting an image, by tab:
+
+| Tab | Slots |
+|---|---|
+| Central Configuration Manager | `ccm-launch`, `ccm-server-list`, `ccm-tomcat`, `ccm-cluster`, `ccm-install-folder`, `filestore-input-size`, `filestore-output-size` |
+| CMC Settings | `cmc-settings-nav`, `cmc-cms-database`, `cmc-audit-database` |
+| CMC Universes | `cmc-universes-nav`, `cmc-universes-count` |
+| CMC Contents | `cmc-folders-nav`, `cmc-folders-count` |
+| CMC Schedules | `cmc-instance-manager-nav`, `cmc-pending-instances`, `cmc-successful-instances` |
+
+The three conversation-only tabs (Overview, Usage, Landscape) and Training
+and Go Live are marked self-evident and show an explanatory line instead.
