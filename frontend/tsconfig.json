@@ -4,6 +4,9 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
+    /* Brings in Vite's client types, which declare `?raw` imports — used to
+       embed the Word template's styles part. */
+    "types": ["vite/client", "node"],
     "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": true,

@@ -32,7 +32,9 @@ skill.
 
 The install assessment has had its first review pass — AD-12, schema v2.
 Word export delivered (client-side, dynamically imported), five model
-corrections, and implied answers added to the export contract.
+corrections, and implied answers added to the export contract. AD-13 then
+matched the Word output to `Blank Install Assessment.docx` visually, using
+that file's own styles part.
 
 Open items:
 

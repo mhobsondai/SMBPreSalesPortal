@@ -11,7 +11,7 @@ the Codestone tenant.
 
 **Status:** deployed and working. Three tools live. See `docs/game-plan.md`
 for phase status and `docs/decisions.md` for the full decision record
-(AD-01 to AD-12) — that file is the reasoning behind everything below.
+(AD-01 to AD-13) — that file is the reasoning behind everything below.
 
 ---
 
@@ -83,6 +83,22 @@ The Word output deliberately keeps the **source document's** section order
 and row labels, not the tool's tab order — and marks inapplicable rows
 `n/a` rather than dropping them, so two assessments are structurally the
 same document.
+
+`lib/assessments/templates/install-assessment.styles.xml` is the styles part
+of the real `Blank Install Assessment.docx`, imported with `?raw` and passed
+to `docx` as `externalStyles`. **Replacing that file rebrands the output** —
+that is the intended way to follow a template change.
+
+Table and page formatting cannot live in a styles part, so it is transcribed
+into `LAYOUT` in `sapInstallAssessmentDocx.ts` and pinned by test. Do not
+tidy it: the headings are green even though `CTHeading1` says navy, the
+Platform Overview table shades only its header row, and two of the four
+column grids are ten twips wider than the others. All three are what the
+source file does. AD-13 explains each.
+
+After changing anything in there, **render the output and look at it** —
+converting with LibreOffice and comparing against the original is how the
+navy-heading mistake was caught. The XML tests would not have found it.
 
 ### The install assessment stores contact details in the browser
 
@@ -177,9 +193,10 @@ document, and that is the recurring shape.
 
 ## Verification expectations
 
-`npm test` runs 142 vitest tests covering navigation invariants, the Fabric
+`npm test` runs 154 vitest tests covering navigation invariants, the Fabric
 estimator's pinned prototype cases, the install assessment's visibility
-rules and export contract, and the generated Word XML. Match that standard:
+rules and export contract, and the generated Word document's structure and
+formatting. Match that standard:
 
 - Converting a prototype → diff the port against the original's actual
   output, not against expectations

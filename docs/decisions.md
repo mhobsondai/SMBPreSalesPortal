@@ -638,3 +638,87 @@ than the moment it happens.
 fields (asserted absent, so reinstating one is a conscious act rather than a
 merge), the single-select go-live behaviour, and twenty tests reading the
 generated Word XML.
+
+## AD-13 — Matching the source document's look and feel
+
+**Date:** 4 August 2026.
+
+**Decision.** The Word output reproduces `Blank Install Assessment.docx`
+visually: the styles part is lifted out of the real file, and the table and
+page formatting is transcribed from it.
+
+### Generated, not patched — and why that was the harder question
+
+`docx` offers `patchDocument`, which fills `{{placeholder}}` tokens in an
+existing file. That is the obvious way to "populate a specific template", and
+it was rejected for a structural reason rather than a preference:
+
+- The document repeats **two whole tables per production environment**.
+  Patching does not repeat table rows or tables, so the template would need a
+  fixed maximum number of environments, each with a blank fallback.
+- Several rows are **conditional**: universes collapse to a single combined
+  row, Crystal Server rows read `n/a`, narrative rows appear only when there
+  is narrative. Patching cannot omit a row.
+
+So the template would have had to carry every combination, and the code would
+still have decided which to fill. The layout would have looked like it lived
+in Word while actually living in the code — the worst of both.
+
+**What is taken from the real file** is
+`lib/assessments/templates/install-assessment.styles.xml` — the styles part,
+verbatim, imported with Vite's `?raw` and handed to `docx` as
+`externalStyles`. So `CTHeading1` in the output *is* the Codestone heading
+style. A rebrand is replacing that one file.
+
+### What the styles part cannot carry
+
+Table and page formatting are properties of each table and section, not named
+styles, so they are transcribed into `LAYOUT` and asserted against the
+generated XML by test. Measured from the source document:
+
+| | |
+|---|---|
+| Label fill | `#3FBD02` Codestone green |
+| Label text | Arial 9pt, bold, white |
+| Borders | **All off.** Structure reads from the green cells, not from rules |
+| Row height | 397 twips minimum, vertically centred |
+| Page | A4, margins 568 / 849 / 709 / 709 twips |
+
+### Three things that look like bugs and are faithful
+
+1. **Headings are green, not navy.** `CTHeading1` defines a navy `#364580`
+   band — and the source document overrides it with a direct green fill on
+   every single heading paragraph. The first attempt trusted the style and
+   produced navy bands. The document wins over its own stylesheet.
+
+2. **Platform Overview shades only its header row.** Its body labels are
+   plain, unbolded Arial. Every other table shades its whole label column.
+   Four tables, four different column grids: `2547/2597/2597/2597`,
+   `3446/3446`, `10338`, `4111/6237`, `4678/5670`. There is no single table
+   style to extract — each shape is transcribed.
+
+3. **Two of those grids sum to 10348, not 10338.** Ten twips over the text
+   width, almost certainly someone dragging a column border in Word years ago.
+   Reproduced rather than tidied: ten twips is 0.18 mm, invisible, and each
+   table takes its width from its own grid so nothing stretches. The test
+   allows 0–10 twips of slack and says why, rather than asserting a
+   consistency the source file does not have.
+
+### Two structural departures, both deliberate
+
+- **The Overview "Narrative" row is gone.** The document has both a generic
+  "Narrative" row and a standalone "Transition to another toolset?" table.
+  The tool captures one forward-looking narrative, and the transition table is
+  its natural home, so `futureDirection` goes there and the generic row —
+  which nothing could ever populate — is dropped rather than left permanently
+  empty.
+- **Platform Overview lost its "Proposed Server" column**, following
+  `proposedServerName` out in AD-12. Two columns, not three.
+
+### Verified by rendering, not just by XML
+
+The generated file was converted with LibreOffice and compared against the
+original page for page. Worth doing again after any change here: the XML tests
+catch a fill or a width changing, but only looking at it catches a heading
+band coming out the wrong colour because a style was trusted over the
+document.
