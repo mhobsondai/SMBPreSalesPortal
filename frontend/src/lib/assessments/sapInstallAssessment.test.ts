@@ -28,7 +28,11 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { TABS, MAX_PRODUCTION_ENVIRONMENTS } from '../../config/sapInstallAssessmentModel';
+import {
+  ASSESSMENT_SCHEMA_VERSION,
+  MAX_PRODUCTION_ENVIRONMENTS,
+  TABS
+} from '../../config/sapInstallAssessmentModel';
 import {
   CLIENT_TABS,
   ENVIRONMENT_TABS,
@@ -37,6 +41,7 @@ import {
   defaultEnvironmentLabel,
   deserialise,
   exportFilename,
+  impliedValues,
   installationTypeOf,
   isTabVisible,
   overallCompleteness,
@@ -85,11 +90,7 @@ function boComplete(): AssessmentState {
       trainingCrystalReports: 'no',
       trainingInformationDesignTool: 'yes',
       trainingUniverseConversion: 'yes',
-      goLiveCoreHours: 'no',
-      goLiveSpecificWeekday: 'yes',
-      goLiveWeekday: 'saturday',
-      goLiveOvernight: 'no',
-      goLiveWeekend: 'yes'
+      goLiveTiming: 'weekend'
     },
     environments: [
       {
@@ -97,7 +98,6 @@ function boComplete(): AssessmentState {
         label: 'PROD01',
         answers: {
           serverName: 'ACME-BOBJ-P01',
-          proposedServerName: 'ACME-BOBJ-P02',
           operatingSystem: 'Windows Server 2016',
           platformSoftware: 'SAP BusinessObjects BI 4.2 SP7',
           authentication: 'Windows AD',
@@ -107,12 +107,10 @@ function boComplete(): AssessmentState {
           httpsConfigured: 'yes',
           separateWebServer: 'yes',
           webServerName: 'ACME-WEB-P01',
-          installationFolder: 'D:\\SAP BusinessObjects',
           inputFileRepositoryGb: '42.5',
           outputFileRepositoryGb: '118',
           cmsDatabaseSoftware: 'SQL Server 2016',
           auditingEnabled: 'yes',
-          auditDatabaseSoftware: 'SQL Server 2016',
           universeCountMode: 'separate',
           unvCount: '64',
           unxCount: '18',
@@ -153,10 +151,7 @@ function crystalServer(): AssessmentState {
       trainingBiLaunchpad: 'yes',
       trainingCms: 'no',
       trainingCrystalReports: 'yes',
-      goLiveCoreHours: 'yes',
-      goLiveSpecificWeekday: 'no',
-      goLiveOvernight: 'no',
-      goLiveWeekend: 'no'
+      goLiveTiming: 'core-hours'
     },
     environments: [
       {
@@ -167,12 +162,12 @@ function crystalServer(): AssessmentState {
           operatingSystem: 'Windows Server 2019',
           platformSoftware: 'SAP Crystal Server 2016',
           authentication: 'Enterprise',
+          // No separate Tomcat, so "separate web server" is never asked and
+          // is implied No.
           separateTomcat: 'no',
           clustered: 'no',
           externallyFacing: 'no',
           httpsConfigured: 'no',
-          separateWebServer: 'no',
-          installationFolder: 'C:\\Program Files (x86)\\SAP BusinessObjects',
           inputFileRepositoryGb: '3.2',
           outputFileRepositoryGb: '9.8',
           cmsDatabaseSoftware: 'SAP SQL Anywhere',
@@ -357,17 +352,46 @@ describe('installation type', () => {
 });
 
 describe('dependent fields', () => {
+  const ccm = TABS.find((t) => t.id === 'ccm')!;
+
+  it('only asks about a separate web server when there is a separate Tomcat', () => {
+    expect(
+      visibleFields(ccm, 'businessobjects', { separateTomcat: 'no' }).map((f) => f.id)
+    ).not.toContain('separateWebServer');
+    expect(
+      visibleFields(ccm, 'businessobjects', { separateTomcat: 'yes' }).map((f) => f.id)
+    ).toContain('separateWebServer');
+  });
+
+  it('implies No for the separate web server when there is no separate Tomcat', () => {
+    // Determined, not inapplicable — the export says No rather than omitting
+    // it, so the Quote Generator reads a fact instead of re-deriving the rule.
+    expect(impliedValues(ccm, 'businessobjects', { separateTomcat: 'no' })).toEqual({
+      separateWebServer: 'no'
+    });
+    expect(impliedValues(ccm, 'businessobjects', { separateTomcat: 'yes' })).toEqual({});
+  });
+
+  it('does not imply anything for fields hidden as merely irrelevant', () => {
+    // webServerName has no implied value: not asking it means we do not know
+    // the name, not that there isn't one.
+    const implied = impliedValues(ccm, 'businessobjects', {
+      separateTomcat: 'yes',
+      separateWebServer: 'no'
+    });
+    expect(implied).not.toHaveProperty('webServerName');
+  });
+
   it('reveals the web server name only when a separate web server is confirmed', () => {
-    const ccm = TABS.find((t) => t.id === 'ccm')!;
-    expect(visibleFields(ccm, 'businessobjects', {}).map((f) => f.id)).not.toContain(
-      'webServerName'
-    );
     expect(
-      visibleFields(ccm, 'businessobjects', { separateWebServer: 'yes' }).map((f) => f.id)
-    ).toContain('webServerName');
-    expect(
-      visibleFields(ccm, 'businessobjects', { separateWebServer: 'no' }).map((f) => f.id)
+      visibleFields(ccm, 'businessobjects', { separateTomcat: 'yes' }).map((f) => f.id)
     ).not.toContain('webServerName');
+    expect(
+      visibleFields(ccm, 'businessobjects', {
+        separateTomcat: 'yes',
+        separateWebServer: 'yes'
+      }).map((f) => f.id)
+    ).toContain('webServerName');
   });
 
   it('switches between separate and combined universe counts', () => {
@@ -383,11 +407,45 @@ describe('dependent fields', () => {
     expect(combined).toEqual(['universeCountMode', 'combinedUniverseCount']);
   });
 
-  it('asks for the audit database only when auditing is enabled', () => {
+  it('captures one database software answer covering CMS and audit', () => {
+    // The audit database always uses the same software as the CMS, so there
+    // is no separate question to ask.
     const settings = TABS.find((t) => t.id === 'cmc-settings')!;
+    expect(visibleFields(settings, 'businessobjects', {}).map((f) => f.id)).toEqual([
+      'cmsDatabaseSoftware',
+      'auditingEnabled'
+    ]);
+  });
+
+  it('asks which weekday only when a specific weekday is chosen', () => {
+    const goLive = TABS.find((t) => t.id === 'go-live')!;
+    expect(visibleFields(goLive, 'businessobjects', {}).map((f) => f.id)).toEqual([
+      'goLiveTiming'
+    ]);
     expect(
-      visibleFields(settings, 'businessobjects', { auditingEnabled: 'no' }).map((f) => f.id)
-    ).not.toContain('auditDatabaseSoftware');
+      visibleFields(goLive, 'businessobjects', { goLiveTiming: 'specific-weekday' }).map(
+        (f) => f.id
+      )
+    ).toEqual(['goLiveTiming', 'goLiveWeekday']);
+    expect(
+      visibleFields(goLive, 'businessobjects', { goLiveTiming: 'weekend' }).map((f) => f.id)
+    ).toEqual(['goLiveTiming']);
+  });
+});
+
+describe('removed fields', () => {
+  // Each of these was dropped in v2 (AD-12). Asserted so a well-meaning
+  // reinstatement is a conscious act rather than a merge.
+  it.each(['proposedServerName', 'installationFolder', 'auditDatabaseSoftware'])(
+    '%s is gone from the model',
+    (id) => {
+      expect(TABS.flatMap((t) => t.fields.map((f) => f.id))).not.toContain(id);
+    }
+  );
+
+  it('go-live is one question, not four booleans', () => {
+    const ids = TABS.find((t) => t.id === 'go-live')!.fields.map((f) => f.id);
+    expect(ids).toEqual(['goLiveTiming', 'goLiveWeekday']);
   });
 });
 
@@ -405,14 +463,14 @@ describe('completeness', () => {
       clustered: 'no',
       externallyFacing: 'no',
       httpsConfigured: 'no',
-      separateWebServer: 'no',
-      installationFolder: 'C:\\SAP',
       inputFileRepositoryGb: '1',
       outputFileRepositoryGb: '2'
     };
     const result = tabCompleteness(ccm, 'businessobjects', answers);
     expect(result.isComplete).toBe(true);
-    expect(result.required).toBe(8);
+    // separateWebServer and webServerName are both hidden by the no-Tomcat
+    // answer, so six questions is the whole tab.
+    expect(result.required).toBe(6);
   });
 
   it('treats an answered zero as answered', () => {
@@ -487,10 +545,31 @@ describe('advisories', () => {
     expect(advisories(boComplete()).map((a) => a.id)).toContain('go-live-rate');
   });
 
-  it('flags a named-but-unnamed web server', () => {
+  it('flags a confirmed-but-unnamed web server', () => {
     const state = boComplete();
     state.environments[0].answers.webServerName = '';
     expect(advisories(state).map((a) => a.id)).toContain('env-1-webserver');
+  });
+
+  it('does not flag the web server when it was never asked about', () => {
+    // No separate Tomcat means no separate web server, so a missing name is
+    // correct rather than an omission.
+    expect(advisories(crystalServer()).map((a) => a.id)).not.toContain('env-1-webserver');
+  });
+
+  it('flags out-of-hours only for overnight and weekend', () => {
+    const state = boComplete();
+    for (const [timing, expected] of [
+      ['core-hours', false],
+      ['specific-weekday', false],
+      ['overnight', true],
+      ['weekend', true]
+    ] as Array<[string, boolean]>) {
+      state.client.goLiveTiming = timing;
+      expect(advisories(state).map((a) => a.id).includes('go-live-rate'), timing).toBe(
+        expected
+      );
+    }
   });
 
   it('reminds the consultant what Crystal Server skipped', () => {
@@ -525,8 +604,14 @@ describe('toExport', () => {
   });
 
   it('carries the schema version', () => {
-    expect(toExport(blank()).schemaVersion).toBe(1);
+    expect(toExport(blank()).schemaVersion).toBe(ASSESSMENT_SCHEMA_VERSION);
+    expect(ASSESSMENT_SCHEMA_VERSION).toBe(2);
     expect(toExport(blank()).tool).toBe('sap-install-assessment');
+  });
+
+  it('records an implied answer as a value, not as absent or null', () => {
+    const answers = toExport(crystalServer()).environments[0].answers;
+    expect(answers.separateWebServer).toBe('no');
   });
 });
 

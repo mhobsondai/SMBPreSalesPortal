@@ -14,6 +14,7 @@ import {
   CLIENT_TABS,
   ENVIRONMENT_TABS,
   STORAGE_KEY,
+  advisories,
   createBlankAssessment,
   deserialise,
   exportFilename,
@@ -78,6 +79,7 @@ export function SapInstallAssessment() {
   const [location, setLocation] = useState<Location>({ tabId: 'overview' });
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
+  const [wordState, setWordState] = useState<'idle' | 'building' | 'failed'>('idle');
 
   const type = installationTypeOf(state);
 
@@ -190,16 +192,41 @@ export function SapInstallAssessment() {
     }
   }
 
-  function downloadJson() {
-    const blob = new Blob([JSON.stringify(toExport(state), null, 2)], {
-      type: 'application/json'
-    });
+  function saveBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = exportFilename(state, 'json');
+    anchor.download = filename;
     anchor.click();
     URL.revokeObjectURL(url);
+  }
+
+  function downloadJson() {
+    saveBlob(
+      new Blob([JSON.stringify(toExport(state), null, 2)], { type: 'application/json' }),
+      exportFilename(state, 'json')
+    );
+  }
+
+  /**
+   * Word export.
+   *
+   * The `docx` builder is imported dynamically so it becomes its own chunk —
+   * it is roughly the size of the rest of the app, and most page loads never
+   * click this button. Generation is in-browser: nothing is uploaded.
+   */
+  async function downloadWord() {
+    setWordState('building');
+    try {
+      const { assessmentDocxBlob } = await import(
+        '../../lib/assessments/sapInstallAssessmentDocx'
+      );
+      const blob = await assessmentDocxBlob(state, advisories(state));
+      saveBlob(blob, exportFilename(state, 'docx'));
+      setWordState('idle');
+    } catch {
+      setWordState('failed');
+    }
   }
 
   // ─── Rail ───────────────────────────────────────────────────────────
@@ -388,19 +415,36 @@ export function SapInstallAssessment() {
               <div className="panel-head">
                 <h3 className="panel-title">Assessment record</h3>
                 <div className="output-actions">
-                  <button type="button" className="btn-ghost" onClick={copySummary}>
-                    {copied ? 'Copied' : 'Copy all'}
+                  <button
+                    type="button"
+                    className="btn-primary-ghost"
+                    onClick={downloadWord}
+                    disabled={wordState === 'building'}
+                  >
+                    {wordState === 'building' ? 'Building…' : 'Download Word'}
                   </button>
                   <button type="button" className="btn-ghost" onClick={downloadJson}>
                     Download JSON
                   </button>
+                  <button type="button" className="btn-ghost" onClick={copySummary}>
+                    {copied ? 'Copied' : 'Copy all'}
+                  </button>
                 </div>
               </div>
               <p className="panel-note">
-                Paste the text into the assessment document, or hand the JSON to
+                The Word file matches the standard assessment document and is
+                built here in the browser — nothing is uploaded. The JSON is for
                 the SAP Quote Generator. Unanswered fields appear as{' '}
-                <code>—</code> rather than being omitted, so gaps stay visible.
+                <code>—</code> below and as empty cells in the document, so gaps
+                stay visible.
               </p>
+
+              {wordState === 'failed' ? (
+                <div className="notice notice--warn">
+                  The Word document could not be built. Use <strong>Copy all</strong>{' '}
+                  for now — the text below holds everything.
+                </div>
+              ) : null}
               <pre className="output-block">{summary.join('\n')}</pre>
             </div>
 

@@ -21,6 +21,7 @@
 import {
   ASSESSMENT_SCHEMA_VERSION,
   MAX_PRODUCTION_ENVIRONMENTS,
+  OUT_OF_HOURS_TIMINGS,
   TABS,
   type Field,
   type InstallationType,
@@ -149,6 +150,34 @@ export function visibleTabs(type: InstallationType): Tab[] {
   return TABS.filter((tab) => isTabVisible(tab, type));
 }
 
+/**
+ * Fields hidden by a dependency whose answer is nonetheless *determined* by
+ * that dependency, paired with the value they take.
+ *
+ * "Separate web server?" is not asked when there is no separate Tomcat,
+ * because there cannot be one — so the answer is No, not unknown. Exporting
+ * it as No means the Quote Generator reads a fact rather than re-deriving a
+ * rule that lives here.
+ *
+ * A field hidden for any other reason — installation type, or a dependency
+ * that makes it genuinely irrelevant — is not included.
+ */
+export function impliedValues(
+  tab: Tab,
+  type: InstallationType,
+  answers: Answers
+): Record<string, string> {
+  const shown = new Set(visibleFields(tab, type, answers).map((f) => f.id));
+  const out: Record<string, string> = {};
+  for (const field of tab.fields) {
+    if (shown.has(field.id)) continue;
+    if (field.impliedWhenHidden === undefined) continue;
+    if (field.onlyFor && !field.onlyFor.includes(type)) continue;
+    out[field.id] = field.impliedWhenHidden;
+  }
+  return out;
+}
+
 // ─── Completeness ─────────────────────────────────────────────────────
 
 export interface Completeness {
@@ -249,10 +278,7 @@ export function advisories(state: AssessmentState): Advisory[] {
     }
   }
 
-  const outOfHours = ['goLiveOvernight', 'goLiveWeekend'].filter(
-    (id) => state.client[id] === 'yes'
-  );
-  if (outOfHours.length > 0) {
+  if (OUT_OF_HOURS_TIMINGS.includes(state.client.goLiveTiming ?? '')) {
     out.push({
       id: 'go-live-rate',
       text: 'Go-live is outside core hours. That attracts a different rate — make sure the quote reflects it.'
@@ -287,6 +313,7 @@ function exportAnswers(
   const out: Record<string, string | number | null> = {};
   for (const tab of tabs) {
     if (!isTabVisible(tab, type)) continue;
+
     for (const field of visibleFields(tab, type, answers)) {
       const raw = (answers[field.id] ?? '').trim();
       if (raw === '') {
@@ -294,6 +321,11 @@ function exportAnswers(
         continue;
       }
       out[field.id] = NUMERIC_KINDS.has(field.kind) ? (num(raw) ?? null) : raw;
+    }
+
+    // Determined by another answer rather than asked — see impliedValues().
+    for (const [id, value] of Object.entries(impliedValues(tab, type, answers))) {
+      out[id] = value;
     }
   }
   return out;
@@ -318,9 +350,16 @@ export interface AssessmentExport {
  * The machine-readable assessment. This is the contract with the SAP Quote
  * Generator: additive changes are safe, renames are not.
  *
- * Fields that do not apply to the chosen installation type are **absent**,
- * not null — so a consumer can tell "Crystal Server, so no universes" from
- * "BusinessObjects, universes not counted yet".
+ * Three states, deliberately distinct:
+ *
+ * | In the export | Means |
+ * |---|---|
+ * | absent | Not applicable — the platform does not have this |
+ * | `null` | Applicable, not yet answered |
+ * | a value | Answered, or **implied** by another answer |
+ *
+ * Collapsing the first two would eventually price zero universes for an
+ * estate that has eighty.
  */
 export function toExport(state: AssessmentState): AssessmentExport {
   const type = installationTypeOf(state);
@@ -371,6 +410,15 @@ function summariseTab(
     } else {
       lines.push(`  ${field.label}: ${displayValue(field, raw)}`);
     }
+  }
+
+  // Implied answers appear in the record, marked, so the reader can see the
+  // value without wondering why the question is missing.
+  const implied = impliedValues(tab, type, answers);
+  for (const [id, value] of Object.entries(implied)) {
+    const field = tab.fields.find((f) => f.id === id);
+    if (!field) continue;
+    lines.push(`  ${field.label}: ${displayValue(field, value)} (implied)`);
   }
 }
 

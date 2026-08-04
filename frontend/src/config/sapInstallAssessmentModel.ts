@@ -88,6 +88,18 @@ export interface Field {
    */
   showWhen?: { field: string; equals: readonly string[] };
   /**
+   * The value this field takes when `showWhen` has hidden it.
+   *
+   * Use only where the hiding answer *determines* this one rather than
+   * making it irrelevant. Without a separate Tomcat there cannot be a
+   * separate web server — the answer is known to be No, so the export says
+   * No rather than omitting the field and leaving the Quote Generator to
+   * re-derive the rule.
+   *
+   * Leave unset where hiding genuinely means "not applicable".
+   */
+  impliedWhenHidden?: string;
+  /**
    * Excluded from completeness counts. Use for genuinely optional
    * narrative, so a tab can read complete without it.
    */
@@ -156,6 +168,28 @@ const YES_NO_SOME: readonly FieldOption[] = [
   { value: 'some', label: 'Some — a subset is required' },
   { value: 'no', label: 'No — none required' }
 ];
+
+/**
+ * Go-live timing is **single select**: these are rate categories, and a
+ * cutover falls into exactly one of them.
+ *
+ * The source document has four independent Yes/No rows. The Word export
+ * still writes four rows — the selected one Yes, the other three No — so
+ * the document reads as it always has. See AD-12.
+ */
+const GO_LIVE_TIMINGS: readonly FieldOption[] = [
+  { value: 'core-hours', label: 'In core hours' },
+  { value: 'specific-weekday', label: 'Specific day of the week' },
+  { value: 'overnight', label: 'Overnight' },
+  { value: 'weekend', label: 'Weekend' }
+];
+
+/** The document rows the timing answer maps onto, in document order. */
+export const GO_LIVE_DOCUMENT_ROWS: ReadonlyArray<{ value: string; label: string }> =
+  GO_LIVE_TIMINGS;
+
+/** Timings that attract a non-standard rate. */
+export const OUT_OF_HOURS_TIMINGS: readonly string[] = ['overnight', 'weekend'];
 
 const WEEKDAYS: readonly FieldOption[] = [
   { value: 'monday', label: 'Monday' },
@@ -281,13 +315,6 @@ export const TABS: readonly Tab[] = [
     fields: [
       { id: 'serverName', label: 'Current server name', kind: 'text' },
       {
-        id: 'proposedServerName',
-        label: 'Proposed server name',
-        kind: 'text',
-        hint: 'Leave blank if not yet decided.',
-        optional: true
-      },
-      {
         id: 'operatingSystem',
         label: 'Operating system',
         kind: 'text',
@@ -332,7 +359,15 @@ export const TABS: readonly Tab[] = [
         hint: 'Reachable from outside the client network.'
       },
       { id: 'httpsConfigured', label: 'HTTPS configured?', kind: 'yesno' },
-      { id: 'separateWebServer', label: 'Separate web server?', kind: 'yesno' },
+      {
+        id: 'separateWebServer',
+        label: 'Separate web server?',
+        kind: 'yesno',
+        // Without a separate Tomcat there cannot be a separate web server,
+        // so the question is not asked and the answer is recorded as No.
+        showWhen: { field: 'separateTomcat', equals: ['yes'] },
+        impliedWhenHidden: 'no'
+      },
       {
         id: 'webServerName',
         label: 'Web server name',
@@ -340,48 +375,41 @@ export const TABS: readonly Tab[] = [
         showWhen: { field: 'separateWebServer', equals: ['yes'] }
       },
       {
-        id: 'installationFolder',
-        label: 'Default installation folder',
-        kind: 'text',
-        placeholder: 'e.g. C:\\Program Files (x86)\\SAP BusinessObjects'
-      },
-      {
         id: 'inputFileRepositoryGb',
         label: 'Input file repository size',
         kind: 'gb',
-        hint: '<installation folder>\\SAP BusinessObjects Enterprise XI 4.0\\FileStore\\Input'
+        hint: 'In the filestore under the default installation folder — the guidance shows how to find it.'
       },
       {
         id: 'outputFileRepositoryGb',
         label: 'Output file repository size',
         kind: 'gb',
-        hint: '<installation folder>\\SAP BusinessObjects Enterprise XI 4.0\\FileStore\\Output'
+        hint: 'Alongside the input repository in the same filestore folder.'
       }
     ]
   },
   {
     id: 'cmc-settings',
     title: 'CMC Settings',
-    blurb: 'The CMS and auditing databases behind the platform.',
+    blurb: 'The database behind the platform, and whether auditing is on.',
     scope: 'environment',
     guidance: guidance([
       ['cmc-settings-nav', 'half'],
-      ['cmc-cms-database', 'wide'],
-      ['cmc-audit-database', 'wide']
+      ['cmc-cms-database', 'wide']
     ]),
     fields: [
       {
         id: 'cmsDatabaseSoftware',
-        label: 'CMS database software',
+        label: 'CMS / audit database software',
         kind: 'text',
+        hint: 'The audit database uses the same software as the CMS, so one answer covers both.',
         placeholder: 'e.g. SQL Server 2016, SAP SQL Anywhere'
       },
-      { id: 'auditingEnabled', label: 'Auditing enabled?', kind: 'yesno' },
       {
-        id: 'auditDatabaseSoftware',
-        label: 'Audit database software',
-        kind: 'text',
-        showWhen: { field: 'auditingEnabled', equals: ['yes'] }
+        id: 'auditingEnabled',
+        label: 'Auditing currently enabled?',
+        kind: 'yesno',
+        hint: 'If not, it is enabled by default on the new server.'
       }
     ]
   },
@@ -534,17 +562,20 @@ export const TABS: readonly Tab[] = [
     scope: 'client',
     guidance: SELF_EVIDENT,
     fields: [
-      { id: 'goLiveCoreHours', label: 'In core hours', kind: 'yesno' },
-      { id: 'goLiveSpecificWeekday', label: 'Specific day of the week', kind: 'yesno' },
+      {
+        id: 'goLiveTiming',
+        label: 'When does go-live have to happen?',
+        kind: 'select',
+        hint: 'One answer only — these are rate categories, not a checklist. Anything outside core hours is charged differently.',
+        options: GO_LIVE_TIMINGS
+      },
       {
         id: 'goLiveWeekday',
         label: 'Which day?',
         kind: 'weekday',
         options: WEEKDAYS,
-        showWhen: { field: 'goLiveSpecificWeekday', equals: ['yes'] }
-      },
-      { id: 'goLiveOvernight', label: 'Overnight', kind: 'yesno' },
-      { id: 'goLiveWeekend', label: 'Weekend', kind: 'yesno' }
+        showWhen: { field: 'goLiveTiming', equals: ['specific-weekday'] }
+      }
     ]
   }
 ] as const;
@@ -552,5 +583,12 @@ export const TABS: readonly Tab[] = [
 /** Environments cannot sensibly be unbounded — the rail stops being usable. */
 export const MAX_PRODUCTION_ENVIRONMENTS = 8;
 
-/** Bumped whenever the export shape changes. Read by the Quote Generator. */
-export const ASSESSMENT_SCHEMA_VERSION = 1;
+/**
+ * Bumped whenever the export shape changes. Read by the Quote Generator.
+ *
+ * v2 (AD-12) removed `proposedServerName`, `installationFolder` and
+ * `auditDatabaseSoftware`, and replaced the four `goLive*` booleans with a
+ * single `goLiveTiming`. `STORAGE_KEY` is scoped to this number, so a bump
+ * discards any assessment in progress rather than migrating it.
+ */
+export const ASSESSMENT_SCHEMA_VERSION = 2;

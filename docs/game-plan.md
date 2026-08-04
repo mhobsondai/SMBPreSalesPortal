@@ -30,12 +30,17 @@ its input contract already exists — the install assessment emits versioned
 JSON — and the domain rules are already encoded in the SAP BIA LabMat
 skill.
 
-Two open items carried forward from AD-11, both small:
+The install assessment has had its first review pass — AD-12, schema v2.
+Word export delivered (client-side, dynamically imported), five model
+corrections, and implied answers added to the export contract.
+
+Open items:
 
 | Item | Effort |
 |---|---|
-| Client-side `.docx` export matching the source document | ~0.5 day |
+| Guidance copy and screenshots — 16 declared slots, see below | ~1–2 h |
 | Confirm with Natasha Keskin whether contact details in `localStorage` on a synced browser profile needs anything recorded | 15 min |
+| Go-live cannot express "Saturday overnight" — revisit only if it comes up | — |
 
 ---
 
@@ -215,7 +220,7 @@ Slots awaiting an image, by tab:
 | Tab | Slots |
 |---|---|
 | Central Configuration Manager | `ccm-launch`, `ccm-server-list`, `ccm-tomcat`, `ccm-cluster`, `ccm-install-folder`, `filestore-input-size`, `filestore-output-size` |
-| CMC Settings | `cmc-settings-nav`, `cmc-cms-database`, `cmc-audit-database` |
+| CMC Settings | `cmc-settings-nav`, `cmc-cms-database` |
 | CMC Universes | `cmc-universes-nav`, `cmc-universes-count` |
 | CMC Contents | `cmc-folders-nav`, `cmc-folders-count` |
 | CMC Schedules | `cmc-instance-manager-nav`, `cmc-pending-instances`, `cmc-successful-instances` |

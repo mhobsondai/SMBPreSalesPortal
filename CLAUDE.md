@@ -11,7 +11,7 @@ the Codestone tenant.
 
 **Status:** deployed and working. Three tools live. See `docs/game-plan.md`
 for phase status and `docs/decisions.md` for the full decision record
-(AD-01 to AD-11) — that file is the reasoning behind everything below.
+(AD-01 to AD-12) — that file is the reasoning behind everything below.
 
 ---
 
@@ -70,6 +70,19 @@ Never adjust a fixture to make a test pass.
 install assessment captures figures and derives nothing, so nothing in it
 can make a quote wrong. Its fixture pins a different thing — which fields
 get asked, and the export shape the Quote Generator reads. See AD-11.
+
+### Document generation stays in the browser
+
+The install assessment builds its `.docx` client-side with `docx`, imported
+dynamically so it stays out of the main bundle. A Functions endpoint will
+keep looking like the natural home for this. It isn't: a server round trip
+means POSTing the client name and contact details, which is the footprint
+AD-08 exists to avoid, for nothing the browser cannot do. See AD-12.
+
+The Word output deliberately keeps the **source document's** section order
+and row labels, not the tool's tab order — and marks inapplicable rows
+`n/a` rather than dropping them, so two assessments are structurally the
+same document.
 
 ### The install assessment stores contact details in the browser
 
@@ -164,9 +177,9 @@ document, and that is the recurring shape.
 
 ## Verification expectations
 
-`npm test` runs 111 vitest tests covering navigation invariants, the Fabric
-estimator's pinned prototype cases, and the install assessment's visibility
-rules and export contract. Match that standard:
+`npm test` runs 142 vitest tests covering navigation invariants, the Fabric
+estimator's pinned prototype cases, the install assessment's visibility
+rules and export contract, and the generated Word XML. Match that standard:
 
 - Converting a prototype → diff the port against the original's actual
   output, not against expectations
@@ -208,8 +221,10 @@ data-ai
 
 Both Quote Generators consume the output of a tool above them. For the SAP
 one that handoff is now **decided**: the install assessment emits versioned
-JSON (`ASSESSMENT_SCHEMA_VERSION`, currently 1) alongside its copy-ready
-text, and the Quote Generator reads the JSON. Fields that do not apply are
-absent; fields that apply but are unanswered are `null` — see AD-11.
+JSON (`ASSESSMENT_SCHEMA_VERSION`, currently **2**) alongside a `.docx` and
+copy-ready text, and the Quote Generator reads the JSON. Three states, and
+the difference matters — absent means not applicable, `null` means not yet
+answered, a value means answered *or implied by another answer*. See AD-11
+and AD-12.
 
 The Fabric handoff is still undecided.

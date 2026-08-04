@@ -529,3 +529,112 @@ removed.
 All of it went into `tool.css` rather than the page stylesheet on the AD-09
 rule: the SAP Quote Generator is next, it consumes this tool's output, and
 it will need every one of these controls.
+
+## AD-12 — Install assessment, first review pass
+
+**Date:** 4 August 2026. Changes from the first read-through of the built
+tool. Schema **v1 → v2**.
+
+### Word export, delivered and client-side
+
+The `.docx` deferred in AD-11 is now built, by the `docx` package running
+**in the browser**. The decision not to generate it server-side stands and
+is worth restating, because a Functions endpoint will keep looking like the
+obvious home for it: generating it server-side means POSTing the client
+name and two sets of contact details to a Codestone server, which hands
+this tool a data-protection footprint it does not currently have, in
+exchange for nothing the browser cannot already do.
+
+`lib/assessments/sapInstallAssessmentDocx.ts` returns a `Document` and
+touches no DOM. The page calls `Packer.toBlob()`; the tests call
+`Packer.toBuffer()`, unzip the result and assert against the real XML — so
+what is tested is what Word will show, not what the builder intended.
+
+**Dynamically imported.** `docx` is 358 kB, comparable to the whole rest of
+the app, and most page loads never click the button. The import is inside
+the click handler so Vite emits it as a separate chunk; the main bundle grew
+by 2 kB, not 360.
+
+### The document keeps its own shape
+
+The tool reorders questions to suit the conversation. The **document does
+not** — it keeps the source file's five sections in the source file's order,
+with the source file's row labels ("Date of Conversation", not the tool's
+"Date of conversation"). What gets filed should read like the document
+people already know.
+
+Three consequences, all deliberate:
+
+- **Rows are never dropped, only marked `n/a`.** A Crystal Server
+  assessment still has "Number of UNVs" and "Web Intelligence training"
+  rows. Two documents produced from the same template should be
+  structurally the same document, whichever platform they describe —
+  otherwise whoever files them cannot compare them.
+- **Go-live writes four rows from one answer.** See below.
+- **Advisories become a "Points to Raise" section**, passed in from
+  `advisories()` rather than recomputed, so the Word output and the
+  on-screen record cannot disagree.
+
+### Five model corrections
+
+| Change | Reason |
+|---|---|
+| `proposedServerName` removed | Not needed at assessment time. The source document's "Proposed Server" column goes with it, leaving a two-column table. |
+| `installationFolder` removed | It was never the answer — it is the *route* to the filestore sizes. It belongs in the guidance pane, not as a captured field. |
+| `auditDatabaseSoftware` removed | The audit database always runs on the same software as the CMS, so asking twice invites a contradiction. One field, relabelled "CMS / audit database software", plus "Auditing currently enabled?". |
+| `separateWebServer` gated on `separateTomcat` | Without a separate Tomcat there cannot be a separate web server. Asking was noise. |
+| Four `goLive*` booleans → one `goLiveTiming` | They are rate categories, and a cutover falls into exactly one. |
+
+### Implied answers: a third export state
+
+Gating `separateWebServer` created a case the export could not represent.
+
+The field is hidden, but its answer is **known** — No. AD-11's rule was
+"hidden means absent, absent means not applicable", which would have made
+the Quote Generator re-derive the Tomcat rule to fill the gap. Two copies of
+one rule, in different languages, is how they diverge.
+
+So `Field.impliedWhenHidden` now carries the value a field takes when its
+dependency hides it, and the export writes it as a value:
+
+| In the export | Means |
+|---|---|
+| absent | Not applicable — the platform does not have this |
+| `null` | Applicable, not yet answered |
+| a value | Answered, **or implied by another answer** |
+
+Used sparingly, and only where hiding *determines* the answer. `webServerName`
+deliberately has no implied value: not asking for the name means we do not
+know it, not that there isn't one. The on-screen record marks implied
+answers `(implied)` so nobody wonders why a question is missing.
+
+### Go-live: one question, four document rows
+
+Single select. The Word export writes the source document's four Yes/No rows
+with the chosen timing as Yes and the other three as No — and all four blank
+when nothing has been chosen, so an unanswered form does not read as four
+explicit Nos.
+
+**Known limitation, accepted for now.** "Specific day of the week" is
+arguably orthogonal to the other three: a client wanting a Saturday
+overnight cutover cannot record both. Treating the four as rate categories
+is the right commercial model and the wrong logical one. If that
+combination comes up in practice, the fix is a timing answer plus an
+optional weekday, not four booleans again. **Open item.**
+
+### Schema v2 discards assessments in progress
+
+`STORAGE_KEY` is scoped to `ASSESSMENT_SCHEMA_VERSION`, so the bump means
+anything half-finished in a browser is not migrated — it starts clean. That
+is the intended behaviour of the AD-11 versioning decision and costs nothing
+today, since the tool has not yet been used on a live call. It will cost
+something once it has: a future schema change needs either a migration or a
+deliberate choice to lose work, and this is the moment to notice that rather
+than the moment it happens.
+
+### Tests
+
+142 now, up from 111. New coverage for the implied-value rule, the removed
+fields (asserted absent, so reinstating one is a conscious act rather than a
+merge), the single-select go-live behaviour, and twenty tests reading the
+generated Word XML.

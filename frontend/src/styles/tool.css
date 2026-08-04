@@ -118,6 +118,29 @@
 
 .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
 
+/* The primary action among several ghost buttons — the one the user wants
+ * most of the time, without shouting. */
+.btn-primary-ghost {
+  background: var(--orange-bg);
+  border: 1px solid var(--orange);
+  padding: 8px 16px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--orange-muted);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primary-ghost:hover { background: var(--white); }
+
+.btn-primary-ghost:disabled {
+  background: var(--surface-2);
+  border-color: var(--rule);
+  color: var(--ink-3);
+  cursor: progress;
+}
+
 /* ─── Output block (copy-ready values) ────────────────────────────── */
 
 .output-panel { border-left: 3px solid var(--orange); }
