@@ -10,6 +10,7 @@ import { HealthCheck } from './pages/HealthCheck';
 import { AssessmentScoringEngine } from './pages/tools/AssessmentScoringEngine';
 import { FabricDataCalculator } from './pages/tools/FabricDataCalculator';
 import { SapInstallAssessment } from './pages/tools/SapInstallAssessment';
+import { SapQuoteGenerator } from './pages/tools/SapQuoteGenerator';
 import { NotFound } from './pages/NotFound';
 import './styles/tokens.css';
 import './styles/base.css';
@@ -57,6 +58,10 @@ createRoot(rootElement).render(
             <Route
               path="/tools/sap-install-assessment"
               element={<SapInstallAssessment />}
+            />
+            <Route
+              path="/tools/sap-quote-generator"
+              element={<SapQuoteGenerator />}
             />
             <Route path="/health" element={<HealthCheck />} />
             <Route path="*" element={<NotFound />} />

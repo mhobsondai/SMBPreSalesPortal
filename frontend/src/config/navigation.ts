@@ -159,7 +159,8 @@ export const SECTIONS: Section[] = [
             id: 'sap-quote-generator',
             title: 'Quote Generator',
             description: 'Produce a LabMat quote and scope from an assessment.',
-            status: 'development'
+            status: 'live',
+            to: '/tools/sap-quote-generator'
           }
         ]
       },

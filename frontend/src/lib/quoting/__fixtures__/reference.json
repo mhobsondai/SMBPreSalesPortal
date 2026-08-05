@@ -1,0 +1,1708 @@
+[
+  {
+    "name": "blank",
+    "input": {
+      "solutionArchitect": "",
+      "projectDate": "2026-08-05",
+      "ticket": "",
+      "client": "",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Business Objects",
+      "projectType": "install",
+      "pricingBasis": "Fixed",
+      "hours": {},
+      "activity": {},
+      "pmLevel": "coord",
+      "pmRateOverride": "",
+      "pmManual": false,
+      "inScope": {
+        "prereqs": true,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": true,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": false,
+        "mig_initial": true,
+        "mig_golive": true,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": true,
+        "post_gl": true,
+        "ded_upg": false,
+        "conv_universe": false,
+        "conv_repoint": false,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consulting pre-requisites document being complete.",
+        "Consultant access to the new and old environments confirmed in place.",
+        "New server(s) commissioned and meeting minimum specifications as laid out in the consulting pre-requisite documentation.",
+        "Microsoft Visual C++ Redistributables will be installed on the new environment(s).",
+        "Network connectivity in place between the old and new servers for migration purposes."
+      ],
+      "assumptions": [
+        "Dependencies not being met will result in a delay to the project commencing.",
+        "Consulting pre-requisites document will be followed and confirmed completed in full by client prior to work commencing.",
+        "Consultant access to the new and existing environments will be maintained for the duration of the project.",
+        "New server(s) will meet the minimum recommended specification for running the platform software.",
+        "New server(s) will have all necessary database connectivity drivers in place and correctly named prior to work commencing.",
+        "Client will assume responsibility for all User Acceptance Testing tasks, though Codestone will provide consulting support for any issues encountered.",
+        "UAT period will be a minimum of 2 weeks and not in excess of 3 months; any UAT support required beyond this period will require additional consulting time or be delivered via existing support agreements.",
+        "Any UAT fixes requiring consultant time will be made at the earliest availability of the consultant during the UAT period.",
+        "Any cases where UAT is not confirmed as being completed will result in a delay to Go Live activities taking place.",
+        "The post Go Live availability of the consultant will be for a maximum of 5 consecutive working days from Go Live being completed.",
+        "Upon completion of the post Go Live support, the client's existing support agreement with Codestone will resume.",
+        "The client will assume all responsibilities for decommissioning the old server(s).",
+        "A working day excludes Saturdays, Sundays and English Bank Holidays and is constrained to between 9am and 5:30pm."
+      ],
+      "exclusions": [
+        "Any activities not previously listed as 'In Scope'.",
+        "Applying patch fixes or software upgrades to existing platform servers.",
+        "Any development of report documents.",
+        "Migration of any SAP discontinued content eg Crystal Reports for Enterprise report documents.",
+        "Working outside of core office hours (Monday to Friday, 9am to 5:30pm, excluding Bank Holidays), except where agreed for Go Live delivery.",
+        "Charges for any expenses incurred for on-site consulting services, which will be charged separately, at cost.",
+        "Decommissioning of old environments.",
+        "Amending existing schedules to alter destinations or username/passwords.",
+        "Correcting any support issues on the old production server, except where this impedes migration activities.",
+        "Configuring firewalls and database access/permissions.",
+        "Correcting bugs in software, except where a configuration workaround can be implemented.",
+        "Any training on new features or software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 0,
+      "implementationDays": 0,
+      "implementationValue": 0,
+      "baseHours": 0,
+      "baseValue": 0,
+      "pmLevel": "admin",
+      "pmProductCode": "DI-BIA-PM-BRONZE2",
+      "pmRate": 0.1,
+      "pmHours": 0,
+      "pmValue": 0,
+      "contingencyRate": 0.2,
+      "pmContingencyHours": 0,
+      "grandHours": 0,
+      "grandDays": 0,
+      "grandValue": 0,
+      "isEmpty": true
+    },
+    "costedLines": [],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Pre-installation documentation and checks.",
+          "Downloading the required software ahead of the main scheduled installation.",
+          "Installation and configuration of new Production server.",
+          "Initial migration from old Production to new Production server.",
+          "Go Live re-migration from old Production server to new Production server."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "UAT support.",
+          "Post go-live support."
+        ]
+      }
+    ],
+    "warningIds": [],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Unnamed client",
+      "",
+      "Product:      SAP Business Objects",
+      "Route:        New Installation (Fixed price)",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 0.0h · 0.0d · £0",
+      "Project Administration – Bronze L2 (up to £5k) (10%): 0.0h · £0",
+      "GRAND TOTAL: 0.0h · 0.0d · £0"
+    ]
+  },
+  {
+    "name": "BOBJ upgrade, fixed",
+    "input": {
+      "solutionArchitect": "Mike Hobson",
+      "projectDate": "2026-08-05",
+      "ticket": "2437170",
+      "client": "Bromley Metals Ltd",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Business Objects",
+      "projectType": "upgrade",
+      "pricingBasis": "Fixed",
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": 1,
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": 1,
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": 7.5,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 3.75,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 3.75
+      },
+      "activity": {
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": "Platform and client tools to 2025"
+      },
+      "pmLevel": "coord",
+      "pmRateOverride": "",
+      "pmManual": false,
+      "inScope": {
+        "prereqs": false,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": false,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": true,
+        "mig_initial": false,
+        "mig_golive": false,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": false,
+        "post_gl": false,
+        "ded_upg": true,
+        "conv_universe": false,
+        "conv_repoint": false,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consultant access to the current server will be in place, with administrative rights.",
+        "Server backed up and all windows updates complete prior to the work commencing."
+      ],
+      "assumptions": [
+        "Codestone will perform the necessary software downloads ahead of the upgrade taking place.",
+        "A catastrophic failure of the upgrade will necessitate a reversion of the server to backups.",
+        "Any existing support issues recorded with Codestone do not impact the upgrade.",
+        "There are no configuration changes to be made to the server to support the adoption of new features.",
+        "The project will be considered complete upon successful system and user acceptance testing by the customer.",
+        "User Acceptance testing will immediately follow the completion of the upgrade, up to the end of the next working day."
+      ],
+      "exclusions": [
+        "Anything not specifically mentioned as 'in scope'.",
+        "On-site travel and expenses.",
+        "Installing client tool upgrades on desktop machines, though installer file will be downloaded.",
+        "Work outside of Codestone office hours of Monday to Friday, 09:00 to 17:30.",
+        "Development of Universes or Reports.",
+        "Amendment to or re-running of any report schedules or publications.",
+        "Configuring a separate Apache Tomcat installation.",
+        "Repair of issues found to not be related to the upgrade.",
+        "Replacement of any certificates that support existing https configurations.",
+        "Amendments to scheduling destinations and whitelisting.",
+        "Resizing of the environment and supporting Apache Tomcat server software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 21,
+      "implementationDays": 2.8,
+      "implementationValue": 3360,
+      "baseHours": 17.5,
+      "baseValue": 2800,
+      "pmLevel": "admin",
+      "pmProductCode": "DI-BIA-PM-BRONZE2",
+      "pmRate": 0.1,
+      "pmHours": 1.75,
+      "pmValue": 280,
+      "contingencyRate": 0.2,
+      "pmContingencyHours": 0.35000000000000003,
+      "grandHours": 23.1,
+      "grandDays": 3.08,
+      "grandValue": 3696,
+      "isEmpty": false
+    },
+    "costedLines": [
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "hours": 0.5,
+        "value": 80
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+        "hours": 1,
+        "value": 160
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+        "hours": 1,
+        "value": 160
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONTINGENCY",
+        "hours": 0.5,
+        "value": 80
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-CONTINGENCY",
+        "hours": 1.5,
+        "value": 240
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING-CONTINGENCY",
+        "hours": 0.75,
+        "value": 120
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CONTINGENCY",
+        "hours": 0.75,
+        "value": 120
+      }
+    ],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Downloading the required software ahead of the main scheduled installation.",
+          "In-place upgrade of the SAP Business Objects server software."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "Dedicated consultant time following the upgrade for support issues up to the end of the following working day."
+        ]
+      }
+    ],
+    "warningIds": [],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Bromley Metals Ltd",
+      "",
+      "Product:      SAP Business Objects",
+      "Route:        In-Place Upgrade (Fixed price)",
+      "Ticket:       2437170",
+      "Architect:    Mike Hobson",
+      "",
+      "SAP-BOBJ-DESIGN",
+      "  Connectivity: 0.5h · £80",
+      "  Pre-Installation Documentation: 1.0h · £160",
+      "  Software Downloads: 1.0h · £160",
+      "  Design Phase Contingency (auto): 0.5h · £80",
+      "  SAP-BOBJ-Design subtotal: 3.0h · £480",
+      "",
+      "SAP-BOBJ-BUILD",
+      "  Platform and Client Upgrade: 7.5h · £1,200 — Platform and client tools to 2025",
+      "  Build Phase Contingency (auto): 1.5h · £240",
+      "  SAP-BOBJ-Build subtotal: 9.0h · £1,440",
+      "",
+      "SAP-BOBJ-UA-TESTING",
+      "  SAP BOBJ User Acceptance Test: 3.8h · £600",
+      "  SAP BOBJ User Acceptance Test Contingency (auto): 0.8h · £120",
+      "  SAP-BOBJ-UA-Testing subtotal: 4.5h · £720",
+      "",
+      "SAP-BOBJ-TRANSITION",
+      "  SAP BOBJ CloudCare Transition: 3.8h · £600",
+      "  SAP BOBJ Transition Contingency (auto): 0.8h · £120",
+      "  SAP-BOBJ-Transition subtotal: 4.5h · £720",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 21.0h · 2.8d · £3,360",
+      "Project Administration – Bronze L2 (up to £5k) (10%): 1.8h · £280",
+      "PM contingency (20%): 0.4h · £56",
+      "GRAND TOTAL: 23.1h · 3.1d · £3,696"
+    ]
+  },
+  {
+    "name": "BOBJ upgrade with conversion, fixed",
+    "input": {
+      "solutionArchitect": "",
+      "projectDate": "2026-08-05",
+      "ticket": "",
+      "client": "Bromley Metals Ltd",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Business Objects",
+      "projectType": "upgrade",
+      "pricingBasis": "Fixed",
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": 2,
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": 2,
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": 7.5,
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": 15,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 15,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 1
+      },
+      "activity": {},
+      "pmLevel": "coord",
+      "pmRateOverride": "",
+      "pmManual": false,
+      "inScope": {
+        "prereqs": false,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": false,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": true,
+        "mig_initial": false,
+        "mig_golive": false,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": false,
+        "post_gl": false,
+        "ded_upg": true,
+        "conv_universe": true,
+        "conv_repoint": true,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consultant access to the current server will be in place, with administrative rights.",
+        "Server backed up and all windows updates complete prior to the work commencing."
+      ],
+      "assumptions": [
+        "Codestone will perform the necessary software downloads ahead of the upgrade taking place.",
+        "A catastrophic failure of the upgrade will necessitate a reversion of the server to backups.",
+        "Any existing support issues recorded with Codestone do not impact the upgrade.",
+        "There are no configuration changes to be made to the server to support the adoption of new features.",
+        "The project will be considered complete upon successful system and user acceptance testing by the customer.",
+        "User Acceptance testing will immediately follow the completion of the upgrade, up to the end of the next working day.",
+        "Universe conversion and report repointing activities will take place before the upgrade to enable separate UAT of the conversion work to take place."
+      ],
+      "exclusions": [
+        "Anything not specifically mentioned as 'in scope'.",
+        "On-site travel and expenses.",
+        "Installing client tool upgrades on desktop machines, though installer file will be downloaded.",
+        "Work outside of Codestone office hours of Monday to Friday, 09:00 to 17:30.",
+        "Development of Universes or Reports.",
+        "Amendment to or re-running of any report schedules or publications.",
+        "Configuring a separate Apache Tomcat installation.",
+        "Repair of issues found to not be related to the upgrade.",
+        "Replacement of any certificates that support existing https configurations.",
+        "Amendments to scheduling destinations and whitelisting.",
+        "Resizing of the environment and supporting Apache Tomcat server software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 51.6,
+      "implementationDays": 6.88,
+      "implementationValue": 8256,
+      "baseHours": 43,
+      "baseValue": 6880,
+      "pmLevel": "coord",
+      "pmProductCode": "DI-BIA-PM-BRONZE1",
+      "pmRate": 0.125,
+      "pmHours": 5.375,
+      "pmValue": 860,
+      "contingencyRate": 0.2,
+      "pmContingencyHours": 1.075,
+      "grandHours": 58.050000000000004,
+      "grandDays": 7.74,
+      "grandValue": 9288,
+      "isEmpty": false
+    },
+    "costedLines": [
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "hours": 0.5,
+        "value": 80
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+        "hours": 2,
+        "value": 320
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+        "hours": 2,
+        "value": 320
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONTINGENCY",
+        "hours": 0.9,
+        "value": 144
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS",
+        "hours": 15,
+        "value": 2400
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-CONTINGENCY",
+        "hours": 4.5,
+        "value": 720
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "hours": 15,
+        "value": 2400
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING-CONTINGENCY",
+        "hours": 3,
+        "value": 480
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "hours": 1,
+        "value": 160
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CONTINGENCY",
+        "hours": 0.2,
+        "value": 32
+      }
+    ],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Downloading the required software ahead of the main scheduled installation.",
+          "In-place upgrade of the SAP Business Objects server software."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "Dedicated consultant time following the upgrade for support issues up to the end of the following working day.",
+          "Universe conversion for 2025 preparation.",
+          "Repointing reports to new, converted universes."
+        ]
+      }
+    ],
+    "warningIds": [],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Bromley Metals Ltd",
+      "",
+      "Product:      SAP Business Objects",
+      "Route:        In-Place Upgrade (Fixed price)",
+      "",
+      "SAP-BOBJ-DESIGN",
+      "  Connectivity: 0.5h · £80",
+      "  Pre-Installation Documentation: 2.0h · £320",
+      "  Software Downloads: 2.0h · £320",
+      "  Design Phase Contingency (auto): 0.9h · £144",
+      "  SAP-BOBJ-Design subtotal: 5.4h · £864",
+      "",
+      "SAP-BOBJ-BUILD",
+      "  Platform and Client Upgrade: 7.5h · £1,200",
+      "  Report Development: 15.0h · £2,400",
+      "  Build Phase Contingency (auto): 4.5h · £720",
+      "  SAP-BOBJ-Build subtotal: 27.0h · £4,320",
+      "",
+      "SAP-BOBJ-UA-TESTING",
+      "  SAP BOBJ User Acceptance Test: 15.0h · £2,400",
+      "  SAP BOBJ User Acceptance Test Contingency (auto): 3.0h · £480",
+      "  SAP-BOBJ-UA-Testing subtotal: 18.0h · £2,880",
+      "",
+      "SAP-BOBJ-TRANSITION",
+      "  SAP BOBJ CloudCare Transition: 1.0h · £160",
+      "  SAP BOBJ Transition Contingency (auto): 0.2h · £32",
+      "  SAP-BOBJ-Transition subtotal: 1.2h · £192",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 51.6h · 6.9d · £8,256",
+      "Project Coordination – Bronze L1 (up to £10k) (12.5%): 5.4h · £860",
+      "PM contingency (20%): 1.1h · £172",
+      "GRAND TOTAL: 58.1h · 7.7d · £9,288"
+    ]
+  },
+  {
+    "name": "CRY install, fixed — crosses the 5k PM threshold",
+    "input": {
+      "solutionArchitect": "",
+      "projectDate": "2026-08-05",
+      "ticket": "",
+      "client": "Broder Group",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Crystal Server",
+      "projectType": "install",
+      "pricingBasis": "Fixed",
+      "hours": {
+        "DI-BIA-SAP-CRY-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-CRY-DES-SOFTWARE": 1.5,
+        "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL": 7.5,
+        "DI-BIA-SAP-CRY-BLD-MIGR-CONFIG": 7.5,
+        "DI-BIA-SAP-CRY-BLD-MIGRATION": 7.5,
+        "DI-BIA-SAP-CRY-UA-TESTING": 3.75,
+        "DI-BIA-SAP-CRY-TRN-CLOUDCARE": 1
+      },
+      "activity": {},
+      "pmLevel": "coord",
+      "pmRateOverride": "",
+      "pmManual": false,
+      "inScope": {
+        "prereqs": true,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": true,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": false,
+        "mig_initial": true,
+        "mig_golive": true,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": true,
+        "post_gl": true,
+        "ded_upg": false,
+        "conv_universe": false,
+        "conv_repoint": false,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consulting pre-requisites document being complete.",
+        "Consultant access to the new and old environments confirmed in place.",
+        "New server(s) commissioned and meeting minimum specifications as laid out in the consulting pre-requisite documentation.",
+        "Microsoft Visual C++ Redistributables will be installed on the new environment(s).",
+        "Network connectivity in place between the old and new servers for migration purposes."
+      ],
+      "assumptions": [
+        "Dependencies not being met will result in a delay to the project commencing.",
+        "Consulting pre-requisites document will be followed and confirmed completed in full by client prior to work commencing.",
+        "Consultant access to the new and existing environments will be maintained for the duration of the project.",
+        "New server(s) will meet the minimum recommended specification for running the platform software.",
+        "New server(s) will have all necessary database connectivity drivers in place and correctly named prior to work commencing.",
+        "Client will assume responsibility for all User Acceptance Testing tasks, though Codestone will provide consulting support for any issues encountered.",
+        "UAT period will be a minimum of 2 weeks and not in excess of 3 months; any UAT support required beyond this period will require additional consulting time or be delivered via existing support agreements.",
+        "Any UAT fixes requiring consultant time will be made at the earliest availability of the consultant during the UAT period.",
+        "Any cases where UAT is not confirmed as being completed will result in a delay to Go Live activities taking place.",
+        "The post Go Live availability of the consultant will be for a maximum of 5 consecutive working days from Go Live being completed.",
+        "Upon completion of the post Go Live support, the client's existing support agreement with Codestone will resume.",
+        "The client will assume all responsibilities for decommissioning the old server(s).",
+        "A working day excludes Saturdays, Sundays and English Bank Holidays and is constrained to between 9am and 5:30pm."
+      ],
+      "exclusions": [
+        "Any activities not previously listed as 'In Scope'.",
+        "Applying patch fixes or software upgrades to existing platform servers.",
+        "Any development of report documents.",
+        "Migration of any SAP discontinued content eg Crystal Reports for Enterprise report documents.",
+        "Working outside of core office hours (Monday to Friday, 9am to 5:30pm, excluding Bank Holidays), except where agreed for Go Live delivery.",
+        "Charges for any expenses incurred for on-site consulting services, which will be charged separately, at cost.",
+        "Decommissioning of old environments.",
+        "Amending existing schedules to alter destinations or username/passwords.",
+        "Correcting any support issues on the old production server, except where this impedes migration activities.",
+        "Configuring firewalls and database access/permissions.",
+        "Correcting bugs in software, except where a configuration workaround can be implemented.",
+        "Any training on new features or software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 35.1,
+      "implementationDays": 4.680000000000001,
+      "implementationValue": 5616.000000000001,
+      "baseHours": 29.25,
+      "baseValue": 4680,
+      "pmLevel": "admin",
+      "pmProductCode": "DI-BIA-PM-BRONZE2",
+      "pmRate": 0.1,
+      "pmHours": 2.9250000000000003,
+      "pmValue": 468,
+      "contingencyRate": 0.2,
+      "pmContingencyHours": 0.5850000000000001,
+      "grandHours": 38.61,
+      "grandDays": 5.148,
+      "grandValue": 6177.599999999999,
+      "isEmpty": false
+    },
+    "costedLines": [
+      {
+        "phase": "SAP-CRY-Design",
+        "code": "DI-BIA-SAP-CRY-DES-CONNECT",
+        "hours": 0.5,
+        "value": 80
+      },
+      {
+        "phase": "SAP-CRY-Design",
+        "code": "DI-BIA-SAP-CRY-DES-SOFTWARE",
+        "hours": 1.5,
+        "value": 240
+      },
+      {
+        "phase": "SAP-CRY-Design",
+        "code": "DI-BIA-SAP-CRY-DES-CONTINGENCY",
+        "hours": 0.4,
+        "value": 64
+      },
+      {
+        "phase": "SAP-CRY-Build",
+        "code": "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-CRY-Build",
+        "code": "DI-BIA-SAP-CRY-BLD-MIGR-CONFIG",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-CRY-Build",
+        "code": "DI-BIA-SAP-CRY-BLD-MIGRATION",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-CRY-Build",
+        "code": "DI-BIA-SAP-CRY-BLD-CONTINGENCY",
+        "hours": 4.5,
+        "value": 720
+      },
+      {
+        "phase": "SAP-CRY-UA-Testing",
+        "code": "DI-BIA-SAP-CRY-UA-TESTING",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-CRY-UA-Testing",
+        "code": "DI-BIA-SAP-CRY-UA-TESTING-CONTINGENCY",
+        "hours": 0.75,
+        "value": 120
+      },
+      {
+        "phase": "SAP-CRY-Transition",
+        "code": "DI-BIA-SAP-CRY-TRN-CLOUDCARE",
+        "hours": 1,
+        "value": 160
+      },
+      {
+        "phase": "SAP-CRY-Transition",
+        "code": "DI-BIA-SAP-CRY-TRN-CONTINGENCY",
+        "hours": 0.2,
+        "value": 32
+      }
+    ],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Pre-installation documentation and checks.",
+          "Downloading the required software ahead of the main scheduled installation.",
+          "Installation and configuration of new Production server.",
+          "Initial migration from old Production to new Production server.",
+          "Go Live re-migration from old Production server to new Production server."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "UAT support.",
+          "Post go-live support."
+        ]
+      }
+    ],
+    "warningIds": [],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Broder Group",
+      "",
+      "Product:      SAP Crystal Server",
+      "Route:        New Installation (Fixed price)",
+      "",
+      "SAP-CRY-DESIGN",
+      "  Connectivity: 0.5h · £80",
+      "  Pre-Installation Documentation: 1.5h · £240",
+      "  Design Phase Contingency (auto): 0.4h · £64",
+      "  SAP-CRY-Design subtotal: 2.4h · £384",
+      "",
+      "SAP-CRY-BUILD",
+      "  Platform and Client Installation: 7.5h · £1,200",
+      "  Platform Configuration: 7.5h · £1,200",
+      "  Content Migration: 7.5h · £1,200",
+      "  Build Phase Contingency (auto): 4.5h · £720",
+      "  SAP-CRY-Build subtotal: 27.0h · £4,320",
+      "",
+      "SAP-CRY-UA-TESTING",
+      "  SAP Crystal Report User Acceptance Test: 3.8h · £600",
+      "  SAP Crystal User Acceptance Test Contingency (auto): 0.8h · £120",
+      "  SAP-CRY-UA-Testing subtotal: 4.5h · £720",
+      "",
+      "SAP-CRY-TRANSITION",
+      "  SAP Crystal Report CloudCare Transition: 1.0h · £160",
+      "  SAP Crystal Transition Contingency (auto): 0.2h · £32",
+      "  SAP-CRY-Transition subtotal: 1.2h · £192",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 35.1h · 4.7d · £5,616",
+      "Project Administration – Bronze L2 (up to £5k) (10%): 2.9h · £468",
+      "PM contingency (20%): 0.6h · £94",
+      "GRAND TOTAL: 38.6h · 5.1d · £6,178"
+    ]
+  },
+  {
+    "name": "CRY install, target price — no contingency",
+    "input": {
+      "solutionArchitect": "",
+      "projectDate": "2026-08-05",
+      "ticket": "",
+      "client": "Broder Group",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Crystal Server",
+      "projectType": "install",
+      "pricingBasis": "Target",
+      "hours": {
+        "DI-BIA-SAP-CRY-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL": 7.5,
+        "DI-BIA-SAP-CRY-BLD-MIGRATION": 15,
+        "DI-BIA-SAP-CRY-UA-TESTING": 7.5,
+        "DI-BIA-SAP-CRY-TRN-CLOUDCARE": 1
+      },
+      "activity": {},
+      "pmLevel": "coord",
+      "pmRateOverride": "",
+      "pmManual": false,
+      "inScope": {
+        "prereqs": true,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": true,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": false,
+        "mig_initial": true,
+        "mig_golive": true,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": true,
+        "post_gl": true,
+        "ded_upg": false,
+        "conv_universe": false,
+        "conv_repoint": false,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consulting pre-requisites document being complete.",
+        "Consultant access to the new and old environments confirmed in place.",
+        "New server(s) commissioned and meeting minimum specifications as laid out in the consulting pre-requisite documentation.",
+        "Microsoft Visual C++ Redistributables will be installed on the new environment(s).",
+        "Network connectivity in place between the old and new servers for migration purposes."
+      ],
+      "assumptions": [
+        "Dependencies not being met will result in a delay to the project commencing.",
+        "Consulting pre-requisites document will be followed and confirmed completed in full by client prior to work commencing.",
+        "Consultant access to the new and existing environments will be maintained for the duration of the project.",
+        "New server(s) will meet the minimum recommended specification for running the platform software.",
+        "New server(s) will have all necessary database connectivity drivers in place and correctly named prior to work commencing.",
+        "Client will assume responsibility for all User Acceptance Testing tasks, though Codestone will provide consulting support for any issues encountered.",
+        "UAT period will be a minimum of 2 weeks and not in excess of 3 months; any UAT support required beyond this period will require additional consulting time or be delivered via existing support agreements.",
+        "Any UAT fixes requiring consultant time will be made at the earliest availability of the consultant during the UAT period.",
+        "Any cases where UAT is not confirmed as being completed will result in a delay to Go Live activities taking place.",
+        "The post Go Live availability of the consultant will be for a maximum of 5 consecutive working days from Go Live being completed.",
+        "Upon completion of the post Go Live support, the client's existing support agreement with Codestone will resume.",
+        "The client will assume all responsibilities for decommissioning the old server(s).",
+        "A working day excludes Saturdays, Sundays and English Bank Holidays and is constrained to between 9am and 5:30pm."
+      ],
+      "exclusions": [
+        "Any activities not previously listed as 'In Scope'.",
+        "Applying patch fixes or software upgrades to existing platform servers.",
+        "Any development of report documents.",
+        "Migration of any SAP discontinued content eg Crystal Reports for Enterprise report documents.",
+        "Working outside of core office hours (Monday to Friday, 9am to 5:30pm, excluding Bank Holidays), except where agreed for Go Live delivery.",
+        "Charges for any expenses incurred for on-site consulting services, which will be charged separately, at cost.",
+        "Decommissioning of old environments.",
+        "Amending existing schedules to alter destinations or username/passwords.",
+        "Correcting any support issues on the old production server, except where this impedes migration activities.",
+        "Configuring firewalls and database access/permissions.",
+        "Correcting bugs in software, except where a configuration workaround can be implemented.",
+        "Any training on new features or software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 31.5,
+      "implementationDays": 4.2,
+      "implementationValue": 5040,
+      "baseHours": 31.5,
+      "baseValue": 5040,
+      "pmLevel": "coord",
+      "pmProductCode": "DI-BIA-PM-BRONZE1-TM",
+      "pmRate": 0.125,
+      "pmHours": 3.9375,
+      "pmValue": 630,
+      "contingencyRate": 0,
+      "pmContingencyHours": 0,
+      "grandHours": 35.4375,
+      "grandDays": 4.725,
+      "grandValue": 5670,
+      "isEmpty": false
+    },
+    "costedLines": [
+      {
+        "phase": "SAP-CRY-Design",
+        "code": "DI-BIA-SAP-CRY-DES-CONNECT",
+        "hours": 0.5,
+        "value": 80
+      },
+      {
+        "phase": "SAP-CRY-Build",
+        "code": "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-CRY-Build",
+        "code": "DI-BIA-SAP-CRY-BLD-MIGRATION",
+        "hours": 15,
+        "value": 2400
+      },
+      {
+        "phase": "SAP-CRY-UA-Testing",
+        "code": "DI-BIA-SAP-CRY-UA-TESTING",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-CRY-Transition",
+        "code": "DI-BIA-SAP-CRY-TRN-CLOUDCARE",
+        "hours": 1,
+        "value": 160
+      }
+    ],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Pre-installation documentation and checks.",
+          "Downloading the required software ahead of the main scheduled installation.",
+          "Installation and configuration of new Production server.",
+          "Initial migration from old Production to new Production server.",
+          "Go Live re-migration from old Production server to new Production server."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "UAT support.",
+          "Post go-live support."
+        ]
+      }
+    ],
+    "warningIds": [
+      "target-no-contingency"
+    ],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Broder Group",
+      "",
+      "Product:      SAP Crystal Server",
+      "Route:        New Installation (Target price)",
+      "",
+      "SAP-CRY-DESIGN",
+      "  Connectivity: 0.5h · £80",
+      "  SAP-CRY-Design subtotal: 0.5h · £80",
+      "",
+      "SAP-CRY-BUILD",
+      "  Platform and Client Installation: 7.5h · £1,200",
+      "  Content Migration: 15.0h · £2,400",
+      "  SAP-CRY-Build subtotal: 22.5h · £3,600",
+      "",
+      "SAP-CRY-UA-TESTING",
+      "  SAP Crystal Report User Acceptance Test: 7.5h · £1,200",
+      "  SAP-CRY-UA-Testing subtotal: 7.5h · £1,200",
+      "",
+      "SAP-CRY-TRANSITION",
+      "  SAP Crystal Report CloudCare Transition: 1.0h · £160",
+      "  SAP-CRY-Transition subtotal: 1.0h · £160",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 31.5h · 4.2d · £5,040",
+      "Project Coordination – Bronze L1 (up to £10k) (12.5%): 3.9h · £630",
+      "GRAND TOTAL: 35.4h · 4.7d · £5,670",
+      "",
+      "POINTS TO CHECK",
+      "  • Target price carries no contingency, so the quoted figure is the base estimate. Time above it is billable but not quoted."
+    ]
+  },
+  {
+    "name": "BOBJ install, silver tier with full phase set",
+    "input": {
+      "solutionArchitect": "",
+      "projectDate": "2026-08-05",
+      "ticket": "",
+      "client": "Large Estate plc",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Business Objects",
+      "projectType": "install",
+      "pricingBasis": "Fixed",
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 2,
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": 7.5,
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": 3.75,
+        "DI-BIA-SAP-BOBJ-DES-WORKSHOP": 15,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL": 22.5,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG": 15,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT": 7.5,
+        "DI-BIA-SAP-BOBJ-BLD-MIGRATION": 30,
+        "DI-BIA-SAP-BOBJ-BLD-DEV-UNIVERSE": 22.5,
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": 30,
+        "DI-BIA-SAP-BOBJ-SIT": 15,
+        "DI-BIA-SAP-BOBJ-TRAINING": 15,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 22.5,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 3.75,
+        "DI-BIA-SAP-BOBJ-TRN-OPERATIONS": 7.5
+      },
+      "activity": {},
+      "pmLevel": "coord",
+      "pmRateOverride": "",
+      "pmManual": false,
+      "inScope": {
+        "prereqs": true,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": true,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": false,
+        "mig_initial": true,
+        "mig_golive": true,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": true,
+        "post_gl": true,
+        "ded_upg": false,
+        "conv_universe": false,
+        "conv_repoint": false,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consulting pre-requisites document being complete.",
+        "Consultant access to the new and old environments confirmed in place.",
+        "New server(s) commissioned and meeting minimum specifications as laid out in the consulting pre-requisite documentation.",
+        "Microsoft Visual C++ Redistributables will be installed on the new environment(s).",
+        "Network connectivity in place between the old and new servers for migration purposes."
+      ],
+      "assumptions": [
+        "Dependencies not being met will result in a delay to the project commencing.",
+        "Consulting pre-requisites document will be followed and confirmed completed in full by client prior to work commencing.",
+        "Consultant access to the new and existing environments will be maintained for the duration of the project.",
+        "New server(s) will meet the minimum recommended specification for running the platform software.",
+        "New server(s) will have all necessary database connectivity drivers in place and correctly named prior to work commencing.",
+        "Client will assume responsibility for all User Acceptance Testing tasks, though Codestone will provide consulting support for any issues encountered.",
+        "UAT period will be a minimum of 2 weeks and not in excess of 3 months; any UAT support required beyond this period will require additional consulting time or be delivered via existing support agreements.",
+        "Any UAT fixes requiring consultant time will be made at the earliest availability of the consultant during the UAT period.",
+        "Any cases where UAT is not confirmed as being completed will result in a delay to Go Live activities taking place.",
+        "The post Go Live availability of the consultant will be for a maximum of 5 consecutive working days from Go Live being completed.",
+        "Upon completion of the post Go Live support, the client's existing support agreement with Codestone will resume.",
+        "The client will assume all responsibilities for decommissioning the old server(s).",
+        "A working day excludes Saturdays, Sundays and English Bank Holidays and is constrained to between 9am and 5:30pm."
+      ],
+      "exclusions": [
+        "Any activities not previously listed as 'In Scope'.",
+        "Applying patch fixes or software upgrades to existing platform servers.",
+        "Any development of report documents.",
+        "Migration of any SAP discontinued content eg Crystal Reports for Enterprise report documents.",
+        "Working outside of core office hours (Monday to Friday, 9am to 5:30pm, excluding Bank Holidays), except where agreed for Go Live delivery.",
+        "Charges for any expenses incurred for on-site consulting services, which will be charged separately, at cost.",
+        "Decommissioning of old environments.",
+        "Amending existing schedules to alter destinations or username/passwords.",
+        "Correcting any support issues on the old production server, except where this impedes migration activities.",
+        "Configuring firewalls and database access/permissions.",
+        "Correcting bugs in software, except where a configuration workaround can be implemented.",
+        "Any training on new features or software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 263.4,
+      "implementationDays": 35.12,
+      "implementationValue": 42144,
+      "baseHours": 219.5,
+      "baseValue": 35120,
+      "pmLevel": "silver",
+      "pmProductCode": "DI-BIA-PM-SILVER",
+      "pmRate": 0.15,
+      "pmHours": 32.925,
+      "pmValue": 5268,
+      "contingencyRate": 0.2,
+      "pmContingencyHours": 6.585,
+      "grandHours": 302.90999999999997,
+      "grandDays": 40.388,
+      "grandValue": 48465.6,
+      "isEmpty": false
+    },
+    "costedLines": [
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "hours": 2,
+        "value": 320
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-WORKSHOP",
+        "hours": 15,
+        "value": 2400
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONTINGENCY",
+        "hours": 5.65,
+        "value": 904.0000000000001
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL",
+        "hours": 22.5,
+        "value": 3600
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG",
+        "hours": 15,
+        "value": 2400
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-MIGRATION",
+        "hours": 30,
+        "value": 4800
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-DEV-UNIVERSE",
+        "hours": 22.5,
+        "value": 3600
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS",
+        "hours": 30,
+        "value": 4800
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-CONTINGENCY",
+        "hours": 25.5,
+        "value": 4080
+      },
+      {
+        "phase": "SAP-BOBJ-System-Testing",
+        "code": "DI-BIA-SAP-BOBJ-SIT",
+        "hours": 15,
+        "value": 2400
+      },
+      {
+        "phase": "SAP-BOBJ-System-Testing",
+        "code": "DI-BIA-SAP-BOBJ-SIT-CONTINGENCY",
+        "hours": 3,
+        "value": 480
+      },
+      {
+        "phase": "SAP-BOBJ-Training",
+        "code": "DI-BIA-SAP-BOBJ-TRAINING",
+        "hours": 15,
+        "value": 2400
+      },
+      {
+        "phase": "SAP-BOBJ-Training",
+        "code": "DI-BIA-SAP-BOBJ-TRAINING-CONTINGENCY",
+        "hours": 3,
+        "value": 480
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "hours": 22.5,
+        "value": 3600
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING-CONTINGENCY",
+        "hours": 4.5,
+        "value": 720
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-OPERATIONS",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CONTINGENCY",
+        "hours": 2.25,
+        "value": 360
+      }
+    ],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Pre-installation documentation and checks.",
+          "Downloading the required software ahead of the main scheduled installation.",
+          "Installation and configuration of new Production server.",
+          "Initial migration from old Production to new Production server.",
+          "Go Live re-migration from old Production server to new Production server."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "UAT support.",
+          "Post go-live support."
+        ]
+      }
+    ],
+    "warningIds": [],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Large Estate plc",
+      "",
+      "Product:      SAP Business Objects",
+      "Route:        New Installation (Fixed price)",
+      "",
+      "SAP-BOBJ-DESIGN",
+      "  Connectivity: 2.0h · £320",
+      "  Pre-Installation Documentation: 7.5h · £1,200",
+      "  Software Downloads: 3.8h · £600",
+      "  Design Workshop: 15.0h · £2,400",
+      "  Design Phase Contingency (auto): 5.7h · £904",
+      "  SAP-BOBJ-Design subtotal: 33.9h · £5,424",
+      "",
+      "SAP-BOBJ-BUILD",
+      "  Platform and Client Installation: 22.5h · £3,600",
+      "  Tomcat Installation: 7.5h · £1,200",
+      "  Platform Configuration: 15.0h · £2,400",
+      "  Content Migration: 30.0h · £4,800",
+      "  Universe Development: 22.5h · £3,600",
+      "  Report Development: 30.0h · £4,800",
+      "  Build Phase Contingency (auto): 25.5h · £4,080",
+      "  SAP-BOBJ-Build subtotal: 153.0h · £24,480",
+      "",
+      "SAP-BOBJ-SYSTEM-TESTING",
+      "  SAP BOBJ System Test: 15.0h · £2,400",
+      "  System Test Phase Contingency (auto): 3.0h · £480",
+      "  SAP-BOBJ-System-Testing subtotal: 18.0h · £2,880",
+      "",
+      "SAP-BOBJ-TRAINING",
+      "  SAP BOBJ End User Training: 15.0h · £2,400",
+      "  SAP BOBJ End User Training Contingency (auto): 3.0h · £480",
+      "  SAP-BOBJ-Training subtotal: 18.0h · £2,880",
+      "",
+      "SAP-BOBJ-UA-TESTING",
+      "  SAP BOBJ User Acceptance Test: 22.5h · £3,600",
+      "  SAP BOBJ User Acceptance Test Contingency (auto): 4.5h · £720",
+      "  SAP-BOBJ-UA-Testing subtotal: 27.0h · £4,320",
+      "",
+      "SAP-BOBJ-TRANSITION",
+      "  SAP BOBJ CloudCare Transition: 3.8h · £600",
+      "  SAP BOBJ Operations Transition: 7.5h · £1,200",
+      "  SAP BOBJ Transition Contingency (auto): 2.3h · £360",
+      "  SAP-BOBJ-Transition subtotal: 13.5h · £2,160",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 263.4h · 35.1d · £42,144",
+      "PRINCE2 Project Management – Silver (up to £50k) (15%): 32.9h · £5,268",
+      "PM contingency (20%): 6.6h · £1,054",
+      "GRAND TOTAL: 302.9h · 40.4d · £48,466"
+    ]
+  },
+  {
+    "name": "BOBJ upgrade with a manual tier and rate override",
+    "input": {
+      "solutionArchitect": "",
+      "projectDate": "2026-08-05",
+      "ticket": "",
+      "client": "Override Ltd",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Business Objects",
+      "projectType": "upgrade",
+      "pricingBasis": "Fixed",
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": 7.5,
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-TOMCAT": 3.75,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 3.75,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 1
+      },
+      "activity": {},
+      "pmLevel": "silver",
+      "pmRateOverride": "17.5",
+      "pmManual": true,
+      "inScope": {
+        "prereqs": false,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": false,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": true,
+        "mig_initial": false,
+        "mig_golive": false,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": false,
+        "post_gl": false,
+        "ded_upg": true,
+        "conv_universe": false,
+        "conv_repoint": false,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consultant access to the current server will be in place, with administrative rights.",
+        "Server backed up and all windows updates complete prior to the work commencing."
+      ],
+      "assumptions": [
+        "Codestone will perform the necessary software downloads ahead of the upgrade taking place.",
+        "A catastrophic failure of the upgrade will necessitate a reversion of the server to backups.",
+        "Any existing support issues recorded with Codestone do not impact the upgrade.",
+        "There are no configuration changes to be made to the server to support the adoption of new features.",
+        "The project will be considered complete upon successful system and user acceptance testing by the customer.",
+        "User Acceptance testing will immediately follow the completion of the upgrade, up to the end of the next working day."
+      ],
+      "exclusions": [
+        "Anything not specifically mentioned as 'in scope'.",
+        "On-site travel and expenses.",
+        "Installing client tool upgrades on desktop machines, though installer file will be downloaded.",
+        "Work outside of Codestone office hours of Monday to Friday, 09:00 to 17:30.",
+        "Development of Universes or Reports.",
+        "Amendment to or re-running of any report schedules or publications.",
+        "Configuring a separate Apache Tomcat installation.",
+        "Repair of issues found to not be related to the upgrade.",
+        "Replacement of any certificates that support existing https configurations.",
+        "Amendments to scheduling destinations and whitelisting.",
+        "Resizing of the environment and supporting Apache Tomcat server software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 19.8,
+      "implementationDays": 2.64,
+      "implementationValue": 3168,
+      "baseHours": 16.5,
+      "baseValue": 2640,
+      "pmLevel": "silver",
+      "pmProductCode": "DI-BIA-PM-SILVER",
+      "pmRate": 0.175,
+      "pmHours": 2.8874999999999997,
+      "pmValue": 461.99999999999994,
+      "contingencyRate": 0.2,
+      "pmContingencyHours": 0.5775,
+      "grandHours": 23.265,
+      "grandDays": 3.102,
+      "grandValue": 3722.3999999999996,
+      "isEmpty": false
+    },
+    "costedLines": [
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "hours": 0.5,
+        "value": 80
+      },
+      {
+        "phase": "SAP-BOBJ-Design",
+        "code": "DI-BIA-SAP-BOBJ-DES-CONTINGENCY",
+        "hours": 0.1,
+        "value": 16
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-UPGR-TOMCAT",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-CONTINGENCY",
+        "hours": 2.25,
+        "value": 360
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING-CONTINGENCY",
+        "hours": 0.75,
+        "value": 120
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "hours": 1,
+        "value": 160
+      },
+      {
+        "phase": "SAP-BOBJ-Transition",
+        "code": "DI-BIA-SAP-BOBJ-TRN-CONTINGENCY",
+        "hours": 0.2,
+        "value": 32
+      }
+    ],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Downloading the required software ahead of the main scheduled installation.",
+          "In-place upgrade of the SAP Business Objects server software."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "Dedicated consultant time following the upgrade for support issues up to the end of the following working day."
+        ]
+      }
+    ],
+    "warningIds": [
+      "tomcat-contradiction"
+    ],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Override Ltd",
+      "",
+      "Product:      SAP Business Objects",
+      "Route:        In-Place Upgrade (Fixed price)",
+      "",
+      "SAP-BOBJ-DESIGN",
+      "  Connectivity: 0.5h · £80",
+      "  Design Phase Contingency (auto): 0.1h · £16",
+      "  SAP-BOBJ-Design subtotal: 0.6h · £96",
+      "",
+      "SAP-BOBJ-BUILD",
+      "  Platform and Client Upgrade: 7.5h · £1,200",
+      "  Tomcat Upgrade: 3.8h · £600",
+      "  Build Phase Contingency (auto): 2.3h · £360",
+      "  SAP-BOBJ-Build subtotal: 13.5h · £2,160",
+      "",
+      "SAP-BOBJ-UA-TESTING",
+      "  SAP BOBJ User Acceptance Test: 3.8h · £600",
+      "  SAP BOBJ User Acceptance Test Contingency (auto): 0.8h · £120",
+      "  SAP-BOBJ-UA-Testing subtotal: 4.5h · £720",
+      "",
+      "SAP-BOBJ-TRANSITION",
+      "  SAP BOBJ CloudCare Transition: 1.0h · £160",
+      "  SAP BOBJ Transition Contingency (auto): 0.2h · £32",
+      "  SAP-BOBJ-Transition subtotal: 1.2h · £192",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 19.8h · 2.6d · £3,168",
+      "PRINCE2 Project Management – Silver (up to £50k) (17.5%): 2.9h · £462",
+      "PM contingency (20%): 0.6h · £92",
+      "GRAND TOTAL: 23.3h · 3.1d · £3,722",
+      "",
+      "POINTS TO CHECK",
+      "  • Tomcat work is costed but the exclusions still rule it out (“Configuring a separate Apache Tomcat installation.”). Remove that exclusion, or move the Tomcat hours, before issuing the quote."
+    ]
+  },
+  {
+    "name": "both routes costed — conflict warning",
+    "input": {
+      "solutionArchitect": "",
+      "projectDate": "2026-08-05",
+      "ticket": "",
+      "client": "Mixed Route Ltd",
+      "contactName": "",
+      "contactEmail": "",
+      "productStack": "SAP Business Objects",
+      "projectType": "upgrade",
+      "pricingBasis": "Fixed",
+      "hours": {
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": 7.5,
+        "DI-BIA-SAP-BOBJ-BLD-MIGRATION": 7.5,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 3.75
+      },
+      "activity": {},
+      "pmLevel": "coord",
+      "pmRateOverride": "",
+      "pmManual": false,
+      "inScope": {
+        "prereqs": false,
+        "healthcheck": false,
+        "download": true,
+        "install_prod": false,
+        "install_test": false,
+        "install_dev": false,
+        "upgrade_inplace": true,
+        "mig_initial": false,
+        "mig_golive": false,
+        "mig_test": false,
+        "mig_dev": false,
+        "pbi_1": false,
+        "pbi_3": false,
+        "webi_s": false,
+        "idt_s": false,
+        "uat_s": false,
+        "post_gl": false,
+        "ded_upg": true,
+        "conv_universe": false,
+        "conv_repoint": false,
+        "conv_config": false
+      },
+      "customScope": {
+        "platform": [],
+        "training": [],
+        "other": []
+      },
+      "dependencies": [
+        "Consultant access to the current server will be in place, with administrative rights.",
+        "Server backed up and all windows updates complete prior to the work commencing."
+      ],
+      "assumptions": [
+        "Codestone will perform the necessary software downloads ahead of the upgrade taking place.",
+        "A catastrophic failure of the upgrade will necessitate a reversion of the server to backups.",
+        "Any existing support issues recorded with Codestone do not impact the upgrade.",
+        "There are no configuration changes to be made to the server to support the adoption of new features.",
+        "The project will be considered complete upon successful system and user acceptance testing by the customer.",
+        "User Acceptance testing will immediately follow the completion of the upgrade, up to the end of the next working day."
+      ],
+      "exclusions": [
+        "Anything not specifically mentioned as 'in scope'.",
+        "On-site travel and expenses.",
+        "Installing client tool upgrades on desktop machines, though installer file will be downloaded.",
+        "Work outside of Codestone office hours of Monday to Friday, 09:00 to 17:30.",
+        "Development of Universes or Reports.",
+        "Amendment to or re-running of any report schedules or publications.",
+        "Configuring a separate Apache Tomcat installation.",
+        "Repair of issues found to not be related to the upgrade.",
+        "Replacement of any certificates that support existing https configurations.",
+        "Amendments to scheduling destinations and whitelisting.",
+        "Resizing of the environment and supporting Apache Tomcat server software."
+      ]
+    },
+    "totals": {
+      "implementationHours": 22.5,
+      "implementationDays": 3,
+      "implementationValue": 3600,
+      "baseHours": 18.75,
+      "baseValue": 3000,
+      "pmLevel": "admin",
+      "pmProductCode": "DI-BIA-PM-BRONZE2",
+      "pmRate": 0.1,
+      "pmHours": 1.875,
+      "pmValue": 300,
+      "contingencyRate": 0.2,
+      "pmContingencyHours": 0.375,
+      "grandHours": 24.75,
+      "grandDays": 3.3,
+      "grandValue": 3960,
+      "isEmpty": false
+    },
+    "costedLines": [
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-MIGRATION",
+        "hours": 7.5,
+        "value": 1200
+      },
+      {
+        "phase": "SAP-BOBJ-Build",
+        "code": "DI-BIA-SAP-BOBJ-BLD-CONTINGENCY",
+        "hours": 3,
+        "value": 480
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "hours": 3.75,
+        "value": 600
+      },
+      {
+        "phase": "SAP-BOBJ-UA-Testing",
+        "code": "DI-BIA-SAP-BOBJ-UA-TESTING-CONTINGENCY",
+        "hours": 0.75,
+        "value": 120
+      }
+    ],
+    "scope": [
+      {
+        "id": "platform",
+        "label": "SAP Platform Implementation Services",
+        "items": [
+          "Downloading the required software ahead of the main scheduled installation.",
+          "In-place upgrade of the SAP Business Objects server software."
+        ]
+      },
+      {
+        "id": "other",
+        "label": "Other Technical Services",
+        "items": [
+          "Dedicated consultant time following the upgrade for support issues up to the end of the following working day."
+        ]
+      }
+    ],
+    "warningIds": [
+      "route-conflict"
+    ],
+    "summary": [
+      "SAP BI PLATFORM — QUOTE SUMMARY",
+      "Mixed Route Ltd",
+      "",
+      "Product:      SAP Business Objects",
+      "Route:        In-Place Upgrade (Fixed price)",
+      "",
+      "SAP-BOBJ-BUILD",
+      "  Platform and Client Upgrade: 7.5h · £1,200",
+      "  Content Migration: 7.5h · £1,200",
+      "  Build Phase Contingency (auto): 3.0h · £480",
+      "  SAP-BOBJ-Build subtotal: 18.0h · £2,880",
+      "",
+      "SAP-BOBJ-UA-TESTING",
+      "  SAP BOBJ User Acceptance Test: 3.8h · £600",
+      "  SAP BOBJ User Acceptance Test Contingency (auto): 0.8h · £120",
+      "  SAP-BOBJ-UA-Testing subtotal: 4.5h · £720",
+      "",
+      "────────────────────────────────────────────",
+      "Implementation: 22.5h · 3.0d · £3,600",
+      "Project Administration – Bronze L2 (up to £5k) (10%): 1.9h · £300",
+      "PM contingency (20%): 0.4h · £60",
+      "GRAND TOTAL: 24.8h · 3.3d · £3,960",
+      "",
+      "POINTS TO CHECK",
+      "  • Hours are entered against both in-place upgrade and installation products (DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL, DI-BIA-SAP-BOBJ-BLD-MIGRATION). A quote should be one route or the other — check this is intended before issuing it."
+    ]
+  }
+]

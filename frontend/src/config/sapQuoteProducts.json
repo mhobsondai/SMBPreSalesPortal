@@ -1,0 +1,429 @@
+{
+  "primaryStacks": [
+    {
+      "name": "SAP Business Objects",
+      "phases": [
+        {
+          "name": "SAP-BOBJ-Design",
+          "description": "SAP BOBJ Design Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+              "description": "Connectivity",
+              "order": 1,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+              "description": "Pre-Installation Documentation",
+              "order": 3,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+              "description": "Software Downloads",
+              "order": 5,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-DES-WORKSHOP",
+              "description": "Design Workshop",
+              "order": 7,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-DES-CONTINGENCY",
+              "description": "Design Phase Contingency",
+              "order": 9,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-BOBJ-Build",
+          "description": "SAP BOBJ Build Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL",
+              "description": "Platform and Client Installation",
+              "order": 10,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT",
+              "description": "Tomcat Installation",
+              "order": 11,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG",
+              "description": "Platform Configuration",
+              "order": 12,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL",
+              "description": "Platform and Client Upgrade",
+              "order": 13,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-UPGR-TOMCAT",
+              "description": "Tomcat Upgrade",
+              "order": 14,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-MIGRATION",
+              "description": "Content Migration",
+              "order": 15,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-DEV-UNIVERSE",
+              "description": "Universe Development",
+              "order": 16,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS",
+              "description": "Report Development",
+              "order": 17,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-BLD-CONTINGENCY",
+              "description": "Build Phase Contingency",
+              "order": 18,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-BOBJ-System-Testing",
+          "description": "SAP BOBJ System Testing Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-BOBJ-SIT",
+              "description": "SAP BOBJ System Test",
+              "order": 19,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-SIT-CONTINGENCY",
+              "description": "System Test Phase Contingency",
+              "order": 20,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-BOBJ-Training",
+          "description": "SAP BOBJ Training Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-BOBJ-TRAINING",
+              "description": "SAP BOBJ End User Training",
+              "order": 21,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-TRAINING-CONTINGENCY",
+              "description": "SAP BOBJ End User Training Contingency",
+              "order": 22,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-BOBJ-UA-Testing",
+          "description": "SAP BOBJ UA Testing Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-BOBJ-UA-TESTING",
+              "description": "SAP BOBJ User Acceptance Test",
+              "order": 23,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-UA-TESTING-CONTINGENCY",
+              "description": "SAP BOBJ User Acceptance Test Contingency",
+              "order": 24,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-BOBJ-Transition",
+          "description": "SAP BOBJ Transition Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+              "description": "SAP BOBJ CloudCare Transition",
+              "order": 25,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-TRN-OPERATIONS",
+              "description": "SAP BOBJ Operations Transition",
+              "order": 26,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-BOBJ-TRN-CONTINGENCY",
+              "description": "SAP BOBJ Transition Contingency",
+              "order": 27,
+              "price": 1200
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SAP Crystal Server",
+      "phases": [
+        {
+          "name": "SAP-CRY-Design",
+          "description": "SAP CRY Design Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-CRY-DES-CONNECT",
+              "description": "Connectivity",
+              "order": 1,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-DES-SOFTWARE",
+              "description": "Pre-Installation Documentation",
+              "order": 3,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-DES-PREINSTALL",
+              "description": "Software Downloads",
+              "order": 5,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-DES-WORKSHOP",
+              "description": "Design Workshop and Document",
+              "order": 7,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-DES-CONTINGENCY",
+              "description": "Design Phase Contingency",
+              "order": 9,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-CRY-Build",
+          "description": "SAP CRY Build Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL",
+              "description": "Platform and Client Installation",
+              "order": 10,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-MIGR-TOMCAT",
+              "description": "Tomcat Installation",
+              "order": 11,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-MIGR-CONFIG",
+              "description": "Platform Configuration",
+              "order": 12,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-UPGR-INSTALL",
+              "description": "Platform and Client Upgrade",
+              "order": 13,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-UPGR-TOMCAT",
+              "description": "Tomcat Upgrade",
+              "order": 14,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-MIGRATION",
+              "description": "Content Migration",
+              "order": 15,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-DEV-REPORTS",
+              "description": "Report Development",
+              "order": 16,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-BLD-CONTINGENCY",
+              "description": "Build Phase Contingency",
+              "order": 17,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-CRY-System-Testing",
+          "description": "SAP CRY System Testing Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-CRY-SIT",
+              "description": "SAP Crystal Report System Test",
+              "order": 18,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-SIT-CONTINGENCY",
+              "description": "System Test Phase Contingency",
+              "order": 19,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-CRY-Training",
+          "description": "SAP CRY Training Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-CRY-TRAINING",
+              "description": "SAP Crystal Report End User Training",
+              "order": 20,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-TRAINING-CONTINGENCY",
+              "description": "SAP Crystal End User Training Contingency",
+              "order": 21,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-CRY-UA-Testing",
+          "description": "SAP CRY UA Testing Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-CRY-UA-TESTING",
+              "description": "SAP Crystal Report User Acceptance Test",
+              "order": 22,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-UA-TESTING-CONTINGENCY",
+              "description": "SAP Crystal User Acceptance Test Contingency",
+              "order": 23,
+              "price": 1200
+            }
+          ]
+        },
+        {
+          "name": "SAP-CRY-Transition",
+          "description": "SAP CRY Transition Phase",
+          "products": [
+            {
+              "id": "DI-BIA-SAP-CRY-TRN-CLOUDCARE",
+              "description": "SAP Crystal Report CloudCare Transition",
+              "order": 24,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-TRN-OPERATIONS",
+              "description": "SAP Crystal Report Operations Transition",
+              "order": 25,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-SAP-CRY-TRN-CONTINGENCY",
+              "description": "SAP Crystal Transition Contingency",
+              "order": 26,
+              "price": 1200
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sharedStacks": [
+    {
+      "name": "Project Management",
+      "phases": [
+        {
+          "name": "Data-Insights-BIA-Project-Management",
+          "description": "Data Insights BIA Project Management Phase",
+          "products": [
+            {
+              "id": "DI-BIA-PM-BRONZE1",
+              "description": "DI BIA PM Bronze 1",
+              "order": 1,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-BRONZE1-TM",
+              "description": "DI BIA PM Bronze 1",
+              "order": 2,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-BRONZE2",
+              "description": "DI BIA PM Bronze 2",
+              "order": 3,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-BRONZE2-TM",
+              "description": "DI BIA PM Bronze 2",
+              "order": 4,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-SILVER",
+              "description": "DI BIA PM Silver",
+              "order": 5,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-SILVER-TM",
+              "description": "DI BIA PM Silver",
+              "order": 6,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-GOLD",
+              "description": "DI BIA PM Gold",
+              "order": 7,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-GOLD-TM",
+              "description": "DI BIA PM Gold",
+              "order": 8,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-PLATINUM",
+              "description": "DI BIA PM Platinum",
+              "order": 9,
+              "price": 1200
+            },
+            {
+              "id": "DI-BIA-PM-CONTINGENCY",
+              "description": "DI BIA PM Contingency",
+              "order": 10,
+              "price": 1200
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

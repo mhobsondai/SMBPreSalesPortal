@@ -1,0 +1,420 @@
+/*
+ * SAP Quote Generator — tool-specific rules only.
+ *
+ * Header, rail, panels, notices, buttons, fields and the segmented control
+ * all come from `styles/tool.css`. What is here is the costing table, the
+ * PM block, the review table and the template pickers — shapes no other
+ * tool has needed yet. If a second tool needs one, move it up (AD-09).
+ */
+
+.step-number {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  width: 12px;
+  flex: none;
+}
+
+.tool-rail-item.is-active .step-number { color: var(--orange); }
+
+.panel-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+}
+
+/* ─── Points to check ─────────────────────────────────────────────── */
+
+.warn-panel { border-left: 3px solid var(--amber); }
+
+.warn-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.warn-list li + li { margin-top: 6px; }
+
+/* ─── Product hours ──────────────────────────────────────────────── */
+
+.phase { margin-top: 18px; }
+
+.phase-head,
+.hours-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 76px 62px 84px;
+  gap: 8px;
+  align-items: center;
+}
+
+.phase-head {
+  background: var(--charcoal);
+  color: var(--white);
+  padding: 8px 12px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* The phase name spans the description and activity columns. */
+.phase-head .phase-name { grid-column: 1 / 3; }
+
+.phase-figure {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.hours-row {
+  padding: 5px 12px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.hours-row.is-costed { background: var(--orange-bg); }
+
+.hours-row.is-contingency {
+  border-left: 2px solid var(--rule);
+  font-style: italic;
+}
+
+.hours-row.is-contingency.is-costed { border-left-color: var(--orange); }
+
+.hours-desc { font-size: 12.5px; line-height: 1.35; color: var(--ink); }
+.hours-row.is-costed .hours-desc { font-weight: 600; }
+
+.hours-code {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+
+.hours-activity,
+.hours-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  padding: 5px 7px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.hours-input { text-align: right; font-family: var(--font-mono); }
+
+.hours-activity:focus,
+.hours-input:focus { outline: none; border-color: var(--orange); }
+
+.hours-derived,
+.hours-input-cell,
+.hours-figure {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-3);
+  text-align: right;
+}
+
+.hours-derived { text-align: left; font-size: 10.5px; text-transform: uppercase; }
+.hours-row.is-costed .hours-figure { color: var(--ink); font-weight: 600; }
+
+.impl-total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px 62px 84px;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--orange-bg);
+  border-top: 2px solid var(--orange);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--orange-muted);
+}
+
+.impl-total span + span { text-align: right; font-family: var(--font-mono); }
+
+/* ─── Project management ─────────────────────────────────────────── */
+
+.pm-lines {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 70px 62px 90px;
+  gap: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.pm-lines .r { text-align: right; }
+.pm-code { font-size: 11.5px; color: var(--ink); }
+.pm-code--derived { font-style: italic; color: var(--ink-3); }
+
+.pm-total {
+  border-top: 1px solid var(--rule);
+  padding-top: 6px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.deliverables {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.grand-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--charcoal);
+  margin-bottom: 20px;
+}
+
+.grand-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+
+.grand-value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  margin-top: 2px;
+}
+
+/* ─── Scope ──────────────────────────────────────────────────────── */
+
+.scope-cat { margin-bottom: 20px; }
+
+.scope-cat-label {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--orange-muted);
+  margin-bottom: 6px;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 4px 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.check input { margin-top: 3px; accent-color: var(--orange); flex: none; }
+
+.tag {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 6px;
+  background: var(--orange-bg);
+  color: var(--orange-muted);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  vertical-align: 1px;
+}
+
+.tag--alt { background: var(--blue-bg); color: var(--blue-text); }
+
+/* ─── Editable lists ─────────────────────────────────────────────── */
+
+.list-edit { margin-top: 8px; }
+.list-edit--indented { margin-left: 27px; }
+
+.list-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.list-textarea { min-height: 52px; }
+
+.list-remove {
+  flex: none;
+  background: none;
+  border: 1px solid var(--rule);
+  color: var(--ink-3);
+  padding: 6px 9px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.list-remove:hover { border-color: var(--red); color: var(--red); }
+
+/* ─── Review ─────────────────────────────────────────────────────── */
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.review-cell { background: var(--surface); padding: 10px 12px; }
+
+.review-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+
+.review-value {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 2px;
+}
+
+.effort-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.effort-table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  font-weight: 400;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.effort-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--rule-soft);
+  color: var(--ink-2);
+}
+
+.effort-table .r { text-align: right; font-family: var(--font-mono); font-size: 12px; }
+
+.effort-phase td {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+}
+
+.effort-line { padding-left: 22px !important; }
+.effort-derived td { font-style: italic; color: var(--ink-3); }
+
+.effort-grand td {
+  border-top: 2px solid var(--orange);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--orange-muted);
+  padding-top: 9px;
+}
+
+/* ─── Templates ──────────────────────────────────────────────────── */
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.template-card {
+  display: block;
+  border: 1px dashed var(--rule);
+  background: var(--surface);
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.template-card:hover { border-color: var(--orange); }
+
+.template-card.is-override {
+  border-style: solid;
+  border-color: var(--amber);
+  background: var(--amber-bg);
+}
+
+.template-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.template-file {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  margin-top: 3px;
+  word-break: break-all;
+}
+
+.template-state {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+
+.template-input { display: none; }
+
+.generate-btn { width: 100%; padding: 14px; font-size: 15px; }
+.generate-msg { margin: 14px 0 0; }
+
+/* ─── Step footer ────────────────────────────────────────────────── */
+
+.step-footer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.step-footer-meta {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+@media (max-width: 900px) {
+  .field-grid,
+  .review-grid,
+  .template-grid,
+  .grand-strip { grid-template-columns: minmax(0, 1fr); }
+
+  .phase-head,
+  .hours-row { grid-template-columns: minmax(0, 1fr) 70px 76px; }
+
+  .phase-head .phase-name { grid-column: 1; }
+  .hours-activity { display: none; }
+}
