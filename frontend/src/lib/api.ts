@@ -13,6 +13,12 @@
  * reaches the URL will land in exactly this state.
  */
 
+import {
+  INTERPRET_ENDPOINT,
+  type Interpretation,
+  type TechnicalStrings
+} from '../config/sapQuoteImportModel';
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -79,6 +85,29 @@ export function getHealth(): Promise<{
   version: string;
   timestamp: string;
   authenticated_as: string;
+  ai_configured?: boolean;
+  ai_model?: string | null;
 }> {
   return request('/api/health');
+}
+
+/**
+ * Read an install assessment's free-text technical fields.
+ *
+ * The portal's first and only outbound AI call. The payload is three short
+ * strings describing a server — no client name, no contact names, no email
+ * addresses — because none of those helps read a Windows version. That is
+ * deliberate and is what keeps AD-08's position intact; the server refuses
+ * anything else. See AD-15.
+ *
+ * Callers must treat failure as non-fatal and fall back to their own
+ * deterministic reading.
+ */
+export function interpretTechnicalStrings(
+  payload: TechnicalStrings
+): Promise<Interpretation & { model?: string }> {
+  return request(INTERPRET_ENDPOINT, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
 }

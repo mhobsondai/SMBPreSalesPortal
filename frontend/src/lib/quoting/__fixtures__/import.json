@@ -1,0 +1,1052 @@
+[
+  {
+    "name": "blank",
+    "input": {
+      "schemaVersion": 2,
+      "tool": "sap-install-assessment",
+      "installationType": "businessobjects",
+      "client": {
+        "client": null,
+        "conversationDate": "2026-08-03",
+        "technicalContactName": null,
+        "technicalContactEmail": null,
+        "signOffName": null,
+        "signOffEmail": null,
+        "consumers": null,
+        "universeModifiers": null,
+        "reportModifiers": null,
+        "futureDirection": null,
+        "adjacentWork": null,
+        "installationType": "businessobjects",
+        "productionEnvironmentCount": 1,
+        "hasTestEnvironments": null,
+        "hasDevEnvironments": null,
+        "trainingBiLaunchpad": null,
+        "trainingCms": null,
+        "trainingWebi": null,
+        "trainingCrystalReports": null,
+        "trainingInformationDesignTool": null,
+        "trainingUniverseConversion": null,
+        "goLiveTiming": null
+      },
+      "environments": [
+        {
+          "id": "env-1",
+          "label": "Production 1",
+          "answers": {
+            "serverName": null,
+            "operatingSystem": null,
+            "platformSoftware": null,
+            "authentication": null,
+            "separateTomcat": null,
+            "clustered": null,
+            "externallyFacing": null,
+            "httpsConfigured": null,
+            "inputFileRepositoryGb": null,
+            "outputFileRepositoryGb": null,
+            "separateWebServer": "no",
+            "cmsDatabaseSoftware": null,
+            "auditingEnabled": null,
+            "universeCountMode": null,
+            "crystalDocuments": null,
+            "webiDocuments": null,
+            "publications": null,
+            "pendingInstances": null,
+            "successfulInstances": null,
+            "destinationChangesRequired": null,
+            "successfulInstancesRequired": null
+          }
+        }
+      ],
+      "completeness": {
+        "required": 40,
+        "answered": 3,
+        "isComplete": false
+      },
+      "advisories": []
+    },
+    "interpretation": {
+      "operatingSystem": {
+        "raw": "",
+        "preWindowsServer2022": null,
+        "detected": null,
+        "confidence": "unknown",
+        "reason": "No operating system recorded in the assessment."
+      },
+      "authentication": {
+        "raw": "",
+        "auth": null,
+        "confidence": "unknown",
+        "reason": "No authentication recorded."
+      },
+      "platformSoftware": {
+        "raw": "",
+        "currentVersion": null,
+        "confidence": "unknown",
+        "reason": "No platform version recorded."
+      },
+      "source": "local"
+    },
+    "seed": {
+      "productStack": "SAP Business Objects",
+      "projectType": "upgrade",
+      "routeReason": "Route not determined from the operating system (No operating system recorded in the assessment.) — defaulted to an in-place upgrade. Confirm this.",
+      "client": "",
+      "contactName": "",
+      "contactEmail": "",
+      "environments": 1,
+      "testEnvironments": 0,
+      "devEnvironments": 0,
+      "tomcatInstances": 0,
+      "auth": null,
+      "filestoreGb": {
+        "total": 0,
+        "unknown": [
+          "Production 1: inputFileRepositoryGb",
+          "Production 1: outputFileRepositoryGb"
+        ]
+      },
+      "contentCount": {
+        "total": 0,
+        "unknown": [
+          "Production 1: crystalDocuments",
+          "Production 1: webiDocuments",
+          "Production 1: publications",
+          "Production 1: universeCountMode"
+        ]
+      },
+      "convertUniverses": false,
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": 1,
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": 1,
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": 7.5,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 3.75,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 1
+      },
+      "derivations": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": "7.5h × 1 production environment.",
+        "DI-BIA-SAP-BOBJ-UA-TESTING": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": "Standard allowance."
+      },
+      "scope": [],
+      "notes": [
+        {
+          "id": "route-unconfirmed",
+          "severity": "warn",
+          "text": "Route not determined from the operating system (No operating system recorded in the assessment.) — defaulted to an in-place upgrade. Confirm this."
+        },
+        {
+          "id": "incomplete-sizing",
+          "severity": "warn",
+          "text": "The migration band is derived from figures the assessment does not have yet: Production 1: inputFileRepositoryGb, Production 1: outputFileRepositoryGb, Production 1: crystalDocuments, Production 1: webiDocuments, Production 1: publications, Production 1: universeCountMode. Treat the migration hours as provisional."
+        },
+        {
+          "id": "assessment-incomplete",
+          "severity": "warn",
+          "text": "The assessment is incomplete — 3 of 40 applicable fields answered."
+        }
+      ],
+      "migrationBandId": null
+    },
+    "changes": [
+      {
+        "id": "projectType",
+        "from": "install",
+        "to": "upgrade",
+        "note": "Route not determined from the operating system (No operating system recorded in the assessment.) — defaulted to an in-place upgrade. Confirm this."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "from": "—",
+        "to": "0.5h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL",
+        "from": "—",
+        "to": "7.5h",
+        "note": "7.5h × 1 production environment."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "from": "—",
+        "to": "3.8h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      }
+    ],
+    "totals": {
+      "grandValue": 3115.2000000000007,
+      "grandHours": 19.470000000000002,
+      "pmLevel": "admin"
+    }
+  },
+  {
+    "name": "businessobjects complete",
+    "input": {
+      "schemaVersion": 2,
+      "tool": "sap-install-assessment",
+      "installationType": "businessobjects",
+      "client": {
+        "client": "Acme Manufacturing Ltd",
+        "conversationDate": "2026-08-03",
+        "technicalContactName": "A Technical Contact",
+        "technicalContactEmail": "tech@example.invalid",
+        "signOffName": "A Sign-off Contact",
+        "signOffEmail": "signoff@example.invalid",
+        "consumers": 240,
+        "universeModifiers": 3,
+        "reportModifiers": 12,
+        "futureDirection": "Evaluating Power BI for new reporting; BI 4.3 to remain for Crystal.",
+        "adjacentWork": "ERP upgrade running in parallel through Q4.",
+        "installationType": "businessobjects",
+        "productionEnvironmentCount": 1,
+        "hasTestEnvironments": "yes",
+        "testEnvironmentCount": 1,
+        "hasDevEnvironments": "no",
+        "trainingBiLaunchpad": "yes",
+        "trainingCms": "yes",
+        "trainingWebi": "yes",
+        "trainingCrystalReports": "no",
+        "trainingInformationDesignTool": "yes",
+        "trainingUniverseConversion": "yes",
+        "goLiveTiming": "weekend"
+      },
+      "environments": [
+        {
+          "id": "env-1",
+          "label": "PROD01",
+          "answers": {
+            "serverName": "ACME-BOBJ-P01",
+            "operatingSystem": "Windows Server 2016",
+            "platformSoftware": "SAP BusinessObjects BI 4.2 SP7",
+            "authentication": "Windows AD",
+            "separateTomcat": "yes",
+            "clustered": "no",
+            "externallyFacing": "yes",
+            "httpsConfigured": "yes",
+            "separateWebServer": "yes",
+            "webServerName": "ACME-WEB-P01",
+            "inputFileRepositoryGb": 42.5,
+            "outputFileRepositoryGb": 118,
+            "cmsDatabaseSoftware": "SQL Server 2016",
+            "auditingEnabled": "yes",
+            "universeCountMode": "separate",
+            "unvCount": 64,
+            "unxCount": 18,
+            "crystalDocuments": 820,
+            "webiDocuments": 460,
+            "publications": 35,
+            "pendingInstances": 12,
+            "successfulInstances": 48210,
+            "destinationChangesRequired": "yes",
+            "destinationChangesNarrative": "Moving from file shares to SFTP for the finance pack.",
+            "successfulInstancesRequired": "some",
+            "successfulInstancesNarrative": "Last 12 months of the statutory reports only."
+          }
+        }
+      ],
+      "completeness": {
+        "required": 47,
+        "answered": 47,
+        "isComplete": true
+      },
+      "advisories": [
+        {
+          "id": "env-1-instances",
+          "scope": "PROD01",
+          "text": "Not all successful instances are required. Recommend the client raises a support ticket for instructions on cleaning them up before migration — it reduces the volume to move."
+        },
+        {
+          "id": "go-live-rate",
+          "text": "Go-live is outside core hours. That attracts a different rate — make sure the quote reflects it."
+        }
+      ]
+    },
+    "interpretation": {
+      "operatingSystem": {
+        "raw": "Windows Server 2016",
+        "preWindowsServer2022": true,
+        "detected": "Windows Server 2016",
+        "confidence": "high",
+        "reason": "Windows Server 2016 is earlier than 2022, so an in-place upgrade is not possible — install and migration."
+      },
+      "authentication": {
+        "raw": "Windows AD",
+        "auth": "Windows AD",
+        "confidence": "high",
+        "reason": "Reads as Windows AD."
+      },
+      "platformSoftware": {
+        "raw": "SAP BusinessObjects BI 4.2 SP7",
+        "currentVersion": "4.2 SP7",
+        "confidence": "high",
+        "reason": "Read as version 4.2 SP7."
+      },
+      "source": "local"
+    },
+    "seed": {
+      "productStack": "SAP Business Objects",
+      "projectType": "install",
+      "routeReason": "Windows Server 2016 is earlier than 2022, so an in-place upgrade is not possible — install and migration.",
+      "client": "Acme Manufacturing Ltd",
+      "contactName": "A Sign-off Contact",
+      "contactEmail": "signoff@example.invalid",
+      "environments": 1,
+      "testEnvironments": 1,
+      "devEnvironments": 0,
+      "tomcatInstances": 1,
+      "auth": "Windows AD",
+      "filestoreGb": {
+        "total": 160.5,
+        "unknown": []
+      },
+      "contentCount": {
+        "total": 1397,
+        "unknown": []
+      },
+      "convertUniverses": true,
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": 1,
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": 1,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL": 7.5,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG": 7.5,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT": 3.75,
+        "DI-BIA-SAP-BOBJ-BLD-MIGRATION": 30,
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": 15,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 3.75,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 1
+      },
+      "derivations": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL": "7.5h × 1 production environment.",
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG": "7.5h for Windows AD × 1 environment.",
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT": "3.8h × 1 Tomcat instance (separate Tomcat or externally facing).",
+        "DI-BIA-SAP-BOBJ-BLD-MIGRATION": "Large migration band — 160.5 GB filestore, 1397 content items.",
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": "UNV → UNX conversion and report repointing for 2025.",
+        "DI-BIA-SAP-BOBJ-UA-TESTING": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": "Standard allowance."
+      },
+      "scope": [
+        "conv_universe",
+        "conv_repoint",
+        "install_test",
+        "mig_test"
+      ],
+      "notes": [
+        {
+          "id": "test-environments",
+          "severity": "warn",
+          "text": "1 test environment reported. Added to scope but not costed — the assessment records only the count, so there is nothing to size them from."
+        },
+        {
+          "id": "tomcat-scoped",
+          "severity": "info",
+          "text": "Tomcat work is costed, so remove the Tomcat exclusion on the Dependencies & Assumptions step before issuing."
+        },
+        {
+          "id": "advisory-env-1-instances",
+          "severity": "info",
+          "text": "[PROD01] Not all successful instances are required. Recommend the client raises a support ticket for instructions on cleaning them up before migration — it reduces the volume to move."
+        },
+        {
+          "id": "advisory-go-live-rate",
+          "severity": "info",
+          "text": "Go-live is outside core hours. That attracts a different rate — make sure the quote reflects it."
+        }
+      ],
+      "migrationBandId": "large"
+    },
+    "changes": [
+      {
+        "id": "client",
+        "from": "—",
+        "to": "Acme Manufacturing Ltd"
+      },
+      {
+        "id": "contactName",
+        "from": "—",
+        "to": "A Sign-off Contact"
+      },
+      {
+        "id": "contactEmail",
+        "from": "—",
+        "to": "signoff@example.invalid"
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "from": "—",
+        "to": "0.5h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL",
+        "from": "—",
+        "to": "7.5h",
+        "note": "7.5h × 1 production environment."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG",
+        "from": "—",
+        "to": "7.5h",
+        "note": "7.5h for Windows AD × 1 environment."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT",
+        "from": "—",
+        "to": "3.8h",
+        "note": "3.8h × 1 Tomcat instance (separate Tomcat or externally facing)."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGRATION",
+        "from": "—",
+        "to": "30.0h",
+        "note": "Large migration band — 160.5 GB filestore, 1397 content items."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS",
+        "from": "—",
+        "to": "15.0h",
+        "note": "UNV → UNX conversion and report repointing for 2025."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "from": "—",
+        "to": "3.8h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "scope-conv_universe",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-conv_repoint",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-install_test",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-mig_test",
+        "from": "Not in scope",
+        "to": "In scope"
+      }
+    ],
+    "totals": {
+      "grandValue": 15676.8,
+      "grandHours": 97.98,
+      "pmLevel": "silver"
+    }
+  },
+  {
+    "name": "crystal server",
+    "input": {
+      "schemaVersion": 2,
+      "tool": "sap-install-assessment",
+      "installationType": "crystal-server",
+      "client": {
+        "client": "Beta Logistics",
+        "conversationDate": "2026-08-03",
+        "technicalContactName": "A Technical Contact",
+        "technicalContactEmail": "tech@example.invalid",
+        "signOffName": "A Sign-off Contact",
+        "signOffEmail": "signoff@example.invalid",
+        "consumers": 35,
+        "reportModifiers": 2,
+        "futureDirection": null,
+        "adjacentWork": null,
+        "installationType": "crystal-server",
+        "productionEnvironmentCount": 1,
+        "hasTestEnvironments": "no",
+        "hasDevEnvironments": "no",
+        "trainingBiLaunchpad": "yes",
+        "trainingCms": "no",
+        "trainingCrystalReports": "yes",
+        "goLiveTiming": "core-hours"
+      },
+      "environments": [
+        {
+          "id": "env-1",
+          "label": "CRYSTAL-PROD",
+          "answers": {
+            "serverName": "BETA-CS-P01",
+            "operatingSystem": "Windows Server 2019",
+            "platformSoftware": "SAP Crystal Server 2016",
+            "authentication": "Enterprise",
+            "separateTomcat": "no",
+            "clustered": "no",
+            "externallyFacing": "no",
+            "httpsConfigured": "no",
+            "inputFileRepositoryGb": 3.2,
+            "outputFileRepositoryGb": 9.8,
+            "separateWebServer": "no",
+            "cmsDatabaseSoftware": "SAP SQL Anywhere",
+            "auditingEnabled": "no",
+            "crystalDocuments": 140,
+            "publications": 4,
+            "pendingInstances": 0,
+            "successfulInstances": 2100,
+            "destinationChangesRequired": "no",
+            "successfulInstancesRequired": "yes"
+          }
+        }
+      ],
+      "completeness": {
+        "required": 34,
+        "answered": 34,
+        "isComplete": true
+      },
+      "advisories": [
+        {
+          "id": "env-1-auditing",
+          "scope": "CRYSTAL-PROD",
+          "text": "Auditing is not currently enabled. It is enabled by default on the new server, so tell the client to expect audit data they do not have today."
+        },
+        {
+          "id": "crystal-scope",
+          "text": "Crystal Server: universe and Web Intelligence questions were not asked, because the platform does not have them. If the client mentions either, the installation type is probably wrong."
+        }
+      ]
+    },
+    "interpretation": {
+      "operatingSystem": {
+        "raw": "Windows Server 2019",
+        "preWindowsServer2022": true,
+        "detected": "Windows Server 2019",
+        "confidence": "high",
+        "reason": "Windows Server 2019 is earlier than 2022, so an in-place upgrade is not possible — install and migration."
+      },
+      "authentication": {
+        "raw": "Enterprise",
+        "auth": "Enterprise",
+        "confidence": "high",
+        "reason": "Reads as Enterprise (platform-native) authentication."
+      },
+      "platformSoftware": {
+        "raw": "SAP Crystal Server 2016",
+        "currentVersion": "2016",
+        "confidence": "high",
+        "reason": "Read as the 2016 release."
+      },
+      "source": "local"
+    },
+    "seed": {
+      "productStack": "SAP Crystal Server",
+      "projectType": "install",
+      "routeReason": "Windows Server 2019 is earlier than 2022, so an in-place upgrade is not possible — install and migration.",
+      "client": "Beta Logistics",
+      "contactName": "A Sign-off Contact",
+      "contactEmail": "signoff@example.invalid",
+      "environments": 1,
+      "testEnvironments": 0,
+      "devEnvironments": 0,
+      "tomcatInstances": 0,
+      "auth": "Enterprise",
+      "filestoreGb": {
+        "total": 13,
+        "unknown": []
+      },
+      "contentCount": {
+        "total": 144,
+        "unknown": []
+      },
+      "convertUniverses": false,
+      "hours": {
+        "DI-BIA-SAP-CRY-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-CRY-DES-SOFTWARE": 1,
+        "DI-BIA-SAP-CRY-DES-PREINSTALL": 1,
+        "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL": 7.5,
+        "DI-BIA-SAP-CRY-BLD-MIGR-CONFIG": 3.75,
+        "DI-BIA-SAP-CRY-BLD-MIGRATION": 15,
+        "DI-BIA-SAP-CRY-UA-TESTING": 3.75,
+        "DI-BIA-SAP-CRY-TRN-CLOUDCARE": 1
+      },
+      "derivations": {
+        "DI-BIA-SAP-CRY-DES-CONNECT": "Standard allowance.",
+        "DI-BIA-SAP-CRY-DES-SOFTWARE": "Standard allowance.",
+        "DI-BIA-SAP-CRY-DES-PREINSTALL": "Standard allowance.",
+        "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL": "7.5h × 1 production environment.",
+        "DI-BIA-SAP-CRY-BLD-MIGR-CONFIG": "3.8h for Enterprise × 1 environment.",
+        "DI-BIA-SAP-CRY-BLD-MIGRATION": "Medium migration band — 13 GB filestore, 144 content items.",
+        "DI-BIA-SAP-CRY-UA-TESTING": "Standard allowance.",
+        "DI-BIA-SAP-CRY-TRN-CLOUDCARE": "Standard allowance."
+      },
+      "scope": [],
+      "notes": [
+        {
+          "id": "advisory-env-1-auditing",
+          "severity": "info",
+          "text": "[CRYSTAL-PROD] Auditing is not currently enabled. It is enabled by default on the new server, so tell the client to expect audit data they do not have today."
+        },
+        {
+          "id": "advisory-crystal-scope",
+          "severity": "info",
+          "text": "Crystal Server: universe and Web Intelligence questions were not asked, because the platform does not have them. If the client mentions either, the installation type is probably wrong."
+        }
+      ],
+      "migrationBandId": "medium"
+    },
+    "changes": [
+      {
+        "id": "client",
+        "from": "—",
+        "to": "Beta Logistics"
+      },
+      {
+        "id": "contactName",
+        "from": "—",
+        "to": "A Sign-off Contact"
+      },
+      {
+        "id": "contactEmail",
+        "from": "—",
+        "to": "signoff@example.invalid"
+      },
+      {
+        "id": "productStack",
+        "from": "SAP Business Objects",
+        "to": "SAP Crystal Server"
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-DES-CONNECT",
+        "from": "—",
+        "to": "0.5h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-DES-SOFTWARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-DES-PREINSTALL",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-BLD-MIGR-INSTALL",
+        "from": "—",
+        "to": "7.5h",
+        "note": "7.5h × 1 production environment."
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-BLD-MIGR-CONFIG",
+        "from": "—",
+        "to": "3.8h",
+        "note": "3.8h for Enterprise × 1 environment."
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-BLD-MIGRATION",
+        "from": "—",
+        "to": "15.0h",
+        "note": "Medium migration band — 13 GB filestore, 144 content items."
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-UA-TESTING",
+        "from": "—",
+        "to": "3.8h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-CRY-TRN-CLOUDCARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      }
+    ],
+    "totals": {
+      "grandValue": 7236,
+      "grandHours": 45.225,
+      "pmLevel": "coord"
+    }
+  },
+  {
+    "name": "two environments partial",
+    "input": {
+      "schemaVersion": 2,
+      "tool": "sap-install-assessment",
+      "installationType": "businessobjects",
+      "client": {
+        "client": "Acme Manufacturing Ltd",
+        "conversationDate": "2026-08-03",
+        "technicalContactName": "A Technical Contact",
+        "technicalContactEmail": "tech@example.invalid",
+        "signOffName": "A Sign-off Contact",
+        "signOffEmail": "signoff@example.invalid",
+        "consumers": 240,
+        "universeModifiers": 3,
+        "reportModifiers": 12,
+        "futureDirection": "Evaluating Power BI for new reporting; BI 4.3 to remain for Crystal.",
+        "adjacentWork": "ERP upgrade running in parallel through Q4.",
+        "installationType": "businessobjects",
+        "productionEnvironmentCount": 2,
+        "hasTestEnvironments": "yes",
+        "testEnvironmentCount": 1,
+        "hasDevEnvironments": "no",
+        "trainingBiLaunchpad": "yes",
+        "trainingCms": "yes",
+        "trainingWebi": "yes",
+        "trainingCrystalReports": "no",
+        "trainingInformationDesignTool": "yes",
+        "trainingUniverseConversion": "yes",
+        "goLiveTiming": "weekend"
+      },
+      "environments": [
+        {
+          "id": "env-1",
+          "label": "PROD01",
+          "answers": {
+            "serverName": "ACME-BOBJ-P01",
+            "operatingSystem": "Windows Server 2016",
+            "platformSoftware": "SAP BusinessObjects BI 4.2 SP7",
+            "authentication": "Windows AD",
+            "separateTomcat": "yes",
+            "clustered": "no",
+            "externallyFacing": "yes",
+            "httpsConfigured": "yes",
+            "separateWebServer": "yes",
+            "webServerName": "ACME-WEB-P01",
+            "inputFileRepositoryGb": 42.5,
+            "outputFileRepositoryGb": 118,
+            "cmsDatabaseSoftware": "SQL Server 2016",
+            "auditingEnabled": "yes",
+            "universeCountMode": "combined",
+            "combinedUniverseCount": 82,
+            "crystalDocuments": 820,
+            "webiDocuments": 460,
+            "publications": 35,
+            "pendingInstances": 12,
+            "successfulInstances": 48210,
+            "destinationChangesRequired": "yes",
+            "destinationChangesNarrative": "Moving from file shares to SFTP for the finance pack.",
+            "successfulInstancesRequired": "some",
+            "successfulInstancesNarrative": "Last 12 months of the statutory reports only."
+          }
+        },
+        {
+          "id": "env-2",
+          "label": "PROD02",
+          "answers": {
+            "serverName": "ACME-BOBJ-P10",
+            "operatingSystem": "Windows Server 2019",
+            "platformSoftware": "SAP BusinessObjects BI 4.2 SP7",
+            "authentication": null,
+            "separateTomcat": null,
+            "clustered": null,
+            "externallyFacing": null,
+            "httpsConfigured": null,
+            "inputFileRepositoryGb": null,
+            "outputFileRepositoryGb": null,
+            "separateWebServer": "no",
+            "cmsDatabaseSoftware": null,
+            "auditingEnabled": null,
+            "universeCountMode": null,
+            "crystalDocuments": null,
+            "webiDocuments": null,
+            "publications": null,
+            "pendingInstances": null,
+            "successfulInstances": null,
+            "destinationChangesRequired": null,
+            "successfulInstancesRequired": null
+          }
+        }
+      ],
+      "completeness": {
+        "required": 66,
+        "answered": 49,
+        "isComplete": false
+      },
+      "advisories": [
+        {
+          "id": "env-1-instances",
+          "scope": "PROD01",
+          "text": "Not all successful instances are required. Recommend the client raises a support ticket for instructions on cleaning them up before migration — it reduces the volume to move."
+        },
+        {
+          "id": "go-live-rate",
+          "text": "Go-live is outside core hours. That attracts a different rate — make sure the quote reflects it."
+        }
+      ]
+    },
+    "interpretation": {
+      "operatingSystem": {
+        "raw": "Windows Server 2016",
+        "preWindowsServer2022": true,
+        "detected": "Windows Server 2016",
+        "confidence": "high",
+        "reason": "Windows Server 2016 is earlier than 2022, so an in-place upgrade is not possible — install and migration."
+      },
+      "authentication": {
+        "raw": "Windows AD",
+        "auth": "Windows AD",
+        "confidence": "high",
+        "reason": "Reads as Windows AD."
+      },
+      "platformSoftware": {
+        "raw": "SAP BusinessObjects BI 4.2 SP7",
+        "currentVersion": "4.2 SP7",
+        "confidence": "high",
+        "reason": "Read as version 4.2 SP7."
+      },
+      "source": "local"
+    },
+    "seed": {
+      "productStack": "SAP Business Objects",
+      "projectType": "install",
+      "routeReason": "Windows Server 2016 is earlier than 2022, so an in-place upgrade is not possible — install and migration.",
+      "client": "Acme Manufacturing Ltd",
+      "contactName": "A Sign-off Contact",
+      "contactEmail": "signoff@example.invalid",
+      "environments": 2,
+      "testEnvironments": 1,
+      "devEnvironments": 0,
+      "tomcatInstances": 1,
+      "auth": "Windows AD",
+      "filestoreGb": {
+        "total": 160.5,
+        "unknown": [
+          "PROD02: inputFileRepositoryGb",
+          "PROD02: outputFileRepositoryGb"
+        ]
+      },
+      "contentCount": {
+        "total": 1397,
+        "unknown": [
+          "PROD02: crystalDocuments",
+          "PROD02: webiDocuments",
+          "PROD02: publications",
+          "PROD02: universeCountMode"
+        ]
+      },
+      "convertUniverses": true,
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": 1,
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": 1,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL": 15,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG": 15,
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT": 3.75,
+        "DI-BIA-SAP-BOBJ-BLD-MIGRATION": 30,
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": 15,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 3.75,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 1
+      },
+      "derivations": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL": "7.5h × 2 production environments.",
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG": "7.5h for Windows AD × 2 environments.",
+        "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT": "3.8h × 1 Tomcat instance (separate Tomcat or externally facing).",
+        "DI-BIA-SAP-BOBJ-BLD-MIGRATION": "Large migration band — 160.5 GB filestore, 1397 content items.",
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": "UNV → UNX conversion and report repointing for 2025.",
+        "DI-BIA-SAP-BOBJ-UA-TESTING": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": "Standard allowance."
+      },
+      "scope": [
+        "conv_universe",
+        "conv_repoint",
+        "install_test",
+        "mig_test"
+      ],
+      "notes": [
+        {
+          "id": "os-heterogeneous",
+          "severity": "warn",
+          "text": "The production environments do not all run the same operating system (Windows Server 2016, Windows Server 2019). The route was decided from the first one — check the others can take it."
+        },
+        {
+          "id": "incomplete-sizing",
+          "severity": "warn",
+          "text": "The migration band is derived from figures the assessment does not have yet: PROD02: inputFileRepositoryGb, PROD02: outputFileRepositoryGb, PROD02: crystalDocuments, PROD02: webiDocuments, PROD02: publications, PROD02: universeCountMode. Treat the migration hours as provisional."
+        },
+        {
+          "id": "multi-environment-band",
+          "severity": "warn",
+          "text": "2 production environments. Filestore sizes and content counts are summed, so the migration is banded once on the combined total rather than once per environment — which can under-price separate cutovers."
+        },
+        {
+          "id": "universe-split-unknown",
+          "severity": "warn",
+          "text": "Universes were counted as a combined total, so the UNV/UNX split is unknown. Conversion has been assumed — remove it if they are already all UNX."
+        },
+        {
+          "id": "test-environments",
+          "severity": "warn",
+          "text": "1 test environment reported. Added to scope but not costed — the assessment records only the count, so there is nothing to size them from."
+        },
+        {
+          "id": "tomcat-scoped",
+          "severity": "info",
+          "text": "Tomcat work is costed, so remove the Tomcat exclusion on the Dependencies & Assumptions step before issuing."
+        },
+        {
+          "id": "assessment-incomplete",
+          "severity": "warn",
+          "text": "The assessment is incomplete — 49 of 66 applicable fields answered."
+        },
+        {
+          "id": "advisory-env-1-instances",
+          "severity": "info",
+          "text": "[PROD01] Not all successful instances are required. Recommend the client raises a support ticket for instructions on cleaning them up before migration — it reduces the volume to move."
+        },
+        {
+          "id": "advisory-go-live-rate",
+          "severity": "info",
+          "text": "Go-live is outside core hours. That attracts a different rate — make sure the quote reflects it."
+        }
+      ],
+      "migrationBandId": "large"
+    },
+    "changes": [
+      {
+        "id": "client",
+        "from": "—",
+        "to": "Acme Manufacturing Ltd"
+      },
+      {
+        "id": "contactName",
+        "from": "—",
+        "to": "A Sign-off Contact"
+      },
+      {
+        "id": "contactEmail",
+        "from": "—",
+        "to": "signoff@example.invalid"
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "from": "—",
+        "to": "0.5h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-INSTALL",
+        "from": "—",
+        "to": "15.0h",
+        "note": "7.5h × 2 production environments."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG",
+        "from": "—",
+        "to": "15.0h",
+        "note": "7.5h for Windows AD × 2 environments."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGR-TOMCAT",
+        "from": "—",
+        "to": "3.8h",
+        "note": "3.8h × 1 Tomcat instance (separate Tomcat or externally facing)."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-MIGRATION",
+        "from": "—",
+        "to": "30.0h",
+        "note": "Large migration band — 160.5 GB filestore, 1397 content items."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS",
+        "from": "—",
+        "to": "15.0h",
+        "note": "UNV → UNX conversion and report repointing for 2025."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "from": "—",
+        "to": "3.8h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "scope-conv_universe",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-conv_repoint",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-install_test",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-mig_test",
+        "from": "Not in scope",
+        "to": "In scope"
+      }
+    ],
+    "totals": {
+      "grandValue": 18988.800000000003,
+      "grandHours": 118.68,
+      "pmLevel": "silver"
+    }
+  }
+]

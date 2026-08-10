@@ -22,6 +22,7 @@ import {
   computeTotals,
   costedPhases,
   createBlankQuote,
+  defaultsForProjectType,
   fillProduct,
   formatHours,
   formatMoney,
@@ -37,9 +38,14 @@ import {
   type QuoteState
 } from '../../lib/quoting/sapQuoteGenerator';
 import {
+  applyImport,
+  type ImportPlan
+} from '../../lib/quoting/sapQuoteImport';
+import {
   loadBundledChecklistTemplate,
   loadBundledLabmatTemplate
 } from '../../lib/quoting/templates';
+import { AssessmentImportPanel } from './AssessmentImportPanel';
 import '../../styles/tool.css';
 import './SapQuoteGenerator.css';
 
@@ -184,6 +190,49 @@ export function SapQuoteGenerator() {
     }
   }
 
+  /**
+   * Apply an accepted import.
+   *
+   * Project type is handled first and separately, because switching it
+   * resets the scope, dependencies, assumptions and exclusions to that
+   * route's defaults — a change the diff cannot show, since it rewrites
+   * lists rather than fields. So it gets its own confirmation, and a
+   * refusal leaves the route alone while everything else still applies.
+   */
+  function applyImportPlan(plan: ImportPlan, accepted: Set<string>) {
+    let next = state;
+
+    const routeChange = plan.changes.find(
+      (c) => c.kind === 'field' && c.field === 'projectType' && accepted.has(c.id)
+    );
+
+    if (routeChange && routeChange.kind === 'field') {
+      const target = routeChange.value as ProjectType;
+      const edited =
+        JSON.stringify(state.dependencies) !==
+          JSON.stringify(defaultsForProjectType(state.projectType).dependencies) ||
+        JSON.stringify(state.exclusions) !==
+          JSON.stringify(defaultsForProjectType(state.projectType).exclusions);
+
+      if (
+        !edited ||
+        window.confirm(
+          'The assessment sets a different project type. Applying it resets the scope, dependencies, assumptions and exclusions to that route’s defaults, and you have edited those lists. Continue?'
+        )
+      ) {
+        next = withProjectType(next, target);
+      } else {
+        accepted.delete(routeChange.id);
+      }
+    }
+
+    setState(applyImport(next, plan, accepted));
+    setMessage({
+      kind: 'ok',
+      text: `Applied ${accepted.size} change${accepted.size === 1 ? '' : 's'} from the assessment.`
+    });
+  }
+
   function changeProjectType(type: ProjectType) {
     const dirty =
       state.dependencies.length > 0 || Object.values(state.inScope).some(Boolean);
@@ -279,6 +328,10 @@ export function SapQuoteGenerator() {
                   ))}
                 </ul>
               </div>
+            )}
+
+            {step === 'details' && (
+              <AssessmentImportPanel state={state} onApply={applyImportPlan} />
             )}
 
             {step === 'details' && (

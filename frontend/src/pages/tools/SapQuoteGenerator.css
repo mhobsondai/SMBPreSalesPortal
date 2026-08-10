@@ -418,3 +418,132 @@
   .phase-head .phase-name { grid-column: 1; }
   .hours-activity { display: none; }
 }
+
+/* ─── Assessment import ──────────────────────────────────────────────
+ *
+ * The diff is the point of this panel: a pre-filled hour lands in a client
+ * quote, so every row has to be readable at a glance and individually
+ * refusable. Conflicts — rows that would overwrite something already typed
+ * — are marked rather than hidden.
+ */
+
+.import-collapsed { border-left: 3px solid var(--blue); }
+.import-panel { border-left: 3px solid var(--orange); }
+
+.import-textarea {
+  min-height: 140px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+}
+
+.import-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.import-msg { margin: 14px 0 0; }
+
+.import-summary {
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.import-summary-head {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.import-notes {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--amber-bg);
+  border-left: 3px solid var(--amber);
+}
+
+.import-notes-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--amber-text);
+  margin-bottom: 6px;
+}
+
+.import-notes ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.import-notes li + li { margin-top: 5px; }
+.import-notes li.is-warn { color: var(--amber-text); font-weight: 500; }
+
+.import-diff { margin-top: 16px; }
+
+.import-group {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  margin: 14px 0 4px;
+}
+
+.import-row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1.6fr) minmax(0, 0.8fr) 14px minmax(0, 0.8fr);
+  gap: 4px 10px;
+  align-items: baseline;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.import-row:hover { background: var(--surface); }
+.import-row.is-conflict { background: var(--amber-bg); }
+.import-row input { accent-color: var(--orange); }
+
+.import-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.import-from { color: var(--ink-3); text-decoration: line-through; }
+.import-arrow { color: var(--ink-3); text-align: center; }
+.import-to { color: var(--ink); font-weight: 600; }
+
+/* Derivation, on its own line under the row it explains. */
+.import-note {
+  grid-column: 2 / -1;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .import-row {
+    grid-template-columns: 16px minmax(0, 1fr);
+  }
+  .import-arrow { display: none; }
+  .import-from,
+  .import-to { grid-column: 2; }
+}
