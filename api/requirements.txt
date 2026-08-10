@@ -1,1 +1,7 @@
 azure-functions
+
+# Anthropic Claude SDK — free-text interpretation for the SAP Quote
+# Generator (AD-15). The client is constructed lazily in shared/ai.py, so
+# the API imports and both other endpoints work without it present; only an
+# interpretation call needs it at runtime.
+anthropic==0.105.2
