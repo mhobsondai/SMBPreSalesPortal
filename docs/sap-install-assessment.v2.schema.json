@@ -1,0 +1,611 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codestone.com/schemas/sap-install-assessment/v2.json",
+  "title": "SAP BI Platform Pre-Sales Install Assessment export",
+  "description": "Produced by toExport() in the SMB Pre-Sales Portal. Three states are distinct and load-bearing: a key that is ABSENT is not applicable to the chosen platform; a key that is NULL is applicable but unanswered; a key with a value was either answered or implied by another answer. Do not collapse absent and null.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "tool",
+    "installationType",
+    "client",
+    "environments",
+    "completeness",
+    "advisories"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 2,
+      "description": "Bumped on any breaking change. Reject an unexpected value rather than guessing."
+    },
+    "tool": {
+      "const": "sap-install-assessment"
+    },
+    "installationType": {
+      "type": "string",
+      "enum": [
+        "businessobjects",
+        "crystal-server"
+      ],
+      "description": "Crystal Server has no universes and no Web Intelligence. Several keys are absent for it."
+    },
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Client-level answers. Answered once for the engagement.",
+      "properties": {
+        "client": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Client"
+        },
+        "conversationDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Date of conversation"
+        },
+        "technicalContactName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Technical contact \u2014 name"
+        },
+        "technicalContactEmail": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "email",
+          "description": "Technical contact \u2014 email"
+        },
+        "signOffName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Sign-off contact \u2014 name"
+        },
+        "signOffEmail": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "email",
+          "description": "Sign-off contact \u2014 email"
+        },
+        "consumers": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Content consumers"
+        },
+        "universeModifiers": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Universe modifiers \u2014 absent unless installationType is businessobjects"
+        },
+        "reportModifiers": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Report modifiers"
+        },
+        "futureDirection": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Future direction"
+        },
+        "adjacentWork": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Adjacent work that might impact delivery"
+        },
+        "installationType": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "businessobjects",
+            "crystal-server",
+            null
+          ],
+          "description": "Installation type"
+        },
+        "productionEnvironmentCount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Production environments"
+        },
+        "hasTestEnvironments": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "Test environments?"
+        },
+        "testEnvironmentCount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "How many test environments? \u2014 only asked when hasTestEnvironments is yes"
+        },
+        "hasDevEnvironments": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "Development environments?"
+        },
+        "devEnvironmentCount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "How many development environments? \u2014 only asked when hasDevEnvironments is yes"
+        },
+        "trainingBiLaunchpad": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "BI Launchpad \u2014 guide"
+        },
+        "trainingCms": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "CMS training \u2014 1 day"
+        },
+        "trainingWebi": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "Web Intelligence training \u2014 1 day \u2014 absent unless installationType is businessobjects"
+        },
+        "trainingCrystalReports": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "Crystal Reports training \u2014 3 days"
+        },
+        "trainingInformationDesignTool": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "Information Design Tool training \u2014 1 day \u2014 absent unless installationType is businessobjects"
+        },
+        "trainingUniverseConversion": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "yes",
+            "no",
+            null
+          ],
+          "description": "Universe conversion and report repointing \u2014 guide \u2014 absent unless installationType is businessobjects"
+        },
+        "goLiveTiming": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "core-hours",
+            "specific-weekday",
+            "overnight",
+            "weekend",
+            null
+          ],
+          "description": "When does go-live have to happen?"
+        },
+        "goLiveWeekday": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+            null
+          ],
+          "description": "Which day? \u2014 only asked when goLiveTiming is specific-weekday"
+        }
+      }
+    },
+    "environments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "description": "One entry per PRODUCTION environment. Test and development environments are counted on the client object but never detailed \u2014 they are rebuilt as a copy of the new production.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "answers"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable across renames, e.g. env-1."
+          },
+          "label": {
+            "type": "string",
+            "description": "Consultant's label, e.g. PROD01."
+          },
+          "answers": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "serverName": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Current server name"
+              },
+              "operatingSystem": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Operating system"
+              },
+              "platformSoftware": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Platform software"
+              },
+              "authentication": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Authentication"
+              },
+              "separateTomcat": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "no",
+                  null
+                ],
+                "description": "Separate Tomcat?"
+              },
+              "clustered": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "no",
+                  null
+                ],
+                "description": "Clustered environment?"
+              },
+              "externallyFacing": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "no",
+                  null
+                ],
+                "description": "Server accessed externally?"
+              },
+              "httpsConfigured": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "no",
+                  null
+                ],
+                "description": "HTTPS configured?"
+              },
+              "separateWebServer": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "no",
+                  null
+                ],
+                "description": "Separate web server? \u2014 only asked when separateTomcat is yes; when not asked, exported as 'no' (implied, not unknown)"
+              },
+              "webServerName": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Web server name \u2014 only asked when separateWebServer is yes"
+              },
+              "inputFileRepositoryGb": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Input file repository size \u2014 gigabytes"
+              },
+              "outputFileRepositoryGb": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Output file repository size \u2014 gigabytes"
+              },
+              "cmsDatabaseSoftware": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "CMS / audit database software"
+              },
+              "auditingEnabled": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "no",
+                  null
+                ],
+                "description": "Auditing currently enabled?"
+              },
+              "universeCountMode": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "separate",
+                  "combined",
+                  null
+                ],
+                "description": "How are you counting universes?"
+              },
+              "unvCount": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Number of UNV universes \u2014 only asked when universeCountMode is separate"
+              },
+              "unxCount": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Number of UNX universes \u2014 only asked when universeCountMode is separate"
+              },
+              "combinedUniverseCount": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Combined universe total \u2014 only asked when universeCountMode is combined"
+              },
+              "crystalDocuments": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Crystal documents"
+              },
+              "webiDocuments": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Web Intelligence documents \u2014 absent unless installationType is businessobjects"
+              },
+              "publications": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Publications and program objects"
+              },
+              "pendingInstances": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Pending instances"
+              },
+              "successfulInstances": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "description": "Successful instances"
+              },
+              "destinationChangesRequired": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "no",
+                  null
+                ],
+                "description": "Are changes to the scheduled destinations required?"
+              },
+              "destinationChangesNarrative": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "What needs to change? \u2014 only asked when destinationChangesRequired is yes"
+              },
+              "successfulInstancesRequired": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "yes",
+                  "some",
+                  "no",
+                  null
+                ],
+                "description": "Are all successful instances of the reports required?"
+              },
+              "successfulInstancesNarrative": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Which instances are required? \u2014 only asked when successfulInstancesRequired is some"
+              }
+            }
+          }
+        }
+      }
+    },
+    "completeness": {
+      "type": "object",
+      "required": [
+        "required",
+        "answered",
+        "isComplete"
+      ],
+      "additionalProperties": false,
+      "description": "Counts applicable, non-optional fields. isComplete false means the assessment has gaps \u2014 treat any quote built from it as provisional.",
+      "properties": {
+        "required": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "answered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "isComplete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "advisories": {
+      "type": "array",
+      "description": "Prompts raised by the answers \u2014 things to say out loud before quoting. Not calculations.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Environment label, or absent for client-level."
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

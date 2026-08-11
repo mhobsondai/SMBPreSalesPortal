@@ -722,3 +722,1062 @@ original page for page. Worth doing again after any change here: the XML tests
 catch a fill or a width changing, but only looking at it catches a heading
 band coming out the wrong colour because a style was trusted over the
 document.
+
+## AD-14 — SAP Quote Generator, rebuilt from the standalone prototype
+
+**Date:** 5 August 2026. Fourth tool.
+
+**Decision.** `bobj_generator.html` — a self-contained browser app Mike had
+already built and used — is rebuilt in the portal's pattern:
+`config/sapQuoteGeneratorModel.ts` for the data, `lib/quoting/` for the
+arithmetic and both document writers, `pages/tools/SapQuoteGenerator.tsx` for
+the page. Its behaviour is reproduced rather than redesigned.
+
+Populating it from the install assessment's JSON export is a **later pass**,
+and so is the Claude API. Neither is wired here.
+
+### The prototype is the pricing authority, and the LabMat skill is not
+
+There are two implementations of SAP BIA pricing in reach: this prototype, and
+`labmat_engine.py` in the `sap-bia-labmat` skill. They are not the same model,
+and the difference is not cosmetic.
+
+| | `labmat_engine.py` | `bobj_generator.html` |
+|---|---|---|
+| Hours | derived from assessment inputs (migration bands, auth, environments) | typed by the consultant |
+| Route | forced by the OS rule | a manual toggle |
+| Phases | Design · Build · UA-Testing · Transition | plus System Testing · Training · Transition-Operations · Universe Development |
+| Contingency | 20% per phase always | 20% Fixed, **0% Target** |
+| PM tier basis | contingency-**inclusive** cost | contingency-**exclusive** value |
+| PM thresholds | `<=` | `<` |
+| Gold | refuses to price, quote manually | priced at 25% |
+| PM codes | one per tier | `-TM` variants for Target |
+
+**Decision: the skill is out of scope for this tool and is not consulted.**
+Mike's instruction, and the right call — the engine solves a different problem
+(deriving effort from an assessment) from the one this tool solves (costing
+effort a consultant has estimated).
+
+**What that costs, stated plainly.** On the Broder Crystal Server install —
+one of the four reference LabMats the engine reproduces to the penny — the two
+disagree:
+
+```
+base delivery 29.25h  →  £4,680 ex-contingency  /  £5,616 inc-contingency
+engine:  tiers on £5,616 → Bronze L1 @ 12.5% → £6,318.00  ← the filed LabMat
+this tool: tiers on £4,680 → Bronze L2 @ 10%   → £6,177.60
+```
+
+**£140.40 low, and only for quotes whose base delivery cost falls between
+£4,167 and £5,000** (where adding contingency crosses a threshold the base
+figure does not). The same gap exists at the £10k and £50k boundaries.
+
+This is recorded rather than fixed because reproducing the prototype was the
+instruction, and because quotes have already been issued from it — changing
+the basis now would make this tool disagree with work already out. If it
+should be changed, it is a one-line change in
+`autoSelectedPmLevel()`'s caller plus a fixture regeneration, and it is a
+pricing decision, not a bug fix. **Open item.**
+
+### Two behaviours that look like bugs and are the prototype's
+
+Both are pinned by fixture and commented at the point of use, because both
+will look like mistakes to whoever reads the code next:
+
+1. **PM tiers off contingency-exclusive value.** `autoSelectPm()` was called
+   from `render()` with a total that excluded contingency rows, while the
+   figure on screen beside it included them.
+2. **Strictly-less-than thresholds.** A base value of exactly £5,000 is
+   `coord`, not `admin`.
+
+### Gold is priced, and warned about
+
+The prototype prices Gold at 25%. Kept — a tier that silently produces a
+number is worse than one that produces a number and says so, and the skill's
+"quote manually" behaviour is not available here. `warnings()` raises
+`pm-gold` above £50k so the figure is never issued without being seen.
+
+### What was merged, and what deliberately was not
+
+Instructed: merge the prototype's scope/dependency/assumption/exclusion text
+with the skill's `scoping_content_sap_bia.json`, prototype wins on conflict.
+
+The merge turned out near-empty, because both sets were derived from the same
+three CheckLists. Across 49 bullets there was **one** genuine difference — "by
+client" against "by the client" in an install assumption, where the
+prototype's wording stands per the instruction. Nothing else needed adding.
+
+What the skill did contribute is **universe conversion**, which the prototype
+had no concept of:
+
+- three new in-scope items in "Other Technical Services", off by default for
+  both routes, because conversion is a decision about the engagement and not
+  something either route implies
+- `CONVERSION_EXTRAS`, a route-specific assumption and exclusion offered as a
+  one-click insert on the Dependencies & Assumptions step
+
+The extras are **offered, not substituted**. The skill keeps whole parallel
+`*_conversion` lists; swapping one in would silently rewrite every bullet the
+moment a consultant ticked a conversion item. A visible, reversible insert is
+the safer shape, and `warnings()` raises `conversion-extras` when conversion
+is in scope and the clauses are missing.
+
+**PM deliverables were not merged.** Six of the skill's Silver entries and six
+of its Gold entries restate entries the prototype already has — "Change
+control management." against "Change control support.", "Detailed project plan
+and roadmap." against "Detailed project plan." plus "High-level project
+roadmap." — and one Gold entry ("Full project management to be quoted
+manually") is an artefact of the engine refusing to price Gold at all, which
+this tool does not do. Merging would have put visible duplication into a
+client-facing scope document. The prototype's lists stand alone. Reversing
+this is one array in `config/`.
+
+### Hours are keyed by product code, not by row position
+
+The prototype rebuilt a flat `rows` array on every product-type switch, which
+zeroed every hour already entered. Keying by code means BusinessObjects →
+Crystal Server → BusinessObjects leaves the original figures intact, and a
+catalogue reordering cannot move an hour from one product to another.
+
+No figure changes: hours recorded against codes outside the selected stack are
+in no total. Covered by test.
+
+### Templates are bundled, with an override
+
+`lib/quoting/templates/` holds `blank-bia-labmat.xlsx` and
+`blank-checklist.docx`, imported as Vite asset URLs and fetched on demand.
+**Replacing either file rebrands the corresponding output** — the same posture
+AD-13 takes for `install-assessment.styles.xml`.
+
+The prototype made the consultant pick both files off disk every run, which
+meant two consultants could produce differently-styled quotes from the same
+tool. The Review step keeps a per-session override for when house style
+changes before the repo catches up; it is marked clearly when active.
+
+### The LabMat is filled, not built
+
+The template carries no formulas, no conditional formatting, no data
+validation and no charts — 316 merged cells, forty cell styles, forty-five
+pre-styled rows. So writing values into it preserves the look exactly.
+
+Verified: after filling, all 316 merges survive and the currency format on the
+value column and the header total are intact. `exceljs` drops the same
+`customXml` parts `openpyxl` already drops, plus `docProps/custom.xml`, so
+there is no fidelity loss against the Python renderer's own output.
+
+Rows 9–80 are cleared before writing, so a shorter quote than the last one
+cannot leave a stale line behind that still foots into a printed total.
+
+### AD-13's "generated, not patched" is scoped, not general
+
+AD-13 rejected `docx`'s `patchDocument` for the install assessment because
+that document repeats whole tables per environment and conditionally omits
+rows. **That reasoning does not apply to the CheckList**, which is a fixed
+document with eleven single-paragraph placeholders — the shape patching suits.
+
+The CheckList writer nonetheless edits `word/document.xml` directly, for a
+different and narrower reason: each expanded bullet must inherit the template
+paragraph's own `w:pPr`, including its `w:numPr` list binding and indent
+level, so the bullets come out as the template's list style rather than a
+reconstruction of it. Cloning the properties out of the file is the most
+direct guarantee of that. Asserted by test — the expanded paragraphs are
+checked to carry the template's `numId` and run properties.
+
+Anyone reaching for `patchDocument` on a future fixed-layout document should
+read this rather than inheriting AD-13's conclusion wholesale.
+
+### Five defects fixed rather than reproduced
+
+Faithfulness stops at things that are simply wrong:
+
+| Defect | Fix |
+|---|---|
+| `In-place upgrade of the SAP Business Objects server software.` was hardcoded, so a **Crystal Server** upgrade quote claimed to upgrade BusinessObjects | `{product}` token, substituted from the selected stack |
+| A non-numeric PM rate override propagated `NaN` through every total, blanking the quote on one stray keystroke | falls back to the tier rate — the position AD-09 already took for the Fabric calculator |
+| `JSZip` stores uncompressed by default and the prototype took that default, turning a 33 kB template into a **298 kB** document | `compression: 'DEFLATE'` — output is now 30 kB |
+| Nothing stopped a quote costing both an in-place upgrade and an installation | `routeConflict()` reports it; a second warning catches products contradicting the selected project type |
+| `isTM`, `isRowVisible()` and `clearHiddenRows()` could never fire — `buildRows()` walked `primaryStacks` only, so no `-TM` product ever entered the row array, and PM was handled separately | dropped, and recorded here so it is not reinstated as a missing feature |
+
+The route guard **reports rather than blocks**. A tool that silently refuses a
+figure is worse than one that asks about it, and the consultant is sometimes
+quoting something genuinely unusual.
+
+### One defect only rendering could have found
+
+AD-13's instruction to render the output and look at it earned its place
+again. The generated CheckList priced 3.75 hours of Tomcat upgrade while its
+exclusions still read *"Configuring a separate Apache Tomcat installation."* —
+a quote that charges for work its own scope document rules out.
+
+Every XML assertion passed. Nothing in the arithmetic was wrong. It was
+visible only by reading the rendered page.
+
+`warnings()` now raises `tomcat-contradiction`. **Reported, not auto-removed**:
+deleting a line from an exclusions list on the tool's own initiative is
+exactly the sort of invisible edit that gets quoted back at you in a dispute.
+
+The skill has a rule for this case (`if tomcat: excl = [e for e in excl if
+"separate Apache Tomcat" not in e]`), which is where the check came from even
+though its pricing is not used.
+
+### Contact details, and where personal data sits
+
+The Overview table of the CheckList has Contact Name and Contact Email rows.
+The prototype hardwired both to empty strings, so every filed CheckList had
+two blank rows.
+
+**Decision: prefilled and editable.** Two fields on the Project Details step,
+written into the document. Once the assessment handoff lands they will be
+hydrated from `signOffName` / `signOffEmail` / `technicalContactName` /
+`technicalContactEmail` and the consultant will confirm them before
+generating.
+
+This is safe because **both documents are assembled in the browser**. Nothing
+here reaches a Codestone server, a log, or Application Insights, so the AD-08
+position holds unchanged and no retention decision is required. Note that the
+skill's `assessment.schema.json` says the opposite ("Leave blank — personal
+data entered manually at validation"); that comment predates a client-side
+generator and is stale.
+
+A server-side generator would have needed a retention decision and a word with
+Natasha Keskin (General Counsel) first. It was never necessary: the prototype
+already proved the browser can do this, with `exceljs` and `jszip`.
+
+### Persistence is deliberately not wired
+
+`STORAGE_KEY`, `serialise()` and `deserialise()` exist and are tested. **They
+are not called.** Whether a quote in progress should survive a refresh is an
+open question Mike has not yet answered, and `localStorage` holding a client
+name and two contact details is the AD-11 conversation, not a default.
+
+Today a refresh clears the quote, and the page says so. Turning it on is two
+calls plus the AD-11 mitigations — a notice naming what is stored, and a Clear
+control behind a confirmation. **Open item.**
+
+### The project brief step is omitted
+
+The prototype's seventh step generates the brief with Claude. The portal has
+no Claude API yet, so the step is not built and `<<project_brief>>` resolves
+to empty.
+
+**Consequence, confirmed by rendering:** the CheckList has a green
+"Introduction" heading band with nothing under it. The consultant writes it in
+Word. That is a visible gap in a document people file, and it is the strongest
+argument for doing the API next.
+
+`briefXml()` is built and tested, including multi-line handling, so wiring the
+step is a page change and an API call rather than a document change. The
+`Base example` folder alongside this repo (`PDD_Generator-main`) already has
+the plumbing — `api/shared/ai.py`, `api/prompts/house_style.md`,
+`api/shared/audit.py` — and is the pattern to copy rather than invent.
+
+### The fixture, and why it was regenerated in this commit
+
+`lib/quoting/__fixtures__/reference.json` pins eight scenarios. **Each stores
+its own inputs**, closing the AD-10 gap rather than repeating it — a test
+asserts they replay.
+
+Two kinds of evidence, deliberately, because the fixture alone would only be
+the code agreeing with itself:
+
+1. **An independent statement of the prototype's arithmetic** in the test
+   file, transcribed from `recalcContingency()`, `tots()` and
+   `autoSelectPm()` rather than from the port, run against every scenario.
+2. **Hand-computed anchors**, including the £3,696 upgrade and the £6,177.60
+   Crystal install that demonstrates the tier boundary.
+
+Plus catalogue-integrity tests. The contingency prefix convention —
+`<phase>-CONTINGENCY` minus its suffix must prefix every sibling in that phase
+and nothing outside it — is what makes contingency derivable at all, so a
+future product code that broke it would silently mis-cost a phase. Asserted
+across both stacks.
+
+**The fixture was regenerated in this commit**, and the reason is the Tomcat
+warning above: adding it changed `warningIds` and `summary` on the
+`BOBJ upgrade with a manual tier and rate override` scenario, which costs
+Tomcat hours. Diffed before and after to confirm **no `totals`, no
+`costedLines` and no `scope` value moved** — the change is a new warning, not a
+new price.
+
+### Dependencies, and a deployment consequence
+
+- **`exceljs` added** as a runtime dependency
+- **`jszip` moved** from `devDependencies` to `dependencies` — it was already
+  present, used by the install assessment's tests to unzip generated `.docx`,
+  and is now shipped code
+
+**`package.json` and `package-lock.json` have changed, so a `src`-only deploy
+will fail CI.** Both files have to go with this change.
+
+Bundle cost, measured rather than assumed:
+
+| | before | after |
+|---|---|---|
+| main JS | 288.66 kB | 333.27 kB |
+| main CSS | 33.27 kB | 40.00 kB |
+
+**+44 kB of JS**, which is the tool itself — a six-step page, the product
+catalogue and about fifty bullets of scope text. Both heavy writers and both
+templates code-split correctly: `exceljs` (938 kB), `jszip` (97 kB) and the two
+templates are separate chunks fetched only when someone clicks Generate.
+
+The 44 kB is honest new application code, not a library leaking in. Worth
+stating because AD-12's "the main bundle grew 2 kB, not 360" is about *keeping
+a dependency out*, and that test still passes here.
+
+### Tests
+
+299 now, up from 154. 145 are new: the pinned pricing scenarios, prototype
+parity, tier boundaries, contingency derivation and phase isolation, hours
+coercion, route validation, the scope and content libraries, formatting,
+filenames, the persistence guard, the LabMat row plan and generated workbook,
+and the CheckList XML.
+
+One test failed on first run and **the test was wrong**: re-zipping adds
+explicit directory entries (`word/`) the original does not have, so comparing
+raw archive entries pinned a JSZip implementation detail. It now compares
+document parts. That is the third time on this project that a disagreement
+between a test and the code was worth reading rather than silencing.
+
+## AD-15 — Pre-populating a quote from an assessment, and the portal's first AI call
+
+**Date:** 7 August 2026.
+
+**Decision.** The Quote Generator accepts a pasted install assessment export
+and pre-fills the client, contacts, route, effort and scope from it. A
+Functions endpoint reads the assessment's free-text technical fields with
+Claude. Nothing is applied without being shown first.
+
+### The skill comes back, for effort only
+
+AD-14 recorded that `labmat_engine.py` is not the pricing authority for this
+tool. That still holds, and this narrows rather than reverses it:
+
+```
+the skill proposes EFFORT   →   the Quote Generator prices it
+```
+
+`config/sapQuoteImportModel.ts` transcribes `resolve_route()`,
+`build_default_lines()` and `migration_band_hours()`: the OS hard rule,
+platform hours per environment, authentication configuration hours, Tomcat
+per instance, migration bands, and universe conversion.
+
+**PM tier selection, PM percentages, contingency and every total stay where
+AD-14 put them** and an import cannot touch them. So the £140.40 Broder
+divergence is unaffected — the two models still disagree about tiering, and
+this feature does not bring that disagreement back in.
+
+Four phases the skill has no opinion about — System Testing, Training,
+Universe Development, Transition – Operations — are **never seeded**, and a
+test asserts it. Their absence is a decision, not a gap in the mapping.
+
+### Nothing personal leaves the browser
+
+The assessment carries a client name, two contact names and two email
+addresses. The obvious implementation POSTs the lot and asks Claude to pull
+out what it needs. That would have handed this tool the data-protection
+footprint AD-08 exists to avoid, and required a retention decision and a
+conversation with Natasha Keskin (General Counsel) before it could ship.
+
+It was never necessary. Reading a Windows version does not need a client
+name. **The entire payload is three strings:**
+
+```json
+{
+  "operatingSystem":  "Windows Server 2016",
+  "authentication":   "Windows AD",
+  "platformSoftware": "SAP BusinessObjects BI 4.2 SP7"
+}
+```
+
+Verified end to end, and asserted by a test that takes each of the five
+personal fields out of the assessment fixture and checks none appears in the
+serialised payload.
+
+Everything else — client, contacts, counts, sizes — is parsed in the browser
+and goes straight into the form. **AD-08's position therefore holds
+unchanged, and no retention decision is required**, because there is nothing
+to retain.
+
+Three defences, not one:
+
+1. The payload is built from three named fields, so there is no path by
+   which anything else could be included.
+2. `containsPersonalData()` checks for an `@` before the request goes out and
+   aborts if it finds one.
+3. `validate_payload()` on the server **rejects** — does not clean — any
+   unknown key, any non-string, anything over 200 characters, and anything
+   containing an `@`. A cleaned payload would hide a bug in the caller. This
+   is the AD-02 defence-in-depth posture applied to data rather than authz.
+
+### Deterministic first, Claude second
+
+Most estates answer "Windows Server 2016" and "Windows AD", which needs no
+model. `interpretLocally()` handles those, and the API is called **only when
+something is still uncertain**.
+
+That is not an optimisation, it is the failure mode. If the key is unset, the
+service is down, or the request times out, the import proceeds on the local
+reading and says which fields it could not work out. An AI outage degrades
+the feature; it never blocks a quote.
+
+It also keeps the pricing reproducible in the ordinary case, which matters
+given CLAUDE.md's rule that two consultants must get the same answer.
+
+**The model is never trusted with the decision.** It returns a fact, a
+confidence and a one-line reason, all three shown to the consultant, and
+`null` is an explicitly permitted and encouraged answer. Forced tool use
+means the reply is a schema-shaped dict rather than prose to parse, and every
+field is re-validated against the permitted values on the way out — a schema
+is a request, not a guarantee.
+
+### Three things the interpreter deliberately refuses to guess
+
+| Input | Answer | Why |
+|---|---|---|
+| `Red Hat Enterprise Linux 8` | `null`, not `false` | The pre-2022 rule is about Windows Server editions. Answering `false` would quietly authorise an in-place upgrade on a platform the rule says nothing about. |
+| `LDAP` | `null`, not `Windows AD` | The assessment invites LDAP — its placeholder literally says so — but the effort model prices only Enterprise, Windows AD and SAML. Filing it under AD would price 7.5 hours on a guess. The consultant is told the mode is not in the model and asked to choose. **Open item:** if LDAP is common in practice, it needs a fourth configuration figure rather than a prompt. |
+| anything unreadable | `null` | An unread OS leaves the route unconfirmed and says so, rather than defaulting silently to upgrade and hiding it. |
+
+### Multi-environment estates — the question AD-14 left open
+
+The assessment is per production environment; the effort model takes one
+count. Decided:
+
+- **Production environments multiply** platform install and configuration
+  effort.
+- **Filestore sizes and content counts are summed**, and the migration is
+  banded **once** from those totals.
+- **Test and development environments are scoped, never costed.** They tick
+  `install_test` / `mig_test` / `install_dev` / `mig_dev` and raise a note.
+
+The third needs justifying, because AD-11 says test and development
+environments are "counted, never detailed" and that "only the count matters",
+which reads like an argument for folding them into the multiplier. They are
+excluded because the assessment records *nothing* that sizes them — they are
+rebuilt as a copy of the new production, so there is no filestore, no content
+count and no configuration to price from. Ticking the scope item and warning
+is honest. Multiplying would invent effort.
+
+**What the summing loses, stated plainly:** two 8 GB environments band as one
+16 GB migration — Large, 30 hours — rather than two Medium ones at 15 hours
+each. That under-prices two genuinely separate cutovers. Flagged as a note on
+every multi-environment import rather than modelled, because changing the
+band arithmetic is a pricing decision and not one to make inside an import
+feature. **Open item.**
+
+Heterogeneous operating systems across production environments are detected
+and warned about; the route is taken from the first.
+
+### The three export states, honoured
+
+AD-11 and AD-12 made absent, `null` and a value mean three different things.
+The importer reads all three:
+
+| State | Reading |
+|---|---|
+| key absent | Not applicable. A genuine zero — Crystal Server has no universes, so it contributes nothing and nothing is flagged. |
+| `null` | Applicable, not answered. Contributes nothing **and is named** in an "incomplete sizing" note. |
+| a value | Answered, or implied. |
+
+This is the difference between "this estate has no universes" and "nobody
+counted the universes", and it is why a partial assessment produces a quote
+marked provisional rather than a confidently wrong one. Tested directly
+against all four scenarios in the assessment's own fixture.
+
+### Preview, then apply
+
+Every change is offered individually — old value against new, with the
+derivation of each pre-filled hour ("30h — Large migration band, 160.5 GB
+filestore, 1,397 content items"). Rows that would overwrite something already
+typed are marked as conflicts. `planImport()` computes the diff and changes
+nothing; `applyImport()` is the only function that touches state.
+
+Project type is handled separately and first, because accepting it resets the
+scope, dependencies, assumptions and exclusions to that route's defaults —
+a change the diff cannot show, since it rewrites lists rather than fields. It
+gets its own confirmation, and refusing it leaves the route alone while
+everything else still applies.
+
+This matters most for the operating-system inference: pre-Windows Server 2022
+turns an in-place upgrade into a full install and migration, which is a
+different engagement at a different price. It is never allowed to happen
+silently.
+
+### The API
+
+`api/shared/ai.py` is adapted from the PDD Generator's module rather than
+written fresh — that pattern is in production, and a second way of getting
+retries and error mapping wrong helps nobody. `api/shared/interpretation.py`
+holds the prompt and schema. `function_app.py` stays routing only.
+
+- `POST /api/tools/sap-quote/interpret` — already gated by the existing
+  `/api/*` rule, so `staticwebapp.config.json` is unchanged.
+- `GET /api/health` now reports `ai_configured` and `ai_model`. Configuration
+  only, never the key.
+- 503 when unconfigured, 502 on failure, 400 on a payload that should not
+  have been sent. All three are non-fatal to the caller.
+- `anthropic==0.105.2` added to `api/requirements.txt`. Imported lazily, so
+  `/health` and `/me` work whether or not it is installed — verified.
+
+`ANTHROPIC_API_KEY` goes in SWA Application Settings and must never reach the
+frontend bundle. `CLAUDE_MODEL` defaults to a fast model: this is a small
+task that has to return inside the Static Web Apps gateway window.
+
+**This is the portal's first outbound call to anything.** Phase 3's GDPR line
+in the game plan is what made the three-string payload worth the extra work.
+
+### Three defects found while building
+
+1. **`W2K12R2` read as no version at all.** The pattern required a word
+   boundary after the year, and `12R2` has none. Two patterns now, and the
+   shorthand one does not require a trailing boundary. That abbreviation is
+   exactly what gets typed on a call.
+
+2. **A fixture that could not replay itself.** `MIGRATION_BANDS` uses
+   `Infinity` for the open-ended top band, which is the honest value —
+   and `JSON.stringify` turns it into `null`, so the pinned band never
+   equalled the computed one. Caught by the replay test, which is precisely
+   the AD-10 failure this project has already paid for once. The band's *id*
+   is pinned instead, and a test now asserts every fixture entry survives a
+   JSON round trip.
+
+3. **A test that was wrong about its own scenario.** It asserted a blank
+   assessment raises `auth-unknown`. It does not, and should not: an
+   undetermined route defaults to an in-place upgrade, which has no
+   configuration line to warn about. The install case is now covered
+   separately, by blanking the authentication field on a Crystal scenario.
+   Fourth time on this project that reading the disagreement beat silencing
+   it.
+
+### Tests
+
+402, up from 299. 103 are new and every one of them replays against
+`lib/assessments/__fixtures__/reference.json` — the real export, not
+hand-written JSON — so if `toExport()` moves, this fails here rather than in
+a client's quote.
+
+`lib/quoting/__fixtures__/import.json` pins interpretation, seed, derivations
+and resulting price for all four scenarios, and **stores its own inputs**.
+
+Structural guarantees asserted across every scenario: a seed never mixes
+routes, never emits a contingency code, never emits a code outside the chosen
+route, and never seeds the four unopinionated phases.
+
+The Python guard is verified separately: eight rejection cases, including a
+client name, a contact name and an email address.
+
+### Cost
+
+Main bundle 333.27 → 351.99 kB. `exceljs` and `jszip` still code-split.
+
+### Still open
+
+- **The project brief step is still not built**, so the CheckList's
+  Introduction is still an empty heading band. There is now a Claude API to
+  build it on, and `briefXml()` is already written and tested — this is the
+  cheapest remaining win.
+- Whether a quote in progress should survive a refresh. Code written and
+  tested, deliberately not called.
+- Whether PM should tier off contingency-inclusive cost (AD-14).
+- Whether LDAP needs a fourth configuration figure.
+- Whether a multi-environment estate should band its migration per
+  environment rather than once on the combined total.
+
+## AD-16 — LDAP is priced as Windows AD
+
+**Date:** 7 August 2026.
+
+**Decision.** The assessment importer maps an LDAP authentication answer to
+**Windows AD**, at the same 7.5 hours of configuration effort.
+
+AD-15 returned `null` for LDAP and asked the consultant to choose, on the
+grounds that the effort model prices three modes and LDAP is not one of them.
+That was over-cautious. Both are directory integrations against something the
+client already runs, and both take the same time to configure, so the
+equivalence is a commercial fact rather than a convenient assumption.
+Confirmed by Mike, 7 August 2026.
+
+### It says so rather than hiding it
+
+The interpretation reads *"LDAP — priced as Windows AD, which carries the same
+configuration effort"*, not *"Reads as Windows AD"*. The LDAP branch is tested
+**before** the generic Active Directory branch specifically so the reason stays
+specific: a silent mapping would bury a pricing decision inside a regular
+expression, where the next person to read the quote would have no way to know
+a substitution had happened.
+
+The server prompt carries the same instruction, so Claude behaves identically
+on the strings the deterministic parser cannot read.
+
+`AUTH_CONFIG_HOURS` gains no LDAP entry. There are still three priced modes;
+LDAP resolves to one of them.
+
+### Two defects found while measuring the upgrade route
+
+Neither is related to LDAP. Both were exposed by comparing the same estate on
+both routes, which is worth doing after any change to the seeding rules.
+
+1. **An in-place upgrade warned about a migration band it does not have.**
+   Filestore size and content count drive exactly one line — content
+   migration — which only exists on the install route. On an upgrade the
+   importer was still raising `incomplete-sizing` ("the migration band is
+   derived from figures the assessment does not have yet") about figures that
+   cannot affect the quote. It now raises `sizing-not-used` as *information*,
+   saying the figures are missing and that an upgrade has no content
+   migration. `multi-environment-band` is suppressed on upgrades for the same
+   reason.
+
+   Noise in a warnings panel is not harmless: it trains people to skip the
+   panel, and the panel is where the route conflict and the Tomcat
+   contradiction live.
+
+2. **`OpenLDAP` did not match the LDAP pattern.** `\bldap\b` needs a word
+   boundary the acronym does not have. The leading boundary is gone.
+
+### The import tests had no real upgrade coverage
+
+All four scenarios in the install assessment's fixture run a pre-2022
+operating system, so **every one of them forced the install route**. Half the
+tool was untested by the import suite.
+
+There is now a fifth scenario — the `businessobjects complete` estate moved to
+Windows Server 2022, changing nothing else — pinned in `import.json` alongside
+the others. Same estate, same content, different route, so the two can be
+compared line for line.
+
+What that comparison shows, pinned as a number so a change to either route's
+line list is visible:
+
+```
+Windows Server 2016 → install    10 lines   71.0h
+Windows Server 2022 → upgrade     8 lines   33.5h
+```
+
+An upgrade fills every line its route has, but only three inputs drive it:
+production environment count, Tomcat instances, and whether universes need
+converting. The filestore size, the content count and the authentication mode
+are all read and displayed, and none of them is priced — there is no migration
+line and no configuration line on that route.
+
+### Still open, and now measured
+
+The upgrade defaults were checked against the two Bromley reference LabMats.
+The **non-conversion** upgrade matches almost exactly; the only gap is
+Transition, 3.75h in the filed quote against a 1h default.
+
+The **conversion** upgrade does not match:
+
+| Line | Filed LabMat | Auto-fill |
+|---|---|---|
+| Pre-Installation Documentation | 2.0h | 1.0h |
+| Software Downloads | 2.0h | 1.0h |
+| UAT | 15.0h | 3.75h |
+| **Total** | **£9,288.00** | **£6,283.20** |
+
+**32% under.** The seeding rules add the 15h conversion line and leave
+everything else at the standard allowance, so nothing else responds to
+conversion being in scope — although testing converted universes is plainly
+more work than validating a version bump.
+
+`SKILL.md` names exactly these lines as the ones commonly adjusted:
+Pre-Installation Documentation, Software Downloads, UAT, Content Migration and
+Transition. The skill knows they get adjusted and does not adjust them.
+
+**Not changed here.** Scaling those three lines is a pricing decision that
+would move real quotes, and it is Mike's to make. The candidate change is a
+conversion profile seeding 2h / 2h / 15h when universe conversion is in scope,
+pinned against the Bromley Conversion LabMat — derived from a filed quote
+rather than invented. **Open item.**
+
+### Tests
+
+414, up from 402. Twelve new: the LDAP mapping across three spellings, the
+Windows AD rate it resolves to, and the upgrade-route scenario — route
+selection, the absence of migration and configuration lines, Tomcat and
+conversion still landing, the seeded-hours comparison against install, sizing
+figures read but not priced, and the absence of the two warnings that no
+longer apply.
+
+The fixture was regenerated in this commit, for the note changes. Diffed
+before and after: no `totals`, no `costedLines` and no `scope` value moved.
+
+### Still not verified — the AI path has never run
+
+Worth stating plainly next to a passing suite, because 414 green tests invite
+the wrong conclusion.
+
+`validate_payload()` is tested across eight rejection cases, and `ai.py` is
+confirmed to import cleanly without the `anthropic` SDK present. Beyond that:
+
+- `complete_structured()` has never executed. The SDK is not installed in the
+  build environment
+- `interpret()` — which normalises the model's reply, coerces confidence and
+  rejects an out-of-enum auth mode — has never seen a response to parse
+- the system prompt has never been near a model
+- the endpoint has never been called. The API is not deployed and
+  `ANTHROPIC_API_KEY` is not set
+
+And the reason none of that surfaced: in every test and every end-to-end run,
+the deterministic reader was confident on all three fields, so
+`needsInterpretation()` returned `false` and **the AI branch was never
+entered.** Not one of the 414 tests goes down it.
+
+`AssessmentImportPanel.tsx` has no tests at all either — `vitest.config.ts` is
+`environment: 'node'` with `include: ['src/**/*.test.ts']`, so no `.tsx` file
+is ever collected. The 503 branch, the failure messaging and the conflict
+display are all unexercised.
+
+**Treat the AI path as the least-proven code in this repo.** It is also, by
+design, the part a failure degrades rather than blocks (AD-15) — which is why
+the tool is usable today with no key set, and why this gap has not bitten.
+
+**Open item.** `interpret()` can be tested against stubbed responses with no
+key and no network: a missing field, a non-boolean where a boolean belongs, an
+auth mode outside the enum, and a reply carrying no `tool_use` block. That is
+the code most likely to fail in production. The panel needs a DOM environment
+and `@testing-library/react`, which is a new dev dependency and a bigger
+decision.
+
+## AD-17 — The quote plan comes from a skill, and three pricing corrections it exposed
+
+**Date:** 11 August 2026.
+
+**Decision.** The Quote Generator stops seeding itself from rules transcribed
+out of `labmat_engine.py` and asks a skill instead. `POST
+/api/tools/sap-quote/plan` sends the install assessment and receives a
+`sap-quote-plan` v1 document: route, effort lines with hours and derivations,
+scope ids, brief, dependencies, assumptions and exclusions. The app still does
+every piece of arithmetic that involves money.
+
+This supersedes the seeding half of AD-15. The rest of AD-15 stands — the
+preview/apply machinery, the three answer states, the multi-environment
+rules and the reasoning about what an import is allowed to touch.
+
+**Nothing has been removed yet.** The endpoint is not built, the round trip
+is not measured, and `config/sapQuoteImportModel.ts` is still what runs in
+production. This records the decisions taken; the code follows once the
+timing number exists.
+
+### Why replace seeding that works
+
+The transcribed rules could never touch System Testing, Training, Universe
+Development or Transition – Operations. AD-15 recorded their absence as
+deliberate, and it was — the engine has no opinion on them, so seeding them
+would have been invention.
+
+But the assessment does have opinions. It asks six training questions, counts
+universe modifiers, and records whether destination changes are required.
+None of that reached the quote, because the seeding rules were a transcription
+of an engine that predates the assessment.
+
+A skill reading the whole export can use all of it. That is the gain, and it
+is the only gain — the deterministic lines come out identical, which the
+parity test below proves case by case.
+
+### The skill is new, and the old one is untouched
+
+`sap-bia-quote-plan`, derived from `sap-bia-labmat`. The original still
+renders LabMat .xlsx and CheckList .docx for standalone quotes and is
+unchanged.
+
+The new one carries no templates, no `openpyxl` and no `python-docx` — 52 KB
+packaged, Python standard library only. That matters: the SWA gateway is
+about 45 seconds and an agentic code-execution loop has to fit inside it.
+Not rendering documents is most of how it might.
+
+Three scripts, and the second is not optional:
+
+- `plan_engine.py` — assessment in, plan out. Deterministic.
+- `validate_plan.py` — the contract, enforced before the plan is returned.
+  Rejection cases verified: unknown code, contingency code, PM code, mixed
+  route, unknown scope id, totals present, missing derivation, zero hours, a
+  substituted client name, an `@` anywhere, a mismatched product stack, a
+  money value on a line.
+- `verify_parity.py` — pins the arithmetic across six cases.
+
+### Two additions to the contract, and why they exist
+
+The contract as specified carries `code`, `hours`, `activity` and
+`derivation` per line. Mike's decision was that **the model may adjust any
+line**, including the engine's own. That buys capability and spends
+reproducibility, and CLAUDE.md requires that two consultants get the same
+answer.
+
+So every line also carries:
+
+- `source` — `"engine"` (produced by a rule, reproducible) or `"model"`
+  (judgement, not reproducible)
+- `engineHours` — required when `source` is `"model"`. The engine's own
+  figure, or `null` if it proposed no such line
+
+The preview should render the two differently. A consultant needs to see at a
+glance which numbers came from a rule and which from a model, and what moved.
+Without this, "the model may adjust any line" means an unmarked number in a
+list of marked ones, which is worse than either extreme.
+
+**One carve-out:** the model must never propose the universe-conversion line.
+`SKILL.md` says so explicitly, because otherwise the permission above would
+let it put back exactly what the decision below takes out.
+
+### Three pricing decisions
+
+All three move real quotes. All three were regenerated in this change, diffed
+before and after.
+
+#### Training is priced, as one line
+
+Codestone rarely delivers training and almost never a full package, so
+training is a single `-TRAINING` line rather than one per course. The engine
+totals it and writes a derivation itemising what is in the number.
+
+| Assessment question | Hours | Scope |
+|---|---|---|
+| `trainingBiLaunchpad` — BI Launchpad guide | 1 | custom scope |
+| `trainingCms` — CMS training, 1 day | 7.5 | custom scope |
+| `trainingWebi` — Web Intelligence, 1 day | 7.5 | `webi_s` |
+| `trainingInformationDesignTool` — IDT, 1 day | 7.5 | `idt_s` |
+| `trainingCrystalReports` — Crystal Reports, **3 days** | 22.5 | custom scope |
+| `trainingUniverseConversion` — repointing guide | **0** | custom scope + `warn` |
+
+Maximum 46 hours. Every "yes" is named individually in the scope section even
+though they share one line. The universe conversion and report repointing
+guide adds no delivery hours — it is a pre-sales action, and the plan raises a
+warning so it is picked up before the quote goes out rather than delivered
+for nothing.
+
+Only two of the six have ids in `SCOPE_CATEGORIES`; the rest arrive as
+`customScope.training` free text. **Open item:** adding `cms_s`, `crystal_3`
+and the two guides would make the whole training path structured. The app
+already distinguishes `pbi_1` from `pbi_3`, so a three-day Crystal course
+fits the naming that exists.
+
+#### Universe conversion is asked, never assumed
+
+The old rule inferred conversion from a universe count. Probing every path
+found it wrong in both directions:
+
+- **`universeCountMode: "combined"` priced 15 hours with no count check at
+  all.** An estate reporting zero universes still got a conversion line,
+  because the `combined` branch tested only the mode.
+- **`"separate"` with a null `unvCount` priced zero and said the gap did not
+  matter.** The `sizing-not-used` note AD-16 introduced reads "an in-place
+  upgrade has no content migration, so they do not affect this quote". On an
+  upgrade that was false: the UNV count was the only thing deciding the
+  conversion line. A silent zero plus an explicit reassurance is the exact
+  "not counted versus none" collapse AD-15 warns about, landing in the one
+  place AD-16 did not anticipate.
+
+**Both defects are in `sapQuoteImport.ts` today** and will keep mis-seeding
+quotes until the local seeding retires.
+
+The plan now seeds no conversion line, ticks no `conv_universe`,
+`conv_repoint` or `conv_config`, and sends the **standard** intro,
+assumptions and exclusions rather than the conversion variants. An unpriced
+scope tick is a commitment to work for free, and a CheckList promising
+conversion the LabMat does not carry is worse than one that stays quiet.
+
+Instead every BusinessObjects estate gets a `confirm-universe-conversion`
+warning, worded from what was actually recorded — UNV count, combined total,
+or not counted at all — and then says the same thing in each case: 2025
+requires the conversion, whether this engagement delivers it is commercial,
+and if it does, add `DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS` at typically 15 hours,
+tick the three scope items, and change the wording. Crystal Server has no
+universes and raises nothing.
+
+Withdrawing the line also resolved the second defect by removing it: on an
+upgrade the universe counts now genuinely affect nothing priced, so
+`sizing-not-used` became true.
+
+#### The migration band uses the input filestore, not the total
+
+A real assessment reported **2.82 GB input file repository against 183 GB
+output** — 98.5% of the filestore was scheduled instance history, and the
+client had said only *some* of it was required. The assessment's own advisory
+already recommends cleaning it up before migration.
+
+Banding on the combined figure forced Large, 30 hours, on an estate that
+plainly wanted one day for the initial migration and one for go-live. And it
+was not a one-off: **any estate with years of scheduling history lands Large
+regardless of how little content it holds.** The boundary makes it worse —
+15.0 GB is Medium, 15.1 GB is Large, and the line doubles.
+
+The input file repository is the content: reports, universes, the things that
+migrate and get validated. The output repository is history, moved in bulk
+after a clean-up the assessment already recommends.
+
+So the band takes `inputFileRepositoryGb` plus the content count. On that
+assessment it comes out Medium, 15 hours, which is the answer a consultant
+gives unprompted.
+
+The exclusion is disclosed rather than silent:
+
+| Condition | Warning |
+|---|---|
+| Output history would have raised the band, and `successfulInstancesRequired` is `some`, `no` or unrecorded | `output-filestore-excluded`, info. States both bands and says revisit the hours if the history migrates wholesale |
+| Output history would have raised the band, and the client requires **all** instances | `output-filestore-all-required`, **warn**. Nothing gets pruned, the full volume moves, consider the higher band |
+| Output filestore not recorded | `output-filestore-not-recorded`, info. Does not affect the hours |
+
+No warning when the two bands agree — there is nothing to disclose.
+
+The change is targeted rather than a blanket reduction. Both BusinessObjects
+fixtures carry a 42.5 GB *input* filestore and stay Large; genuinely large
+estates are untouched.
+
+### What the three decisions do to a quote
+
+Base delivery hours, the app's current local seeding against this plan:
+
+| Case | App seeding | AD-17 | Delta |
+|---|---|---|---|
+| blank | 14.75 | 14.75 | — |
+| businessobjects complete | 71.0 | 79.5 | +8.5 |
+| crystal server | 33.5 | 49.5 | +16.0 |
+| two environments partial | 86.0 | 94.5 | +8.5 |
+| businessobjects on WS2022 | 33.5 | 42.0 | +8.5 |
+| output heavy estate | 63.5 | 33.5 | **−30.0** |
+
+The +8.5 pattern is training added (+23.5) and conversion withdrawn (−15) on
+the same estate. Crystal is +23.5 training against −7.5 band. The output-heavy
+estate loses 30 hours because both the conversion inference and the total-FRS
+band were wrong on it at once — which is why it is now a pinned case.
+
+Route and scope have not moved on any pre-existing case.
+
+### How the arithmetic stays pinned
+
+Section 4 of the handoff asked how to hold this steady when the extraction
+cannot be. `verify_parity.py` is the answer: six fixed assessment exports in,
+fixed engine lines out, asserting route, lines, base hours, scope and `env`.
+
+It runs against the portal's own fixtures rather than a synthetic `env`, so
+the reading and the arithmetic are pinned in the same pass. Model-sourced
+lines are excluded, because they are not reproducible by construction — that
+is what `source` is for.
+
+`--write` regenerates the expectations and prints a reminder that doing so is
+a pricing change. All three decisions above went through it and were diffed.
+
+The sixth case, `output_heavy_estate`, is the assessment that exposed the band
+problem, scrubbed of client name, contacts, hostname and free-text detail. The
+original five had no example of a small input filestore against a huge output
+one, which is why this went unnoticed for so long.
+
+### The handoff: a Build quote button, and no screen between
+
+The assessment gains **Build quote** alongside Download JSON. It navigates to
+the quote page with the export in router state — in memory, never over the
+network — and the quote page mounts with its import panel already open and
+waiting on the endpoint.
+
+**A third screen was considered and rejected.** It does not remove a code
+path: it would receive the plan and hand it to the quote page, so the quote
+page needs the "arrived with a plan" path either way. The unique content of
+the middle screen is a spinner, and a spinner does not need a URL.
+
+The stronger argument is refresh. Router state is in memory, so a refresh on a
+dedicated waiting route has nothing to render and no coherent fallback. A
+refresh on the quote page leaves the consultant on a normal blank quote —
+degraded but sensible, which is the same posture AD-15 set for an AI outage.
+
+It also keeps the tool pattern intact: `pages/tools/<slug>`, one page per
+tool, each referenced from a Tile in `config/navigation.ts`. A screen that is
+not a tool has no home in that tree.
+
+Download JSON stays. It is the path for someone returning to an assessment a
+week later, and the fallback when the endpoint is down.
+
+### GDPR — AD-08's position survives, if the payload is built rather than cleaned
+
+AD-15 could say "nothing personal leaves the browser" because the payload was
+three strings. This sends the assessment, which changes the question.
+
+Mike's decision on 11 August was that **the skill does not need the client
+name or the contacts.** It reads neither: `derive_env()` never touches
+`client.client`, `technicalContactName`, `technicalContactEmail`,
+`signOffName` or `signOffEmail`, and `validate_plan.py` fails on a single `@`
+anywhere in the output. `intro` returns with `{client}` unsubstituted for the
+app to fill, exactly as `fillProduct()` handles `{product}`.
+
+Demonstrated rather than asserted: every bundled parity assessment has the
+personal fields nulled, and the engine output is byte-identical to the run
+against the originals.
+
+**But retention applies to what is sent, not to what is used.** The strip has
+to happen in the browser, before the POST.
+
+**Build the payload from an allowlist, do not clean a denylist.** Nulling five
+named fields is not enough. `futureDirection` and `adjacentWork` are free text
+and in the assessment that prompted this carried a colleague's name and a
+direct quote about her; `serverName` carried a live hostname. Around nineteen
+fields in the export are never read by the engine at all — the five personal
+ones, all four free-text narratives, `serverName`, `webServerName`,
+`cmsDatabaseSoftware`, `consumers`, `reportModifiers` and the rest. An
+allowlist drops them by construction, which is AD-15's "no path by which
+anything else could be included" applied at the right scale.
+
+Do that, and **AD-08's position holds unchanged and no retention decision is
+required**, because there is still nothing client-identifiable to retain.
+
+Two controls regardless:
+
+1. **The endpoint logs no payload.** Caller and outcome only. Nothing into
+   Application Insights carrying a name or an address.
+2. **The import panel states the position**, as AD-08's pattern requires — the
+   claim is visible and therefore has to stay true.
+
+`validate_payload()` inverts. Rejecting any payload containing an `@` was
+right when the payload was three strings; it becomes a schema check on the
+assessment shape plus a size cap.
+
+**Separately, and not created by this change:** the install assessment already
+persists to `localStorage` via `serialise()`, including the client name and
+both contacts. That data is at rest on the consultant's machine today, which
+is a different position from AD-08's "closing the tab discards it". It is
+already on the game plan as a question for Natasha Keskin and this change does
+not alter it — but it does mean the tempting shortcut of having the quote page
+read the assessment out of the other tool's storage key should be avoided.
+Router state is explicit about what was handed over; a shared storage key
+means the quote page silently picks up whatever assessment happens to be
+saved.
+
+### What this rejects
+
+**Engine-only JSON.** A skill that just runs the engine and returns its output
+produces exactly what `sapQuoteImportModel.ts` already produces locally, at
+the cost of a network round trip, a data-protection question and a 45-second
+gateway risk. The whole justification is the four phases the engine cannot
+reach.
+
+**A conversion profile baked in now.** AD-16 left 2h / 2h / 15h as a candidate
+for Pre-Installation Documentation, Software Downloads and UAT when conversion
+is in scope, pinned against the Bromley Conversion LabMat. `SKILL.md` names it
+as a case to check rather than a rule to apply. The 15h conversion line itself
+is now moot — it is no longer seeded — but Pre-Installation Documentation and
+UAT still run light when conversion is in play. **Open item, unchanged.**
+
+**Scaling conversion by universe count.** Three universes and three hundred
+carried the same 15h, and `universeModifiers` was read but never used. Not
+addressed here, because the line is no longer seeded at all.
+
+### Still open
+
+- **The round trip has not been measured.** No `ANTHROPIC_API_KEY` and no
+  uploaded `skill_id`, so the 45-second question is untested. If it does not
+  fit, submit-and-poll is a bigger change than everything above put together.
+  Nothing downstream should be designed before that number exists.
+- **The endpoint is not built** and the local seeding is not removed.
+  `sapQuoteImport.test.ts:694` asserts the four phases are never seeded and
+  `NEVER_SEEDED_NOTE` says so on screen; both invert when this ships.
+- **The two conversion defects and the total-FRS band are live in the app.**
+  If this work slips, they are worth fixing in place: a `> 0` check on the
+  `combined` branch, universe gaps out of the `sizing-not-used` bucket, and
+  banding on the input filestore.
+- Whether `scope` should carry the route defaults or only the ticks beyond
+  them. The plan sends the full list, matching the contract's own example.
+  Needs confirming against `applyImport()`.
+- `SCOPE_CATEGORIES` has no ids for CMS training, three-day Crystal Reports
+  training or either guide.
+- The AI path remains the least-proven code in the repo (AD-16). This change
+  makes it load-bearing rather than a fallback for three uncertain fields,
+  which raises the cost of it being wrong.

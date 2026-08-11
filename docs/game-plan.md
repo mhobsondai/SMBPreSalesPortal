@@ -9,11 +9,12 @@ authenticated users, API enforcing the tenant policy independently.
 Anonymous visitors are redirected to the Microsoft login without
 receiving the JS bundle. Both AD-07 follow-ups closed.
 
-**Phase 2 in progress.** Three tools shipped:
+**Phase 2 in progress.** Four tools shipped:
 
 - Assessment Scoring Engine (Assessments) — client-side only, AD-08
 - Fabric Data Calculator (Fabric Platform) — AD-09
 - SAP Pre-Sales Install Assessment (SAP BI Platform) — AD-11
+- SAP Quote Generator (SAP BI Platform) — AD-14, AD-15, AD-16, AD-17
 
 The first two were converted from standalone HTML prototypes with their
 arithmetic pinned against reference fixtures. The third had no prototype:
@@ -21,14 +22,46 @@ it is built from `Blank Install Assessment.docx`, captures rather than
 calculates, and pins its field-visibility rules and export contract
 instead.
 
-`styles/tool.css` now also holds the vertical tab rail, the form/guidance
-split and the shared form vocabulary. A test runner arrived with the third
-tool — `npm test`, 111 tests, AD-10.
+The fourth is a rebuild of `bobj_generator.html`, a standalone browser app
+already in use. Its arithmetic is reproduced deliberately, pinned against both
+a fixture and an independent transcription of the prototype's formulas. The
+`sap-bia-labmat` skill was **not** used: it solves a different problem and
+disagrees on PM tiering. AD-14 has the detail and the £140.40 consequence.
 
-**Next: the SAP Quote Generator.** It is the best-placed of the two because
-its input contract already exists — the install assessment emits versioned
-JSON — and the domain rules are already encoded in the SAP BIA LabMat
-skill.
+`styles/tool.css` now also holds the vertical tab rail, the form/guidance
+split and the shared form vocabulary — the Quote Generator reused all of it
+and added nothing, which is the first time the shared layer has covered a new
+tool outright.
+
+The Quote Generator also imports the install assessment's JSON export and
+pre-fills itself from it, which brought **the portal's first AI call** with
+it — `POST /api/tools/sap-quote/interpret`, reading the free-text operating
+system and authentication fields. Only three technical strings are sent; the
+client name and contact details never leave the browser, so AD-08 stands
+unchanged. See AD-15.
+
+**That local seeding is being replaced — AD-17.** A new skill,
+`sap-bia-quote-plan`, reads the whole assessment and returns a
+`sap-quote-plan` v1 document over `POST /api/tools/sap-quote/plan`; the app
+keeps every calculation involving money. The gain is the four phases the
+transcribed rules could never reach, Training first among them. The skill is
+built, validated and pinned across six parity cases. **The endpoint is not,
+and the round trip against the ~45s gateway is not yet measured** — that
+number gates the design, so nothing downstream should start before it.
+
+Building it also exposed three pricing corrections, all recorded in AD-17:
+training is now priced as one line, universe conversion is asked rather than
+inferred, and the migration band takes the **input** file repository instead
+of the total. The last two are live defects in `sapQuoteImport.ts` today.
+
+`npm test` is now 414 tests. `exceljs` was added and `jszip` promoted to a
+runtime dependency, and `anthropic` added to `api/requirements.txt` — so
+**`package.json`, `package-lock.json` and `api/requirements.txt` must ship
+with that change** or CI fails.
+
+**`ANTHROPIC_API_KEY` must be set in SWA Application Settings** before the
+import can use AI. Without it the import still works, on the deterministic
+reading alone; `/api/health` reports `ai_configured`.
 
 The install assessment has had its first review pass — AD-12, schema v2.
 Word export delivered (client-side, dynamically imported), five model
@@ -40,6 +73,18 @@ Open items:
 
 | Item | Effort |
 |---|---|
+| **Measure the plan round trip against the ~45s SWA gateway.** Blocked on `ANTHROPIC_API_KEY` and an uploaded `skill_id`. If it does not fit, submit-and-poll is a bigger change than the rest of AD-17 combined — do not discover this at the end | 1 h once unblocked |
+| **Build `POST /api/tools/sap-quote/plan`** — `config/sapQuotePlanModel.ts` with the contract and validators, a second function in `ai.py` (leave `complete_structured()` alone), graceful degradation. AD-17 | ~1 day, after the timing number |
+| **Strip personal data before the POST — build the payload from an allowlist, not a denylist.** ~19 export fields are never read by the skill, including all four free-text narratives and `serverName`. Do this and AD-08's position holds with no retention decision. AD-17 | ~1 h |
+| **Build quote button** on the install assessment, navigating to the quote page with the export in router state. No screen between the two — AD-17 explains why | ~2 h |
+| **Project Brief step** — still missing, so every CheckList has an empty Introduction. The Claude API and `briefXml()` both exist now, so this is a page change and one prompt | ~2–3 h |
+| Set `ANTHROPIC_API_KEY` in SWA Application Settings, and check `/api/health` reports `ai_configured: true` | 10 min |
+| **Fix the two conversion defects and the band in `sapQuoteImport.ts`** if AD-17 slips — they mis-seed live quotes today. A `> 0` check on the `combined` branch, universe gaps out of `sizing-not-used`, band on input FRS | ~1 h |
+| Add `SCOPE_CATEGORIES` ids for CMS training, 3-day Crystal Reports training and the two guides, so training stops arriving as custom scope. `pbi_1`/`pbi_3` already set the naming | 30 min |
+| **Decide the conversion profile** — Pre-Installation Documentation and UAT still run light when conversion is in scope (Bromley Conversion: 2h / 2h / 15h against 1h / 1h / 3.75h). The 15h conversion line itself is moot under AD-17, since it is no longer seeded. AD-16 has the numbers | 15 min to decide, 30 min to build |
+| Decide whether a multi-environment estate should band its migration per environment rather than once on the combined total (AD-15) | 15 min to decide |
+| Decide whether a quote in progress should survive a refresh. Code is written and tested but deliberately not called — see AD-14 | 15 min to decide |
+| Decide whether PM should tier off contingency-inclusive cost, which would align with the reference LabMats and move some quotes up by ~£140 | 15 min to decide |
 | Guidance copy and screenshots — 16 declared slots, see below | ~1–2 h |
 | Confirm with Natasha Keskin whether contact details in `localStorage` on a synced browser profile needs anything recorded | 15 min |
 | Go-live cannot express "Saturday overnight" — revisit only if it comes up | — |
@@ -210,6 +255,39 @@ saved estimates, run history, audit trail. Not before.
 | Oryx/glibc breakage recurs on dependency bumps | Build fails | Frontend is built on the Actions runner — insulated. Don't revert to Oryx builds |
 
 ## Immediate next action
+
+**Set `ANTHROPIC_API_KEY`, upload the `sap-bia-quote-plan` skill, and measure
+the plan round trip against the ~45s gateway.** Everything in AD-17 waits on
+that number.
+
+The key goes in SWA Application Settings — never the frontend bundle — and
+`/api/health` will report `ai_configured: true` once it is there. Until then
+the import works on its deterministic reading alone, so nothing is blocked.
+
+The measurement is not a formality. An agentic code-execution loop on Opus 5
+may not fit inside the gateway window. Not rendering documents helps a great
+deal — the skill is 52 KB of standard library with no `openpyxl` and no
+`python-docx` — but if it still does not fit, the answer is submit-and-poll,
+which is a bigger change than the rest of AD-17 put together. Find out first.
+
+Then build the endpoint, then the Project Brief step.
+
+The brief is the last visible gap: the CheckList's Introduction is a green
+heading band with nothing under it. `briefXml()` is built and tested, and
+`api/shared/ai.py` is in place, so it is a page change plus one prompt.
+
+**One thing to decide before writing that prompt.** Unlike the import, a
+brief prompt genuinely needs the client name and the scope list — three
+technical strings will not write it. That is a wider payload than anything
+the portal sends today, so Phase 3's GDPR line applies: decide what is
+logged and retained *before* it ships, and talk to Natasha Keskin (General
+Counsel) if any prompt or completion is going to be stored. AD-15's
+three-string payload was cheap precisely because it avoided this; the brief
+will not get the same free pass.
+
+---
+
+## Also outstanding
 
 Supply the guidance copy and screenshots for the install assessment. Every
 slot is declared and renders a labelled placeholder at its intended size —
