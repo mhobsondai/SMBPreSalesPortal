@@ -62,9 +62,35 @@ interface AssessmentScenario {
   export: AssessmentExport;
 }
 
-const SCENARIOS = (
+const RAW_SCENARIOS = (
   JSON.parse(readFileSync(ASSESSMENT_FIXTURE, 'utf8')) as AssessmentScenario[]
 ).map((s) => ({ name: s.name, export: s.export }));
+
+/*
+ * Every scenario the install assessment fixture ships runs a pre-2022
+ * operating system, so all four force the install route. Without this
+ * derived case the import tests would never exercise an in-place upgrade
+ * at all — which is half the tool.
+ *
+ * Built by moving one assessment to Windows Server 2022 and changing
+ * nothing else, so the two can be compared line for line: same estate,
+ * same content, different route.
+ */
+const UPGRADE_SCENARIO: AssessmentScenario = (() => {
+  const base = RAW_SCENARIOS.find((s) => s.name === 'businessobjects complete')!.export;
+  return {
+    name: 'businessobjects on Windows Server 2022',
+    export: {
+      ...base,
+      environments: base.environments.map((e) => ({
+        ...e,
+        answers: { ...e.answers, operatingSystem: 'Windows Server 2022' }
+      }))
+    }
+  };
+})();
+
+const SCENARIOS = [...RAW_SCENARIOS, UPGRADE_SCENARIO];
 
 function scenario(name: string): AssessmentExport {
   const found = SCENARIOS.find((s) => s.name === name);
@@ -251,17 +277,24 @@ describe('local interpretation', () => {
     expect(result.authentication.auth).toBe('SAML');
   });
 
-  it('refuses to file LDAP under a mode the model does not have', () => {
-    // The assessment invites "LDAP" but the effort model prices only three
-    // modes. Guessing Windows AD would price 7.5h on nothing. See AD-15.
-    const result = interpretLocally({
-      operatingSystem: '',
-      authentication: 'LDAP',
-      platformSoftware: ''
-    });
-    expect(result.authentication.auth).toBeNull();
-    expect(result.authentication.reason).toContain('LDAP');
-    expect(needsInterpretation(result)).toBe(true);
+  it('prices LDAP as Windows AD, and says so', () => {
+    // Confirmed 7 August 2026: same directory integration, same 7.5 hours.
+    // The reason has to name the substitution — a silent mapping would hide
+    // a commercial decision inside a regex. See AD-16.
+    for (const raw of ['LDAP', 'LDAP over TLS', 'OpenLDAP directory']) {
+      const result = interpretLocally({
+        operatingSystem: '',
+        authentication: raw,
+        platformSoftware: ''
+      });
+      expect(result.authentication.auth, raw).toBe('Windows AD');
+      expect(result.authentication.reason, raw).toContain('LDAP');
+      expect(result.authentication.confidence, raw).toBe('high');
+    }
+  });
+
+  it('charges LDAP the Windows AD configuration rate', () => {
+    expect(AUTH_CONFIG_HOURS['Windows AD']).toBe(7.5);
   });
 
   it('reads a platform version or a release year', () => {
@@ -541,7 +574,7 @@ describe('unreadable authentication on the install route', () => {
       ...base,
       environments: base.environments.map((e) => ({
         ...e,
-        answers: { ...e.answers, authentication: 'LDAP over TLS' }
+        answers: { ...e.answers, authentication: 'via the usual broker' }
       }))
     };
   })();
@@ -557,10 +590,10 @@ describe('unreadable authentication on the install route', () => {
     expect(seed.hours['DI-BIA-SAP-CRY-BLD-MIGR-CONFIG']).toBeUndefined();
   });
 
-  it('says why, quoting the LDAP reason', () => {
+  it('says why', () => {
     const note = seed.notes.find((n) => n.id === 'auth-unknown');
     expect(note).toBeDefined();
-    expect(note!.text).toContain('LDAP');
+    expect(note!.text).toContain('Could not match');
   });
 
   it('still fills every other line', () => {
@@ -568,6 +601,60 @@ describe('unreadable authentication on the install route', () => {
       PLATFORM_HOURS_PER_ENVIRONMENT
     );
     expect(seed.hours['DI-BIA-SAP-CRY-BLD-MIGRATION']).toBeGreaterThan(0);
+  });
+});
+
+describe('seeding — an in-place upgrade', () => {
+  const seed = seedFor('businessobjects on Windows Server 2022');
+  const install = seedFor('businessobjects complete');
+
+  it('takes the upgrade route on Windows Server 2022', () => {
+    expect(seed.projectType).toBe('upgrade');
+    expect(seed.routeReason).toContain('supports an in-place upgrade');
+  });
+
+  it('fills every line the upgrade route has', () => {
+    const expected = ROUTE_LINES.upgrade.map((s) => `DI-BIA-SAP-BOBJ-${s}`);
+    // Every seeded code is an upgrade code, and nothing the route declares
+    // is left out on a complete assessment.
+    expect(Object.keys(seed.hours).sort()).toEqual(expected.sort());
+  });
+
+  it('emits no migration and no configuration line', () => {
+    expect(seed.hours['DI-BIA-SAP-BOBJ-BLD-MIGRATION']).toBeUndefined();
+    expect(seed.hours['DI-BIA-SAP-BOBJ-BLD-MIGR-CONFIG']).toBeUndefined();
+    expect(seed.migrationBand).toBeNull();
+  });
+
+  it('still upgrades Tomcat and still converts universes', () => {
+    expect(seed.hours['DI-BIA-SAP-BOBJ-BLD-UPGR-TOMCAT']).toBe(TOMCAT_HOURS_PER_INSTANCE);
+    expect(seed.hours['DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS']).toBe(UNIVERSE_CONVERSION_HOURS);
+  });
+
+  /*
+   * The point of the paired scenarios: the same estate seeds roughly half
+   * the effort on an upgrade, because the two largest install lines —
+   * migration and configuration — do not exist. Worth pinning so a change
+   * to either route's line list is visible as a number.
+   */
+  it('seeds materially less than the same estate would on install', () => {
+    const sum = (h: Record<string, number>) => Object.values(h).reduce((a, b) => a + b, 0);
+    expect(sum(seed.hours)).toBe(33.5);
+    expect(sum(install.hours)).toBe(71);
+  });
+
+  it('reads the sizing figures but does not price them', () => {
+    // The filestore and content totals are still computed — they are shown
+    // in the preview — but nothing on this route consumes them.
+    expect(seed.filestoreGb.total).toBeGreaterThan(0);
+    expect(seed.contentCount.total).toBeGreaterThan(0);
+    expect(Object.values(seed.derivations).join(' ')).not.toContain('migration band');
+  });
+
+  it('does not warn about migration banding it is not doing', () => {
+    const ids = seed.notes.map((n) => n.id);
+    expect(ids).not.toContain('incomplete-sizing');
+    expect(ids).not.toContain('multi-environment-band');
   });
 });
 

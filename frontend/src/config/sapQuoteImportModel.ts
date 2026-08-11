@@ -44,6 +44,12 @@ export type AuthMode = (typeof AUTH_MODES)[number];
  * Enterprise authentication is self-contained; AD and SAML both mean
  * integrating with something the client already runs, which is the same
  * order of work either way.
+ *
+ * **LDAP is priced as Windows AD** and has no entry of its own. The
+ * assessment invites LDAP as an answer, and it is the same directory
+ * integration for the same 7.5 hours — so the interpreter maps it rather
+ * than asking. It says so in its reason, so the substitution stays visible
+ * on screen. Confirmed 7 August 2026; see AD-16.
  */
 export const AUTH_CONFIG_HOURS: Record<AuthMode, number> = {
   Enterprise: 3.75,

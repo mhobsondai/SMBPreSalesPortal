@@ -333,6 +333,31 @@ function interpretAuth(raw: string): Interpretation['authentication'] {
   if (/\b(saml|adfs|federat)/i.test(lower)) {
     return { raw, auth: 'SAML', confidence: 'high', reason: 'Reads as SAML / federated sign-on.' };
   }
+  /*
+   * LDAP is priced as Windows AD.
+   *
+   * The assessment invites LDAP — its placeholder says "e.g. Enterprise,
+   * Windows AD, LDAP" — and the effort model has three modes, none of them
+   * LDAP. AD-15 originally returned null and asked the consultant to
+   * choose; that was over-cautious. Both are directory integrations against
+   * something the client already runs, and both take the same 7.5 hours to
+   * configure, so the equivalence is a real commercial fact rather than a
+   * convenient assumption. Confirmed 7 August 2026. See AD-16.
+   *
+   * Tested before the generic AD branch so the reason stays specific —
+   * "LDAP, priced as Windows AD" tells the consultant something; "Reads as
+   * Windows AD" would quietly hide the substitution.
+   */
+  // No leading \b: "OpenLDAP" has no word boundary before the acronym.
+  if (/ldap\b/i.test(lower)) {
+    return {
+      raw,
+      auth: 'Windows AD',
+      confidence: 'high',
+      reason:
+        'LDAP — priced as Windows AD, which carries the same configuration effort.'
+    };
+  }
   if (/\b(windows\s*ad|active\s*directory|kerberos|ntlm|\bad\b)/i.test(lower)) {
     return { raw, auth: 'Windows AD', confidence: 'high', reason: 'Reads as Windows AD.' };
   }
@@ -342,22 +367,6 @@ function interpretAuth(raw: string): Interpretation['authentication'] {
       auth: 'Enterprise',
       confidence: 'high',
       reason: 'Reads as Enterprise (platform-native) authentication.'
-    };
-  }
-  /*
-   * LDAP is a real answer the assessment invites — its placeholder says
-   * "e.g. Enterprise, Windows AD, LDAP" — but the effort model has only
-   * three modes and LDAP is not one of them. Rather than quietly filing it
-   * under Windows AD and pricing 7.5 hours on a guess, it is surfaced.
-   * See AD-15.
-   */
-  if (/\bldap\b/i.test(lower)) {
-    return {
-      raw,
-      auth: null,
-      confidence: 'low',
-      reason:
-        'LDAP is not one of the three modes the effort model prices. Pick the closest — Windows AD is usually right — and check the configuration hours.'
     };
   }
   return { raw, auth: null, confidence: 'unknown', reason: 'Could not match this to a known mode.' };
@@ -539,18 +548,35 @@ export function buildSeed(
     unknown: [...content.unknown, ...universes.flatMap((u) => u.unknown)]
   };
 
-  if (filestoreGb.unknown.length > 0 || contentCount.unknown.length > 0) {
+  /*
+   * Filestore size and content count drive exactly one thing: the migration
+   * band, which only exists on the install route. Warning that they are
+   * incomplete on an in-place upgrade would be pointing at a figure that
+   * does not affect the quote — noise that trains people to skip the notes.
+   *
+   * So on an upgrade the gap is reported as information rather than a
+   * warning, and it says why it does not matter.
+   */
+  const sizingGaps = [...filestoreGb.unknown, ...contentCount.unknown];
+  if (projectType === 'install' && sizingGaps.length > 0) {
     notes.push({
       id: 'incomplete-sizing',
       severity: 'warn',
-      text: `The migration band is derived from figures the assessment does not have yet: ${[
-        ...filestoreGb.unknown,
-        ...contentCount.unknown
-      ].join(', ')}. Treat the migration hours as provisional.`
+      text: `The migration band is derived from figures the assessment does not have yet: ${sizingGaps.join(
+        ', '
+      )}. Treat the migration hours as provisional.`
+    });
+  } else if (projectType === 'upgrade' && sizingGaps.length > 0) {
+    notes.push({
+      id: 'sizing-not-used',
+      severity: 'info',
+      text: `Some sizing figures are missing (${sizingGaps.join(
+        ', '
+      )}), but an in-place upgrade has no content migration, so they do not affect this quote.`
     });
   }
 
-  if (productionCount > 1) {
+  if (productionCount > 1 && projectType === 'install') {
     notes.push({
       id: 'multi-environment-band',
       severity: 'warn',

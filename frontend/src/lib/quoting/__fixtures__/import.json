@@ -140,9 +140,9 @@
           "text": "Route not determined from the operating system (No operating system recorded in the assessment.) — defaulted to an in-place upgrade. Confirm this."
         },
         {
-          "id": "incomplete-sizing",
-          "severity": "warn",
-          "text": "The migration band is derived from figures the assessment does not have yet: Production 1: inputFileRepositoryGb, Production 1: outputFileRepositoryGb, Production 1: crystalDocuments, Production 1: webiDocuments, Production 1: publications, Production 1: universeCountMode. Treat the migration hours as provisional."
+          "id": "sizing-not-used",
+          "severity": "info",
+          "text": "Some sizing figures are missing (Production 1: inputFileRepositoryGb, Production 1: outputFileRepositoryGb, Production 1: crystalDocuments, Production 1: webiDocuments, Production 1: publications, Production 1: universeCountMode), but an in-place upgrade has no content migration, so they do not affect this quote."
         },
         {
           "id": "assessment-incomplete",
@@ -1047,6 +1047,278 @@
       "grandValue": 18988.800000000003,
       "grandHours": 118.68,
       "pmLevel": "silver"
+    }
+  },
+  {
+    "name": "businessobjects on Windows Server 2022",
+    "input": {
+      "schemaVersion": 2,
+      "tool": "sap-install-assessment",
+      "installationType": "businessobjects",
+      "client": {
+        "client": "Acme Manufacturing Ltd",
+        "conversationDate": "2026-08-03",
+        "technicalContactName": "A Technical Contact",
+        "technicalContactEmail": "tech@example.invalid",
+        "signOffName": "A Sign-off Contact",
+        "signOffEmail": "signoff@example.invalid",
+        "consumers": 240,
+        "universeModifiers": 3,
+        "reportModifiers": 12,
+        "futureDirection": "Evaluating Power BI for new reporting; BI 4.3 to remain for Crystal.",
+        "adjacentWork": "ERP upgrade running in parallel through Q4.",
+        "installationType": "businessobjects",
+        "productionEnvironmentCount": 1,
+        "hasTestEnvironments": "yes",
+        "testEnvironmentCount": 1,
+        "hasDevEnvironments": "no",
+        "trainingBiLaunchpad": "yes",
+        "trainingCms": "yes",
+        "trainingWebi": "yes",
+        "trainingCrystalReports": "no",
+        "trainingInformationDesignTool": "yes",
+        "trainingUniverseConversion": "yes",
+        "goLiveTiming": "weekend"
+      },
+      "environments": [
+        {
+          "id": "env-1",
+          "label": "PROD01",
+          "answers": {
+            "serverName": "ACME-BOBJ-P01",
+            "operatingSystem": "Windows Server 2022",
+            "platformSoftware": "SAP BusinessObjects BI 4.2 SP7",
+            "authentication": "Windows AD",
+            "separateTomcat": "yes",
+            "clustered": "no",
+            "externallyFacing": "yes",
+            "httpsConfigured": "yes",
+            "separateWebServer": "yes",
+            "webServerName": "ACME-WEB-P01",
+            "inputFileRepositoryGb": 42.5,
+            "outputFileRepositoryGb": 118,
+            "cmsDatabaseSoftware": "SQL Server 2016",
+            "auditingEnabled": "yes",
+            "universeCountMode": "separate",
+            "unvCount": 64,
+            "unxCount": 18,
+            "crystalDocuments": 820,
+            "webiDocuments": 460,
+            "publications": 35,
+            "pendingInstances": 12,
+            "successfulInstances": 48210,
+            "destinationChangesRequired": "yes",
+            "destinationChangesNarrative": "Moving from file shares to SFTP for the finance pack.",
+            "successfulInstancesRequired": "some",
+            "successfulInstancesNarrative": "Last 12 months of the statutory reports only."
+          }
+        }
+      ],
+      "completeness": {
+        "required": 47,
+        "answered": 47,
+        "isComplete": true
+      },
+      "advisories": [
+        {
+          "id": "env-1-instances",
+          "scope": "PROD01",
+          "text": "Not all successful instances are required. Recommend the client raises a support ticket for instructions on cleaning them up before migration — it reduces the volume to move."
+        },
+        {
+          "id": "go-live-rate",
+          "text": "Go-live is outside core hours. That attracts a different rate — make sure the quote reflects it."
+        }
+      ]
+    },
+    "interpretation": {
+      "operatingSystem": {
+        "raw": "Windows Server 2022",
+        "preWindowsServer2022": false,
+        "detected": "Windows Server 2022",
+        "confidence": "high",
+        "reason": "Windows Server 2022 supports an in-place upgrade."
+      },
+      "authentication": {
+        "raw": "Windows AD",
+        "auth": "Windows AD",
+        "confidence": "high",
+        "reason": "Reads as Windows AD."
+      },
+      "platformSoftware": {
+        "raw": "SAP BusinessObjects BI 4.2 SP7",
+        "currentVersion": "4.2 SP7",
+        "confidence": "high",
+        "reason": "Read as version 4.2 SP7."
+      },
+      "source": "local"
+    },
+    "seed": {
+      "productStack": "SAP Business Objects",
+      "projectType": "upgrade",
+      "routeReason": "Windows Server 2022 supports an in-place upgrade.",
+      "client": "Acme Manufacturing Ltd",
+      "contactName": "A Sign-off Contact",
+      "contactEmail": "signoff@example.invalid",
+      "environments": 1,
+      "testEnvironments": 1,
+      "devEnvironments": 0,
+      "tomcatInstances": 1,
+      "auth": "Windows AD",
+      "filestoreGb": {
+        "total": 160.5,
+        "unknown": []
+      },
+      "contentCount": {
+        "total": 1397,
+        "unknown": []
+      },
+      "convertUniverses": true,
+      "hours": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": 0.5,
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": 1,
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": 1,
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": 7.5,
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-TOMCAT": 3.75,
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": 15,
+        "DI-BIA-SAP-BOBJ-UA-TESTING": 3.75,
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": 1
+      },
+      "derivations": {
+        "DI-BIA-SAP-BOBJ-DES-CONNECT": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-SOFTWARE": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-DES-PREINSTALL": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL": "7.5h × 1 production environment.",
+        "DI-BIA-SAP-BOBJ-BLD-UPGR-TOMCAT": "3.8h × 1 Tomcat instance (separate Tomcat or externally facing).",
+        "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS": "UNV → UNX conversion and report repointing for 2025.",
+        "DI-BIA-SAP-BOBJ-UA-TESTING": "Standard allowance.",
+        "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE": "Standard allowance."
+      },
+      "scope": [
+        "conv_universe",
+        "conv_repoint",
+        "install_test",
+        "mig_test"
+      ],
+      "notes": [
+        {
+          "id": "test-environments",
+          "severity": "warn",
+          "text": "1 test environment reported. Added to scope but not costed — the assessment records only the count, so there is nothing to size them from."
+        },
+        {
+          "id": "tomcat-scoped",
+          "severity": "info",
+          "text": "Tomcat work is costed, so remove the Tomcat exclusion on the Dependencies & Assumptions step before issuing."
+        },
+        {
+          "id": "advisory-env-1-instances",
+          "severity": "info",
+          "text": "[PROD01] Not all successful instances are required. Recommend the client raises a support ticket for instructions on cleaning them up before migration — it reduces the volume to move."
+        },
+        {
+          "id": "advisory-go-live-rate",
+          "severity": "info",
+          "text": "Go-live is outside core hours. That attracts a different rate — make sure the quote reflects it."
+        }
+      ],
+      "migrationBandId": null
+    },
+    "changes": [
+      {
+        "id": "client",
+        "from": "—",
+        "to": "Acme Manufacturing Ltd"
+      },
+      {
+        "id": "contactName",
+        "from": "—",
+        "to": "A Sign-off Contact"
+      },
+      {
+        "id": "contactEmail",
+        "from": "—",
+        "to": "signoff@example.invalid"
+      },
+      {
+        "id": "projectType",
+        "from": "install",
+        "to": "upgrade",
+        "note": "Windows Server 2022 supports an in-place upgrade."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-CONNECT",
+        "from": "—",
+        "to": "0.5h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-SOFTWARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-DES-PREINSTALL",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-UPGR-INSTALL",
+        "from": "—",
+        "to": "7.5h",
+        "note": "7.5h × 1 production environment."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-UPGR-TOMCAT",
+        "from": "—",
+        "to": "3.8h",
+        "note": "3.8h × 1 Tomcat instance (separate Tomcat or externally facing)."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-BLD-DEV-REPORTS",
+        "from": "—",
+        "to": "15.0h",
+        "note": "UNV → UNX conversion and report repointing for 2025."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-UA-TESTING",
+        "from": "—",
+        "to": "3.8h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "DI-BIA-SAP-BOBJ-TRN-CLOUDCARE",
+        "from": "—",
+        "to": "1.0h",
+        "note": "Standard allowance."
+      },
+      {
+        "id": "scope-conv_universe",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-conv_repoint",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-install_test",
+        "from": "Not in scope",
+        "to": "In scope"
+      },
+      {
+        "id": "scope-mig_test",
+        "from": "Not in scope",
+        "to": "In scope"
+      }
+    ],
+    "totals": {
+      "grandValue": 7236,
+      "grandHours": 45.225,
+      "pmLevel": "coord"
     }
   }
 ]
