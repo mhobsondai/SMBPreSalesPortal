@@ -92,3 +92,32 @@ export const FORCE = {
 
 /** Upper bound of the minimum-priority slider. */
 export const MAX_PRIORITY_FILTER = 70;
+
+/**
+ * Geometry of the process view — the staged swimlanes the map switches to
+ * when the filters isolate a single spine. Transcribed from the prototype.
+ *
+ * These are not cosmetic. Lane heights and the vertical fit are derived from
+ * `rowStep` and `lanePadding`, and `columnWidth` sets both the stage column
+ * and the width a decision's label has to wrap into — so changing one moves
+ * every node. The pinned layouts in the fixture would all shift with them.
+ */
+export const PROCESS = {
+  columnWidth: 198,
+  rowStep: 38,
+  lanePadding: 13,
+  /** Height of the stage-header strip above the first lane. */
+  headerHeight: 52,
+  /** Gutter on the left holding the department name. */
+  laneLabelWidth: 116,
+  /** Node inset from the left edge of its stage column. */
+  nodeInset: 20,
+  /** Characters per line before a decision label wraps. */
+  labelWrapAt: 23,
+  /** Lines of label shown before it is cut with an ellipsis. */
+  labelMaxLines: 2,
+  /** Clearances kept for the focus bar above and the title block below. */
+  fitInset: { top: 44, bottom: 96 },
+  fitPadding: 20,
+  fitScale: { min: 0.3, max: 1.05 }
+};

@@ -8,11 +8,14 @@ import {
   DEFAULT_BANDS,
   KIND_LABEL,
   MAX_PRIORITY_FILTER,
+  PROCESS,
   TYPE_COLOUR
 } from '../../config/decisionConstellationModel';
 import {
+  activeProcessSpine,
   buildGraph,
   buildIndex,
+  buildProcessLayout,
   decisionsForHub,
   defaultFilterState,
   departmentSpreadForHub,
@@ -115,6 +118,15 @@ export function DecisionConstellation() {
   const [railOpen, setRailOpen] = useState(false);
   const [focus, setFocus] = useState<DecisionNode | null>(null);
   const [inspected, setInspected] = useState<ConstellationNode | null>(null);
+  /**
+   * The escape hatch out of the process view without giving up the filter.
+   * Selecting one spine switches to the flow, which is right almost always —
+   * but sometimes you want that spine's systems and departments as a network,
+   * and there is no other way to ask for it. Re-armed whenever the spine
+   * selection changes, so the next spine you pick shows its flow again.
+   */
+  const [procOff, setProcOff] = useState(false);
+  const [processOverflow, setProcessOverflow] = useState(false);
 
   // Typing should not rebuild a 240-node graph per keystroke.
   useEffect(() => {
@@ -134,6 +146,16 @@ export function DecisionConstellation() {
   const focusGraph = useMemo(
     () => (focus ? egoGraph(CONSTELLATION_DATA, focus.id) : null),
     [focus]
+  );
+
+  // One spine and no ego view means the flow, not the network.
+  const processSpine = activeProcessSpine(filters);
+  const process = useMemo(
+    () =>
+      processSpine && !procOff && !focus
+        ? buildProcessLayout(CONSTELLATION_DATA, index, filters, PROCESS)
+        : null,
+    [processSpine, procOff, focus, index, filters]
   );
   const summary = useMemo(
     () => summarise(index, filters, focusGraph ?? graph, focus?.id),
@@ -162,14 +184,45 @@ export function DecisionConstellation() {
   }
 
   function selectNode(node: ConstellationNode) {
+    // A process hub is not worth a panel listing what depends on it — the
+    // whole flow is one click away and says more.
+    if (node.type === 'process') {
+      showProcess(node.label);
+      return;
+    }
     setInspected(node);
-    setFocus(isDecision(node) ? node : null);
+    // In the process view a decision opens its panel in place. Dropping the
+    // flow for an ego view would lose the position the user just clicked.
+    setFocus(!process && isDecision(node) ? node : null);
+  }
+
+  /** Isolate one spine and show its flow. */
+  function showProcess(spine: string) {
+    setSpines(new Set([spine]));
+    setProcOff(false);
+    setFocus(null);
+    setInspected(null);
   }
 
   function closeInspector() {
     setInspected(null);
     setFocus(null);
   }
+
+  /** Leave the flow for the network, keeping the spine filter. */
+  function leaveProcess() {
+    setProcOff(true);
+    setInspected(null);
+  }
+
+  // Escape backs out of the panel wherever you are.
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') closeInspector();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   function resetFilters() {
     setBands(new Set(DEFAULT_BANDS));
@@ -180,6 +233,7 @@ export function DecisionConstellation() {
     setMinPriority(0);
     setQueryInput('');
     setQuery('');
+    setProcOff(false);
     closeInspector();
   }
 
@@ -295,6 +349,11 @@ export function DecisionConstellation() {
 
                 <fieldset className="dc-group">
                   <legend>Process spine</legend>
+                  <p className="dc-hint">
+                    Select a single spine to switch into the{' '}
+                    <strong className="dc-hint-em">process view</strong> — decisions in
+                    flow order, departments as lanes.
+                  </p>
                   {index.spines.map((spine) => (
                     <label className="dc-chk" key={spine}>
                       <input
@@ -302,6 +361,7 @@ export function DecisionConstellation() {
                         checked={spines.has(spine)}
                         onChange={() => {
                           setSpines(toggle(spines, spine));
+                          setProcOff(false);
                           clearFocus();
                         }}
                       />
@@ -312,10 +372,12 @@ export function DecisionConstellation() {
                   <AllNone
                     onAll={() => {
                       setSpines(new Set(index.spines));
+                      setProcOff(false);
                       clearFocus();
                     }}
                     onNone={() => {
                       setSpines(new Set());
+                      setProcOff(false);
                       clearFocus();
                     }}
                   />
@@ -455,9 +517,12 @@ export function DecisionConstellation() {
                 <ConstellationCanvas
                   graph={focusGraph ?? graph}
                   focus={focus}
+                  process={process}
+                  selectedId={inspected?.id ?? null}
                   inspectorOpen={Boolean(inspected)}
                   onSelect={selectNode}
                   onDismiss={closeInspector}
+                  onProcessOverflow={setProcessOverflow}
                 />
 
                 {focus && (
@@ -469,7 +534,19 @@ export function DecisionConstellation() {
                   </div>
                 )}
 
-                <div className="dc-legend">
+                {process && (
+                  <div className="dc-focusbar">
+                    <span>
+                      {process.spine} — process view · {process.decisions} decisions
+                      {processOverflow ? ' · drag to pan' : ''}
+                    </span>
+                    <button type="button" onClick={leaveProcess}>
+                      Constellation view ×
+                    </button>
+                  </div>
+                )}
+
+                <div className={`dc-legend${process ? ' is-hidden' : ''}`}>
                   <div className="dc-legend-key">Node types</div>
                   <div className="dc-legend-row">
                     <svg viewBox="0 0 14 14" aria-hidden="true">
@@ -504,19 +581,30 @@ export function DecisionConstellation() {
                   </div>
                   <div className="dc-tb">
                     <div className="dc-tb-k">Decisions</div>
-                    <div className="dc-tb-v">{summary.decisions}</div>
+                    <div className="dc-tb-v">
+                      {process ? process.decisions : summary.decisions}
+                    </div>
+                  </div>
+                  {/* The middle two tiles count whatever the current drawing
+                      is made of — hubs and links on the map, lanes and stages
+                      in the flow. */}
+                  <div className="dc-tb">
+                    <div className="dc-tb-k">{process ? 'Departments' : 'Systems'}</div>
+                    <div className="dc-tb-v">
+                      {process ? process.lanes.length : summary.systems}
+                    </div>
                   </div>
                   <div className="dc-tb">
-                    <div className="dc-tb-k">Systems</div>
-                    <div className="dc-tb-v">{summary.systems}</div>
-                  </div>
-                  <div className="dc-tb">
-                    <div className="dc-tb-k">Links</div>
-                    <div className="dc-tb-v">{summary.links}</div>
+                    <div className="dc-tb-k">{process ? 'Stages' : 'Links'}</div>
+                    <div className="dc-tb-v">
+                      {process ? process.stages.length : summary.links}
+                    </div>
                   </div>
                   <div className="dc-tb">
                     <div className="dc-tb-k">Avg priority</div>
-                    <div className="dc-tb-v">{summary.avgPriority}</div>
+                    <div className="dc-tb-v">
+                      {process ? process.avgPriority : summary.avgPriority}
+                    </div>
                   </div>
                 </div>
 
@@ -526,17 +614,18 @@ export function DecisionConstellation() {
                   aria-label="Selected node"
                 >
                   {inspected && isDecision(inspected) && (
-                    <DecisionPanel decision={inspected} onClose={closeInspector} />
+                    <DecisionPanel
+                      decision={inspected}
+                      inProcess={Boolean(process)}
+                      onClose={closeInspector}
+                      onShowProcess={() => showProcess(inspected.spine)}
+                    />
                   )}
                   {inspected && !isDecision(inspected) && (
                     <HubPanel
                       hub={inspected}
                       decisions={hubDecisions}
                       onClose={closeInspector}
-                      onOnlySpine={() => {
-                        setSpines(new Set([inspected.label]));
-                        closeInspector();
-                      }}
                       onOnlySystem={() => {
                         setSystems(new Set([inspected.id]));
                         closeInspector();
@@ -568,10 +657,14 @@ function AllNone({ onAll, onNone }: { onAll: () => void; onNone: () => void }) {
 
 function DecisionPanel({
   decision,
-  onClose
+  inProcess,
+  onClose,
+  onShowProcess
 }: {
   decision: DecisionNode;
+  inProcess: boolean;
   onClose: () => void;
+  onShowProcess: () => void;
 }) {
   return (
     <>
@@ -602,7 +695,12 @@ function DecisionPanel({
         k="Cadence"
         v={`${decision.cadence} · ${decision.horizon} · decision needed within ${decision.latency.toLowerCase()}`}
       />
-      <Field k="Process spine" v={decision.spine} />
+      <div className="dc-field">
+        <div className="dc-field-k">Process spine</div>
+        <div className="dc-field-v">
+          {decision.spine} · stage {decision.stageIndex + 1}, {decision.stage}
+        </div>
+      </div>
       <div className="dc-field">
         <div className="dc-field-k">Source systems</div>
         <div className="dc-field-v">
@@ -621,25 +719,47 @@ function DecisionPanel({
       <Field k="Metrics and data needed" v={decision.metrics} />
 
       <div className="dc-actionbar">
-        <button type="button" className="dc-act" onClick={onClose}>
-          Back to full map
-        </button>
+        {/* Already in the flow: the only thing left to do is put the panel
+            away. Anywhere else, offer the flow — it is the most useful next
+            move from a decision, and otherwise means finding the spine in
+            the rail. */}
+        {inProcess ? (
+          <button type="button" className="dc-act" onClick={onClose}>
+            Close
+          </button>
+        ) : (
+          <>
+            <button type="button" className="dc-act" onClick={onShowProcess}>
+              Show {decision.spine} in flow
+            </button>
+            <button
+              type="button"
+              className="dc-act dc-act--quiet"
+              onClick={onClose}
+            >
+              Back to full map
+            </button>
+          </>
+        )}
       </div>
     </>
   );
 }
 
+/**
+ * Departments and source systems only. A process spine never reaches here —
+ * clicking one goes straight to its flow, which answers the same question
+ * better than a list would.
+ */
 function HubPanel({
   hub,
   decisions,
   onClose,
-  onOnlySpine,
   onOnlySystem
 }: {
   hub: ConstellationNode;
   decisions: DecisionNode[];
   onClose: () => void;
-  onOnlySpine: () => void;
   onOnlySystem: () => void;
 }) {
   if (isDecision(hub)) return null;
@@ -684,13 +804,6 @@ function HubPanel({
         </div>
       </div>
 
-      {hub.type === 'process' && (
-        <div className="dc-actionbar">
-          <button type="button" className="dc-act" onClick={onOnlySpine}>
-            Show only this spine
-          </button>
-        </div>
-      )}
       {hub.type === 'system' && (
         <div className="dc-actionbar">
           <button type="button" className="dc-act" onClick={onOnlySystem}>
@@ -953,7 +1066,7 @@ function FlexibilityView({ hidden }: { hidden: boolean }) {
           <Card
             t="A process spine"
             tag="Cross-functional story"
-            body="Quote-to-cash carries 51 decisions across six departments. Best route for showing that value sits in the joins between systems rather than inside any one of them."
+            body="Quote-to-cash carries 51 decisions across eight departments. Select it alone and the map becomes a process view — decisions in flow order, departments as lanes, handoffs visible."
           />
           <Card
             t="A system"
@@ -1037,10 +1150,18 @@ function FlexibilityView({ hidden }: { hidden: boolean }) {
 
         <div className="dc-callout">
           <p>
-            <strong>Try it in the Constellation tab.</strong> Open the Source system panel, select
-            Core platforms only, then untick ERP. What remains on screen is the part of the
-            business the ERP cannot answer by itself — usually the most persuasive ninety seconds
-            of a first meeting.
+            <strong>Two things to try in the Constellation tab.</strong>
+          </p>
+          <p>
+            Open the Source system panel, select Core platforms only, then untick ERP. What
+            remains on screen is the part of the business the ERP cannot answer by itself —
+            usually the most persuasive ninety seconds of a first meeting.
+          </p>
+          <p>
+            Then select a single process spine. The view switches to{' '}
+            <strong>flow order</strong> — stages left to right, departments as lanes. Walking
+            one spine stage by stage is the most natural way to run a discovery session,
+            because it follows the order in which the business actually makes its decisions.
           </p>
         </div>
 

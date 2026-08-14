@@ -26,6 +26,10 @@ export interface DecisionNode {
   latency: string;
   /** End-to-end process the decision belongs to. */
   spine: string;
+  /** Stage of that spine the decision sits at. One of `spineStages[spine]`. */
+  stage: string;
+  /** Position of `stage` within `spineStages[spine]`. Zero-based. */
+  stageIndex: number;
   /** The system that holds most of the evidence. */
   primary: string;
   /** How it is decided today. */
@@ -79,6 +83,13 @@ export interface ConstellationDataset {
   weights: Record<string, number>;
   /** Priority score at which each band starts. */
   bands: Record<string, number>;
+  /**
+   * Spine name → its stages **in flow order**. This is what makes the process
+   * view possible: the array order is the order the business works in, so it
+   * is meaning rather than presentation. Reordering one changes what the map
+   * says.
+   */
+  spineStages: Record<string, string[]>;
 }
 
 export function isDecision(node: ConstellationNode): node is DecisionNode {

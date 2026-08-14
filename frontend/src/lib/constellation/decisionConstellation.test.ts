@@ -19,17 +19,21 @@ import { describe, expect, it } from 'vitest';
 import {
   BAND_ORDER,
   CONSTELLATION_DATA,
-  DEFAULT_BANDS
+  DEFAULT_BANDS,
+  PROCESS
 } from '../../config/decisionConstellationModel';
 import {
+  activeProcessSpine,
   buildGraph,
   buildIndex,
+  buildProcessLayout,
   decisionsForHub,
   defaultFilterState,
   departmentSpreadForHub,
   egoGraph,
   nodeRadius,
   nodeShapePath,
+  stepLabelLines,
   summarise,
   visibleDecisions,
   wrapLabel,
@@ -73,8 +77,26 @@ describe('dataset', () => {
       spines: index.spines.length,
       systems: index.systems.length,
       weights: CONSTELLATION_DATA.weights,
-      bands: CONSTELLATION_DATA.bands
+      bands: CONSTELLATION_DATA.bands,
+      spineStages: CONSTELLATION_DATA.spineStages
     }).toEqual(fixture.dataset);
+  });
+
+  it('gives every decision a stage that exists in its own spine', () => {
+    // The process view indexes columns by `stageIndex`, so a stage naming a
+    // step that is not in `spineStages[spine]` would place a node in thin air.
+    for (const d of index.decisions) {
+      const stages = CONSTELLATION_DATA.spineStages[d.spine];
+      expect(stages, `${d.id} has spine ${d.spine}`).toBeDefined();
+      expect(stages).toContain(d.stage);
+      expect(stages[d.stageIndex]).toBe(d.stage);
+    }
+  });
+
+  it('names stages for every spine, with no empty flow', () => {
+    for (const spine of index.spines) {
+      expect(CONSTELLATION_DATA.spineStages[spine]?.length).toBeGreaterThan(0);
+    }
   });
 
   it('carries the counts the prose views quote', () => {
@@ -320,6 +342,193 @@ describe('geometry', () => {
       ].map((n) => nodeShapePath(n, 6).replace(/[\d.-]+/g, ''))
     );
     expect(paths.size).toBe(4);
+  });
+});
+
+describe('the process view', () => {
+  function layoutFor(state: FilterState) {
+    return buildProcessLayout(CONSTELLATION_DATA, index, state, PROCESS);
+  }
+
+  function spineState(spine: string, bands = BAND_ORDER): FilterState {
+    return { ...defaultFilterState(index, bands), spines: new Set([spine]) };
+  }
+
+  describe('reproduces the prototype', () => {
+    for (const [name, expected] of Object.entries(fixture.process)) {
+      it(name, () => {
+        const state = name.includes('Now and Next')
+          ? spineState(expected.spine, DEFAULT_BANDS)
+          : spineState(expected.spine);
+        const layout = layoutFor(state)!;
+
+        expect(layout.spine).toBe(expected.spine);
+        expect(layout.stages).toEqual(expected.stages);
+        expect(layout.decisions).toBe(expected.decisions);
+        expect(layout.emptyStages).toEqual(expected.emptyStages);
+        expect(layout.totalWidth).toBe(expected.totalWidth);
+        expect(layout.totalHeight).toBe(expected.totalHeight);
+        expect(layout.lanes).toEqual(expected.lanes);
+        expect(
+          layout.placed.map((p) => ({ id: p.decision.id, x: p.x, y: p.y }))
+        ).toEqual(expected.placed);
+        expect({
+          decisions: layout.decisions,
+          departments: layout.lanes.length,
+          stages: layout.stages.length,
+          avgPriority: layout.avgPriority
+        }).toEqual(expected.titleBlock);
+      });
+    }
+  });
+
+  it('applies only when exactly one spine is selected', () => {
+    expect(activeProcessSpine(defaultFilterState(index))).toBeNull();
+    expect(activeProcessSpine(spineState('Strategy'))).toBe('Strategy');
+    expect(
+      activeProcessSpine({ ...defaultFilterState(index), spines: new Set() })
+    ).toBeNull();
+    expect(
+      activeProcessSpine({
+        ...defaultFilterState(index),
+        spines: new Set(['Strategy', 'Quote-to-cash'])
+      })
+    ).toBeNull();
+    expect(layoutFor(defaultFilterState(index))).toBeNull();
+  });
+
+  it('lays every spine out, so no selection can reach a broken view', () => {
+    for (const spine of index.spines) {
+      const layout = layoutFor(spineState(spine))!;
+      expect(layout.stages.length).toBeGreaterThan(0);
+      expect(layout.lanes.length).toBeGreaterThan(0);
+      expect(layout.placed.length).toBe(layout.decisions);
+    }
+  });
+
+  it('places every visible decision of the spine exactly once', () => {
+    const state = spineState('Quote-to-cash');
+    const expected = visibleDecisions(index, state).filter(
+      (d) => d.spine === 'Quote-to-cash'
+    );
+    const layout = layoutFor(state)!;
+    expect(layout.placed).toHaveLength(expected.length);
+    expect(new Set(layout.placed.map((p) => p.decision.id))).toEqual(
+      new Set(expected.map((d) => d.id))
+    );
+  });
+
+  it('puts a decision in the column its stageIndex names', () => {
+    const layout = layoutFor(spineState('Quote-to-cash'))!;
+    for (const { decision, x } of layout.placed) {
+      expect(x).toBe(layout.columnX(decision.stageIndex) + PROCESS.nodeInset);
+    }
+  });
+
+  it('orders lanes by decision count, busiest first', () => {
+    const counts = layoutFor(spineState('Quote-to-cash'))!.lanes.map((l) => l.count);
+    expect(counts).toEqual(counts.slice().sort((a, b) => b - a));
+  });
+
+  it('stacks lanes without gaps or overlaps', () => {
+    const layout = layoutFor(spineState('Purchase-to-pay'))!;
+    let y = PROCESS.headerHeight;
+    for (const lane of layout.lanes) {
+      expect(lane.y).toBe(y);
+      y += lane.height;
+    }
+    expect(layout.totalHeight).toBe(y);
+  });
+
+  it('sizes a lane to its busiest cell', () => {
+    const layout = layoutFor(spineState('Quote-to-cash'))!;
+    for (const lane of layout.lanes) {
+      const inLane = layout.placed.filter((p) => p.decision.dept === lane.dept);
+      const busiest = Math.max(
+        ...layout.stages.map(
+          (s) => inLane.filter((p) => p.decision.stage === s).length
+        )
+      );
+      expect(lane.height).toBe(
+        Math.max(1, busiest) * PROCESS.rowStep + PROCESS.lanePadding * 2
+      );
+      // Every node in the lane sits inside it.
+      for (const p of inLane) {
+        expect(p.y).toBeGreaterThanOrEqual(lane.y);
+        expect(p.y).toBeLessThan(lane.y + lane.height);
+      }
+    }
+  });
+
+  it('puts the highest-priority decision at the top of a cell', () => {
+    const layout = layoutFor(spineState('Quote-to-cash'))!;
+    const cells = new Map<string, typeof layout.placed>();
+    for (const p of layout.placed) {
+      const key = `${p.decision.dept}|${p.decision.stage}`;
+      cells.set(key, [...(cells.get(key) ?? []), p]);
+    }
+    for (const bucket of cells.values()) {
+      const byY = bucket.slice().sort((a, b) => a.y - b.y);
+      const priorities = byY.map((p) => p.decision.priority);
+      expect(priorities).toEqual(priorities.slice().sort((a, b) => b - a));
+    }
+  });
+
+  it('reports a stage with nothing in it rather than dropping the column', () => {
+    // Two stages of the example are empty at full width; both must still be
+    // drawn, or the flow silently loses a step.
+    const strategy = layoutFor(spineState('Strategy'))!;
+    expect(strategy.emptyStages).toEqual(['Review']);
+    expect(strategy.stages).toContain('Review');
+    expect(layoutFor(spineState('Hire-to-retire'))!.emptyStages).toEqual(['Onboard']);
+  });
+
+  it('still honours the other filters', () => {
+    const all = layoutFor(spineState('Quote-to-cash'))!;
+    const narrowed = layoutFor(spineState('Quote-to-cash', DEFAULT_BANDS))!;
+    expect(narrowed.decisions).toBeLessThan(all.decisions);
+    expect(narrowed.totalHeight).toBeLessThan(all.totalHeight);
+    // Columns never change — the flow is the spine's, not the filter's.
+    expect(narrowed.stages).toEqual(all.stages);
+    expect(narrowed.totalWidth).toBe(all.totalWidth);
+  });
+
+  it('empties out rather than breaking when a filter excludes everything', () => {
+    const state: FilterState = { ...spineState('Strategy'), query: 'zzzznope' };
+    const layout = layoutFor(state)!;
+    expect(layout.placed).toEqual([]);
+    expect(layout.lanes).toEqual([]);
+    expect(layout.decisions).toBe(0);
+    expect(layout.avgPriority).toBe('—');
+    expect(layout.emptyStages).toEqual(layout.stages);
+    expect(layout.totalHeight).toBe(PROCESS.headerHeight);
+  });
+});
+
+describe('the process view’s step labels', () => {
+  for (const [label, expected] of Object.entries(fixture.stepLabels)) {
+    it(`wraps “${label.slice(0, 32)}…”`, () => {
+      expect(stepLabelLines(label, PROCESS.labelWrapAt, PROCESS.labelMaxLines)).toEqual(
+        expected
+      );
+    });
+  }
+
+  it('leaves a label that fits alone, with no ellipsis', () => {
+    expect(stepLabelLines('Rebate accrual', PROCESS.labelWrapAt, 2)).toEqual([
+      'Rebate accrual'
+    ]);
+  });
+
+  it('strips trailing punctuation before the ellipsis', () => {
+    const lines = stepLabelLines(
+      'One two three four five, six seven eight nine ten eleven',
+      PROCESS.labelWrapAt,
+      2
+    );
+    expect(lines).toHaveLength(2);
+    expect(lines[1]).toMatch(/…$/);
+    expect(lines[1]).not.toMatch(/[,;]…$/);
   });
 });
 

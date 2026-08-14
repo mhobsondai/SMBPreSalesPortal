@@ -18,13 +18,17 @@ import {
   BAND_COLOUR,
   FORCE,
   LINK_COLOUR,
+  PROCESS,
   TYPE_COLOUR
 } from '../../config/decisionConstellationModel';
 import {
   nodeRadius,
   nodeShapePath,
+  stepLabelLines,
   wrapLabel,
-  type ConstellationGraph
+  type ConstellationGraph,
+  type PlacedDecision,
+  type ProcessLayout
 } from '../../lib/constellation/decisionConstellation';
 import {
   isDecision,
@@ -63,11 +67,24 @@ interface CanvasProps {
   graph: ConstellationGraph;
   /** Non-null puts the map in the radial ego view for that decision. */
   focus: DecisionNode | null;
+  /**
+   * Non-null replaces the force layout with the staged swimlanes. Takes
+   * precedence over everything else — a single spine is a different drawing,
+   * not a filtered one.
+   */
+  process: ProcessLayout | null;
+  /** Ringed in the process view. The ego view carries its own emphasis. */
+  selectedId: string | null;
   /** True while the inspector covers the right-hand strip of the stage. */
   inspectorOpen: boolean;
   onSelect: (node: ConstellationNode) => void;
-  /** Clicking empty space while focused. */
+  /** Clicking empty space while focused, or anywhere in the process view. */
   onDismiss: () => void;
+  /**
+   * Fired after the process view is fitted: true when the spine is too tall
+   * for the stage and the user will have to pan. The focus bar says so.
+   */
+  onProcessOverflow: (overflow: boolean) => void;
 }
 
 /** Must match `.dc-inspector` in DecisionConstellation.css. */
@@ -83,17 +100,20 @@ function colourOf(node: ConstellationNode): string {
 export function ConstellationCanvas({
   graph,
   focus,
+  process,
+  selectedId,
   inspectorOpen,
   onSelect,
-  onDismiss
+  onDismiss,
+  onProcessOverflow
 }: CanvasProps) {
   const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Callbacks change identity on every parent render; the engine is built
   // once, so it reads them through a ref rather than being rebuilt.
-  const handlers = useRef({ onSelect, onDismiss });
-  handlers.current = { onSelect, onDismiss };
+  const handlers = useRef({ onSelect, onDismiss, onProcessOverflow });
+  handlers.current = { onSelect, onDismiss, onProcessOverflow };
 
   const engine = useRef<ReturnType<typeof createEngine> | null>(null);
 
@@ -107,8 +127,8 @@ export function ConstellationCanvas({
   }, []);
 
   useEffect(() => {
-    engine.current?.apply(graph, focus, inspectorOpen);
-  }, [graph, focus, inspectorOpen]);
+    engine.current?.apply({ graph, focus, process, selectedId, inspectorOpen });
+  }, [graph, focus, process, selectedId, inspectorOpen]);
 
   return (
     <div className="dc-canvas" ref={stageRef}>
@@ -121,13 +141,30 @@ export function ConstellationCanvas({
   );
 }
 
+interface View {
+  graph: ConstellationGraph;
+  focus: DecisionNode | null;
+  process: ProcessLayout | null;
+  selectedId: string | null;
+  inspectorOpen: boolean;
+}
+
 function createEngine(
   svgEl: SVGSVGElement,
   stageEl: HTMLDivElement,
-  handlers: { current: { onSelect: (n: ConstellationNode) => void; onDismiss: () => void } }
+  handlers: {
+    current: {
+      onSelect: (n: ConstellationNode) => void;
+      onDismiss: () => void;
+      onProcessOverflow: (overflow: boolean) => void;
+    };
+  }
 ) {
   const svg = select(svgEl);
   const root = svg.append('g');
+  // Stage chrome sits behind everything and never takes a click, so the
+  // bands and lane rules cannot swallow a press aimed at a decision.
+  const gStage = root.append('g').attr('class', 'dc-stagechrome');
   const gLink = root.append('g');
   const gNode = root.append('g');
   const gLabel = root.append('g');
@@ -137,12 +174,9 @@ function createEngine(
   let userZoomed = false;
   let focused: DecisionNode | null = null;
   let inspectorOpen = false;
+  let laidOut: ProcessLayout | null = null;
   let current: { nodes: SimNode[]; links: SimLink[] } = { nodes: [], links: [] };
-  let pending: {
-    graph: ConstellationGraph;
-    focus: DecisionNode | null;
-    inspectorOpen: boolean;
-  } | null = null;
+  let pending: View | null = null;
   let started = false;
 
   /** One instance per node id, reused so positions persist across filters. */
@@ -171,7 +205,8 @@ function createEngine(
     .on('mousedown.cursor', () => svg.classed('is-dragging', true))
     .on('mouseup.cursor', () => svg.classed('is-dragging', false))
     .on('click', () => {
-      if (focused) handlers.current.onDismiss();
+      // Empty space backs out of whichever detail view is open.
+      if (focused || laidOut) handlers.current.onDismiss();
     });
 
   const sim: Simulation<SimNode, SimLink> = forceSimulation<SimNode>()
@@ -207,7 +242,7 @@ function createEngine(
   }
 
   function tick() {
-    if (focused) return;
+    if (focused || laidOut) return;
     gLink
       .selectAll<SVGLineElement, SimLink>('line')
       .attr('x1', (l) => l.source.x ?? 0)
@@ -230,7 +265,7 @@ function createEngine(
   /** Zoom out just enough that the settled layout fits, unless the user has
    *  taken control of the zoom themselves. */
   function fitView() {
-    if (userZoomed || focused || !current.nodes.length) return;
+    if (userZoomed || focused || laidOut || !current.nodes.length) return;
     const xs = current.nodes.map((n) => n.x ?? 0);
     const ys = current.nodes.map((n) => n.y ?? 0);
     const pad = 84;
@@ -381,6 +416,218 @@ function createEngine(
     sim.alpha(0.85).restart();
   }
 
+  // ─── Process view ──────────────────────────────────────────────────────
+
+  /**
+   * Fits the flow to the width and lets a tall spine scroll.
+   *
+   * Deliberately not a "fit everything on screen": the reading is left to
+   * right, so the stages have to stay legible even if that pushes the lower
+   * lanes below the fold. Returns true when it has.
+   */
+  function fitProcess(layout: ProcessLayout): boolean {
+    const { top, bottom } = PROCESS.fitInset;
+    const pad = PROCESS.fitPadding;
+    const availableWidth = width - pad * 2;
+    const availableHeight = height - top - bottom - pad * 2;
+    const k = Math.max(
+      PROCESS.fitScale.min,
+      Math.min(PROCESS.fitScale.max, availableWidth / layout.totalWidth)
+    );
+    const tx = pad + (availableWidth - k * layout.totalWidth) / 2;
+    const overflow = k * layout.totalHeight > availableHeight;
+    const ty = overflow
+      ? top + pad
+      : top + pad + (availableHeight - k * layout.totalHeight) / 2;
+    svg
+      .transition()
+      .duration(450)
+      .call(zoomBehaviour.transform, zoomIdentity.translate(tx, ty).scale(k));
+    return overflow;
+  }
+
+  function renderProcess(layout: ProcessLayout) {
+    sim.stop();
+    for (const n of instances.values()) {
+      n.fx = null;
+      n.fy = null;
+    }
+    gLink.selectAll('*').remove();
+    gNode.selectAll('*').remove();
+    gLabel.selectAll('*').remove();
+    gStage.selectAll('*').remove();
+
+    const { columnWidth, headerHeight, lanePadding, rowStep } = PROCESS;
+    const { stages, lanes, totalWidth, totalHeight, columnX } = layout;
+
+    // Stage columns: alternating band, a rule, a number and the stage name.
+    stages.forEach((stage, i) => {
+      gStage
+        .append('rect')
+        .attr('class', `dc-stageband${i % 2 ? ' dc-stageband--alt' : ''}`)
+        .attr('x', columnX(i))
+        .attr('y', headerHeight)
+        .attr('width', columnWidth)
+        .attr('height', totalHeight - headerHeight);
+      gStage
+        .append('line')
+        .attr('class', 'dc-stagerule')
+        .attr('x1', columnX(i))
+        .attr('y1', 30)
+        .attr('x2', columnX(i))
+        .attr('y2', totalHeight);
+      gStage
+        .append('text')
+        .attr('class', 'dc-stagenum')
+        .attr('x', columnX(i) + 14)
+        .attr('y', 24)
+        .text(String(i + 1).padStart(2, '0'));
+      gStage
+        .append('text')
+        .attr('class', 'dc-stagehdr')
+        .attr('x', columnX(i) + 34)
+        .attr('y', 25)
+        .text(stage);
+      // An empty stage keeps its column and says so. Dropping it would hide
+      // a step of the flow, which is the one thing this view exists to show.
+      if (layout.emptyStages.includes(stage)) {
+        gStage
+          .append('text')
+          .attr('class', 'dc-emptystage')
+          .attr('x', columnX(i) + columnWidth / 2)
+          .attr('y', headerHeight + 34)
+          .attr('text-anchor', 'middle')
+          .text('— none —');
+      }
+    });
+    gStage
+      .append('line')
+      .attr('class', 'dc-stagerule')
+      .attr('x1', columnX(stages.length))
+      .attr('y1', 30)
+      .attr('x2', columnX(stages.length))
+      .attr('y2', totalHeight);
+    gStage
+      .append('line')
+      .attr('class', 'dc-stagerule')
+      .attr('x1', 0)
+      .attr('y1', headerHeight)
+      .attr('x2', totalWidth)
+      .attr('y2', headerHeight);
+
+    // Lane labels down the left, divider under each lane.
+    for (const lane of lanes) {
+      gStage
+        .append('line')
+        .attr('class', 'dc-lanerule')
+        .attr('x1', 0)
+        .attr('y1', lane.y + lane.height)
+        .attr('x2', totalWidth)
+        .attr('y2', lane.y + lane.height);
+      // "Warehouse & Fulfilment" is too wide for the gutter, so break on the
+      // ampersand rather than shrinking every label to fit the longest.
+      const parts = lane.dept.split(' & ');
+      const label = gStage
+        .append('text')
+        .attr('class', 'dc-lanelabel')
+        .attr('x', 8)
+        .attr('y', lane.y + lanePadding + 10);
+      parts.forEach((part, i) => {
+        label
+          .append('tspan')
+          .attr('x', 8)
+          .attr('dy', i ? 12 : 0)
+          .text(i ? `& ${part}` : part);
+      });
+      gStage
+        .append('text')
+        .attr('class', 'dc-stagenum')
+        .attr('x', 8)
+        .attr('y', lane.y + lanePadding + 10 + parts.length * 12 + 2)
+        .text(`${lane.count} dec`);
+    }
+
+    const entered = gNode
+      .selectAll<SVGGElement, PlacedDecision>('g.dc-pnode')
+      .data(layout.placed, (p) => p.decision.id)
+      .enter()
+      .append('g')
+      .attr('class', 'dc-pnode')
+      .attr('tabindex', 0)
+      .attr('role', 'button')
+      .attr('aria-label', (p) => p.decision.label)
+      .attr('transform', (p) => `translate(${p.x},${p.y})`);
+
+    // The whole row is the hit area, not the 6px dot. This gets clicked on a
+    // projector, from across a meeting room, on a trackpad.
+    entered
+      .append('rect')
+      .attr('class', 'dc-hit')
+      .attr('x', (p) => -nodeRadius(p.decision) - 7)
+      .attr('y', -rowStep / 2 + 3)
+      .attr('width', columnWidth - 26)
+      .attr('height', rowStep - 6);
+    entered
+      .append('circle')
+      .attr('class', 'dc-selectring')
+      .attr('r', (p) => nodeRadius(p.decision) + 5);
+    entered
+      .append('circle')
+      .attr('class', 'dc-shape')
+      .attr('r', (p) => nodeRadius(p.decision))
+      .attr('fill', (p) => colourOf(p.decision));
+    entered
+      .append('text')
+      .attr('class', 'dc-steplabel')
+      .attr('y', 0)
+      .each(function (p) {
+        const lines = stepLabelLines(
+          p.decision.label,
+          PROCESS.labelWrapAt,
+          PROCESS.labelMaxLines
+        );
+        const x = nodeRadius(p.decision) + 9;
+        const text = select(this).attr('x', x);
+        lines.forEach((line, i) => {
+          text
+            .append('tspan')
+            .attr('x', x)
+            .attr('y', (i - (lines.length - 1) / 2) * 12.5 + 4)
+            .text(line);
+        });
+      });
+    // The label is truncated, so the full text has to be reachable somehow.
+    entered
+      .append('title')
+      .text(
+        (p) =>
+          `${p.decision.id} · ${p.decision.label}\n` +
+          `${p.decision.stage} · priority ${p.decision.priority} (${p.decision.band})`
+      );
+
+    entered
+      .on('click', (event: MouseEvent, p) => {
+        event.stopPropagation();
+        handlers.current.onSelect(p.decision);
+      })
+      .on('keydown', (event: KeyboardEvent, p) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handlers.current.onSelect(p.decision);
+        }
+      });
+
+    current = { nodes: [], links: [] };
+    userZoomed = false;
+    handlers.current.onProcessOverflow(fitProcess(layout));
+  }
+
+  function markSelected(selectedId: string | null) {
+    gNode
+      .selectAll<SVGGElement, PlacedDecision>('g.dc-pnode')
+      .classed('is-selected', (p) => p.decision.id === selectedId);
+  }
+
   /**
    * The ego view: the decision in the middle, its department above, its
    * systems fanned out to the left and its process spine to the right. Laid
@@ -491,24 +738,42 @@ function createEngine(
     svg.transition().duration(400).call(zoomBehaviour.transform, zoomIdentity);
   }
 
-  function apply(
-    graph: ConstellationGraph,
-    focus: DecisionNode | null,
-    inspecting: boolean
-  ) {
+  function apply(view: View) {
     if (!measure()) {
       // The stage has no size until its tab is shown. The observer below
       // replays this the moment it does.
-      pending = { graph, focus, inspectorOpen: inspecting };
+      pending = view;
       return;
     }
     pending = null;
     started = true;
-    inspectorOpen = inspecting;
-    const leavingFocus = focused && !focus;
-    focused = focus;
-    if (focus) {
-      renderFocus(focus, graph);
+    inspectorOpen = view.inspectorOpen;
+
+    if (view.process) {
+      focused = null;
+      // Selecting a decision must not re-lay the flow out under the click,
+      // so only a genuinely new layout triggers a redraw.
+      if (view.process !== laidOut) {
+        laidOut = view.process;
+        renderProcess(view.process);
+      }
+      markSelected(view.selectedId);
+      return;
+    }
+
+    const leavingProcess = laidOut !== null;
+    laidOut = null;
+    if (leavingProcess) {
+      gStage.selectAll('*').remove();
+      gNode.selectAll('*').remove();
+      gLabel.selectAll('*').remove();
+      gLink.selectAll('*').remove();
+    }
+
+    const leavingFocus = focused && !view.focus;
+    focused = view.focus;
+    if (view.focus) {
+      renderFocus(view.focus, view.graph);
       return;
     }
     if (leavingFocus) {
@@ -516,14 +781,19 @@ function createEngine(
       gNode.selectAll('*').remove();
       gLabel.selectAll('*').remove();
     }
-    renderForce(graph);
+    renderForce(view.graph);
   }
 
   const observer = new ResizeObserver(() => {
     if (!measure()) return;
     if (pending) {
-      const next = pending;
-      apply(next.graph, next.focus, next.inspectorOpen);
+      apply(pending);
+      return;
+    }
+    // The process view is fitted to the width, so a resize changes the scale
+    // rather than just the visible area — it has to be re-fitted, not nudged.
+    if (laidOut) {
+      handlers.current.onProcessOverflow(fitProcess(laidOut));
       return;
     }
     if (started && !focused) sim.alpha(0.3).restart();

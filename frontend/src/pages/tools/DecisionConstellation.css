@@ -631,6 +631,102 @@
   font-weight: 500;
 }
 
+/* ─── Process view (staged swimlanes) ────────────────────────────────── */
+
+.dc-stagechrome {
+  pointer-events: none;
+}
+
+.dc-stageband {
+  fill: #121a22;
+}
+
+.dc-stageband--alt {
+  fill: #16202a;
+}
+
+.dc-stagerule {
+  stroke: var(--dc-rule);
+  stroke-width: 1;
+}
+
+.dc-stagehdr {
+  font-family: var(--dc-display);
+  font-size: 12.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  fill: var(--dc-chalk);
+  pointer-events: none;
+}
+
+.dc-stagenum {
+  font-family: var(--dc-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  fill: var(--dc-dim);
+  pointer-events: none;
+}
+
+.dc-lanelabel {
+  font-family: var(--dc-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  fill: #9bb3c9;
+  pointer-events: none;
+}
+
+.dc-lanerule {
+  stroke: var(--dc-rule);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+}
+
+.dc-emptystage {
+  font-family: var(--dc-mono);
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  fill: #3b4854;
+  pointer-events: none;
+}
+
+.dc-pnode {
+  cursor: pointer;
+}
+
+/* Whole-row hit area. Invisible, but it is what makes the view usable on a
+   projector — see the comment in ConstellationCanvas. */
+.dc-hit {
+  fill: transparent;
+}
+
+.dc-steplabel {
+  font-family: var(--dc-body);
+  font-size: 11px;
+  fill: var(--dc-text);
+}
+
+.dc-pnode:hover .dc-steplabel {
+  fill: #fff;
+}
+
+.dc-selectring {
+  fill: none;
+  stroke: var(--dc-brass);
+  stroke-width: 1.5;
+  opacity: 0;
+}
+
+.dc-pnode.is-selected .dc-selectring {
+  opacity: 1;
+}
+
+/* No hub nodes are drawn in this view, so the key would describe shapes that
+   are not on screen. */
+.dc-legend.is-hidden {
+  display: none;
+}
+
 /* ─── Title block ────────────────────────────────────────────────────── */
 
 .dc-titleblock {
@@ -929,6 +1025,23 @@
 .dc-act:hover {
   background: var(--dc-brass);
   color: var(--dc-ground);
+}
+
+/* Second action in the bar — present, but not competing with the first. */
+.dc-act--quiet {
+  border-color: var(--dc-rule);
+  color: var(--dc-muted);
+  margin-top: 8px;
+}
+
+.dc-act--quiet:hover {
+  background: none;
+  border-color: var(--dc-muted);
+  color: var(--dc-chalk);
+}
+
+.dc-hint-em {
+  color: var(--dc-verdigris);
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────── */

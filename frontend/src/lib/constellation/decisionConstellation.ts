@@ -317,6 +317,165 @@ export function departmentSpreadForHub(decisions: DecisionNode[]): [string, numb
   return Object.entries(counts).sort((a, b) => b[1] - a[1]);
 }
 
+// ─── Process view ────────────────────────────────────────────────────────
+//
+// Isolating a single spine switches the map out of the force layout and into
+// staged swimlanes: stage columns left to right in flow order, departments as
+// lanes down the side. The point is that handoffs become visible — you can
+// walk one spine stage by stage, which is the order the business actually
+// makes its decisions in, and see where each one crosses a department.
+//
+// The geometry is computed here rather than in the canvas so it can be pinned
+// against the prototype's own output, the same way the filtering is.
+
+/**
+ * The spine the process view applies to, or `null` for the constellation.
+ *
+ * Exactly one selected spine is the trigger — there is no separate toggle,
+ * because the useful gesture in front of a client is "show me just
+ * quote-to-cash", not "switch view mode". Two spines have no shared flow
+ * order to lay out, so the constellation comes back on its own.
+ */
+export function activeProcessSpine(state: FilterState): string | null {
+  return state.spines.size === 1 ? [...state.spines][0] : null;
+}
+
+export interface ProcessLane {
+  dept: string;
+  /** Decisions this department owns in this spine, across all stages. */
+  count: number;
+  y: number;
+  height: number;
+}
+
+export interface PlacedDecision {
+  decision: DecisionNode;
+  x: number;
+  y: number;
+}
+
+export interface ProcessLayout {
+  spine: string;
+  /** In flow order. Column i is `stages[i]`. */
+  stages: string[];
+  lanes: ProcessLane[];
+  placed: PlacedDecision[];
+  /** Stages with nothing in them under the current filters. */
+  emptyStages: string[];
+  decisions: number;
+  avgPriority: string;
+  totalWidth: number;
+  totalHeight: number;
+  columnX: (index: number) => number;
+}
+
+export function buildProcessLayout(
+  dataset: ConstellationDataset,
+  index: ConstellationIndex,
+  state: FilterState,
+  geometry: {
+    columnWidth: number;
+    rowStep: number;
+    lanePadding: number;
+    headerHeight: number;
+    laneLabelWidth: number;
+    nodeInset: number;
+  }
+): ProcessLayout | null {
+  const spine = activeProcessSpine(state);
+  if (!spine) return null;
+
+  const stages = dataset.spineStages[spine] ?? [];
+  const decisions = visibleDecisions(index, state).filter((d) => d.spine === spine);
+
+  // Lanes are the departments present, busiest first. Insertion order breaks
+  // ties, which keeps a lane from jumping when a filter changes.
+  const byDept = new Map<string, DecisionNode[]>();
+  for (const d of decisions) {
+    const bucket = byDept.get(d.dept);
+    if (bucket) bucket.push(d);
+    else byDept.set(d.dept, [d]);
+  }
+  const laneOrder = [...byDept.keys()].sort(
+    (a, b) => byDept.get(b)!.length - byDept.get(a)!.length
+  );
+
+  // One cell per department × stage, highest priority at the top of the cell.
+  const cells = new Map<string, DecisionNode[]>();
+  for (const d of decisions) {
+    const key = `${d.dept}|${d.stage}`;
+    const bucket = cells.get(key);
+    if (bucket) bucket.push(d);
+    else cells.set(key, [d]);
+  }
+  for (const bucket of cells.values()) bucket.sort((a, b) => b.priority - a.priority);
+
+  // A lane is as tall as its busiest cell, so nothing overlaps and the lane
+  // heights themselves show where the work piles up.
+  const lanes: ProcessLane[] = [];
+  let y = geometry.headerHeight;
+  for (const dept of laneOrder) {
+    const busiest = Math.max(
+      1,
+      ...stages.map((s) => cells.get(`${dept}|${s}`)?.length ?? 0)
+    );
+    const height = busiest * geometry.rowStep + geometry.lanePadding * 2;
+    lanes.push({ dept, count: byDept.get(dept)!.length, y, height });
+    y += height;
+  }
+
+  const columnX = (i: number) => geometry.laneLabelWidth + i * geometry.columnWidth;
+
+  const placed: PlacedDecision[] = [];
+  for (const lane of lanes) {
+    stages.forEach((stage, column) => {
+      const bucket = cells.get(`${lane.dept}|${stage}`) ?? [];
+      bucket.forEach((decision, row) => {
+        placed.push({
+          decision,
+          x: columnX(column) + geometry.nodeInset,
+          y: lane.y + geometry.lanePadding + 12 + row * geometry.rowStep
+        });
+      });
+    });
+  }
+
+  return {
+    spine,
+    stages,
+    lanes,
+    placed,
+    emptyStages: stages.filter((s) => !decisions.some((d) => d.stage === s)),
+    decisions: decisions.length,
+    avgPriority: decisions.length
+      ? (decisions.reduce((a, b) => a + b.priority, 0) / decisions.length).toFixed(1)
+      : '—',
+    totalWidth: geometry.laneLabelWidth + stages.length * geometry.columnWidth,
+    totalHeight: y,
+    columnX
+  };
+}
+
+/**
+ * A decision's label as it appears beside its node in the process view:
+ * wrapped, and cut to `maxLines` with an ellipsis.
+ *
+ * Truncation is acceptable here and not on the map, because a row is a fixed
+ * width and the full label is one hover — or one click — away.
+ */
+export function stepLabelLines(
+  label: string,
+  wrapAt: number,
+  maxLines: number
+): string[] {
+  const lines = wrapLabel(label, wrapAt);
+  if (lines.length <= maxLines) return lines;
+  const shown = lines.slice(0, maxLines);
+  // Trailing punctuation before an ellipsis reads as a typo.
+  shown[maxLines - 1] = `${shown[maxLines - 1].replace(/[,;]?$/, '')}…`;
+  return shown;
+}
+
 // ─── Geometry ────────────────────────────────────────────────────────────
 //
 // Shared by the canvas and by the legend, so a legend glyph is drawn by the

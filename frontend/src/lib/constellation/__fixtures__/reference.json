@@ -17,6 +17,79 @@
       "Now": 52,
       "Next": 40,
       "Later": 28
+    },
+    "spineStages": {
+      "Quote-to-cash": [
+        "Plan & target",
+        "Engage",
+        "Quote & price",
+        "Order & credit",
+        "Allocate & fulfil",
+        "Invoice & collect",
+        "Review & renew"
+      ],
+      "Purchase-to-pay": [
+        "Need & spec",
+        "Source & terms",
+        "Order",
+        "Import & receive",
+        "Invoice & pay",
+        "Review"
+      ],
+      "Record-to-report": [
+        "Capture",
+        "Control",
+        "Close",
+        "Report",
+        "Plan & forecast",
+        "Govern"
+      ],
+      "Plan-to-fulfil": [
+        "Forecast",
+        "Consensus",
+        "Stock policy",
+        "Capacity & network",
+        "Execute",
+        "Review"
+      ],
+      "Idea-to-market": [
+        "Scan & select",
+        "Assess & approve",
+        "Source & cost",
+        "Enrich & list",
+        "Launch",
+        "Lifecycle"
+      ],
+      "Hire-to-retire": [
+        "Plan",
+        "Attract",
+        "Onboard",
+        "Deploy",
+        "Develop & reward",
+        "Exit"
+      ],
+      "Issue-to-resolution": [
+        "Prevent",
+        "Capture",
+        "Triage",
+        "Resolve",
+        "Recover",
+        "Learn"
+      ],
+      "Source-to-contract": [
+        "Define need",
+        "Market & select",
+        "Negotiate",
+        "Contract",
+        "Manage & audit"
+      ],
+      "Strategy": [
+        "Diagnose",
+        "Choose",
+        "Fund",
+        "Govern",
+        "Review"
+      ]
     }
   },
   "derived": {
@@ -127,6 +200,1631 @@
       "Later": 67,
       "Watch": 42
     }
+  },
+  "process": {
+    "Quote-to-cash": {
+      "spine": "Quote-to-cash",
+      "stages": [
+        "Plan & target",
+        "Engage",
+        "Quote & price",
+        "Order & credit",
+        "Allocate & fulfil",
+        "Invoice & collect",
+        "Review & renew"
+      ],
+      "decisions": 51,
+      "lanes": [
+        {
+          "dept": "Sales & Commercial",
+          "count": 21,
+          "y": 52,
+          "height": 254
+        },
+        {
+          "dept": "Pricing & Margin",
+          "count": 10,
+          "y": 306,
+          "height": 368
+        },
+        {
+          "dept": "Marketing",
+          "count": 5,
+          "y": 674,
+          "height": 140
+        },
+        {
+          "dept": "Warehouse & Fulfilment",
+          "count": 4,
+          "y": 814,
+          "height": 102
+        },
+        {
+          "dept": "Customer Service",
+          "count": 4,
+          "y": 916,
+          "height": 102
+        },
+        {
+          "dept": "Finance",
+          "count": 4,
+          "y": 1018,
+          "height": 140
+        },
+        {
+          "dept": "Procurement & Import",
+          "count": 2,
+          "y": 1158,
+          "height": 102
+        },
+        {
+          "dept": "Quality & Compliance",
+          "count": 1,
+          "y": 1260,
+          "height": 64
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1502,
+      "totalHeight": 1324,
+      "placed": [
+        {
+          "id": "SALC-003",
+          "x": 136,
+          "y": 77
+        },
+        {
+          "id": "SALC-015",
+          "x": 136,
+          "y": 115
+        },
+        {
+          "id": "SALC-020",
+          "x": 136,
+          "y": 153
+        },
+        {
+          "id": "SALC-019",
+          "x": 136,
+          "y": 191
+        },
+        {
+          "id": "SALC-001",
+          "x": 136,
+          "y": 229
+        },
+        {
+          "id": "SALC-002",
+          "x": 136,
+          "y": 267
+        },
+        {
+          "id": "SALC-005",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "SALC-004",
+          "x": 334,
+          "y": 115
+        },
+        {
+          "id": "SALC-006",
+          "x": 334,
+          "y": 153
+        },
+        {
+          "id": "SALC-021",
+          "x": 334,
+          "y": 191
+        },
+        {
+          "id": "SALC-018",
+          "x": 334,
+          "y": 229
+        },
+        {
+          "id": "SALC-008",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "SALC-022",
+          "x": 532,
+          "y": 115
+        },
+        {
+          "id": "SALC-007",
+          "x": 532,
+          "y": 153
+        },
+        {
+          "id": "SALC-010",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "SALC-023",
+          "x": 730,
+          "y": 115
+        },
+        {
+          "id": "SALC-011",
+          "x": 730,
+          "y": 153
+        },
+        {
+          "id": "SALC-016",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "SALC-012",
+          "x": 1126,
+          "y": 77
+        },
+        {
+          "id": "SALC-014",
+          "x": 1324,
+          "y": 77
+        },
+        {
+          "id": "SALC-017",
+          "x": 1324,
+          "y": 115
+        },
+        {
+          "id": "PRIM-008",
+          "x": 532,
+          "y": 331
+        },
+        {
+          "id": "PRIM-004",
+          "x": 532,
+          "y": 369
+        },
+        {
+          "id": "PRIM-002",
+          "x": 532,
+          "y": 407
+        },
+        {
+          "id": "PRIM-011",
+          "x": 532,
+          "y": 445
+        },
+        {
+          "id": "PRIM-003",
+          "x": 532,
+          "y": 483
+        },
+        {
+          "id": "PRIM-005",
+          "x": 532,
+          "y": 521
+        },
+        {
+          "id": "PRIM-010",
+          "x": 532,
+          "y": 559
+        },
+        {
+          "id": "PRIM-001",
+          "x": 532,
+          "y": 597
+        },
+        {
+          "id": "PRIM-009",
+          "x": 532,
+          "y": 635
+        },
+        {
+          "id": "PRIM-007",
+          "x": 1324,
+          "y": 331
+        },
+        {
+          "id": "MAR-001",
+          "x": 136,
+          "y": 699
+        },
+        {
+          "id": "MAR-002",
+          "x": 334,
+          "y": 699
+        },
+        {
+          "id": "MAR-003",
+          "x": 334,
+          "y": 737
+        },
+        {
+          "id": "MAR-011",
+          "x": 334,
+          "y": 775
+        },
+        {
+          "id": "MAR-005",
+          "x": 532,
+          "y": 699
+        },
+        {
+          "id": "WARF-013",
+          "x": 136,
+          "y": 839
+        },
+        {
+          "id": "WARF-005",
+          "x": 730,
+          "y": 839
+        },
+        {
+          "id": "WARF-007",
+          "x": 928,
+          "y": 839
+        },
+        {
+          "id": "WARF-012",
+          "x": 928,
+          "y": 877
+        },
+        {
+          "id": "CUSS-002",
+          "x": 136,
+          "y": 941
+        },
+        {
+          "id": "CUSS-003",
+          "x": 136,
+          "y": 979
+        },
+        {
+          "id": "CUSS-008",
+          "x": 730,
+          "y": 941
+        },
+        {
+          "id": "CUSS-007",
+          "x": 928,
+          "y": 941
+        },
+        {
+          "id": "FIN-001",
+          "x": 730,
+          "y": 1043
+        },
+        {
+          "id": "FIN-002",
+          "x": 730,
+          "y": 1081
+        },
+        {
+          "id": "FIN-005",
+          "x": 730,
+          "y": 1119
+        },
+        {
+          "id": "FIN-003",
+          "x": 1126,
+          "y": 1043
+        },
+        {
+          "id": "PROI-008",
+          "x": 928,
+          "y": 1183
+        },
+        {
+          "id": "PROI-009",
+          "x": 928,
+          "y": 1221
+        },
+        {
+          "id": "QUAC-005",
+          "x": 928,
+          "y": 1285
+        }
+      ],
+      "titleBlock": {
+        "decisions": 51,
+        "departments": 8,
+        "stages": 7,
+        "avgPriority": "40.9"
+      }
+    },
+    "Record-to-report": {
+      "spine": "Record-to-report",
+      "stages": [
+        "Capture",
+        "Control",
+        "Close",
+        "Report",
+        "Plan & forecast",
+        "Govern"
+      ],
+      "decisions": 23,
+      "lanes": [
+        {
+          "dept": "Finance",
+          "count": 12,
+          "y": 52,
+          "height": 178
+        },
+        {
+          "dept": "Executive & Strategy",
+          "count": 5,
+          "y": 230,
+          "height": 140
+        },
+        {
+          "dept": "IT & Data",
+          "count": 3,
+          "y": 370,
+          "height": 64
+        },
+        {
+          "dept": "Quality & Compliance",
+          "count": 3,
+          "y": 434,
+          "height": 102
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1304,
+      "totalHeight": 536,
+      "placed": [
+        {
+          "id": "FIN-017",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "FIN-010",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "FIN-004",
+          "x": 532,
+          "y": 115
+        },
+        {
+          "id": "FIN-011",
+          "x": 532,
+          "y": 153
+        },
+        {
+          "id": "FIN-014",
+          "x": 532,
+          "y": 191
+        },
+        {
+          "id": "FIN-009",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "FIN-006",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "FIN-007",
+          "x": 928,
+          "y": 115
+        },
+        {
+          "id": "FIN-013",
+          "x": 1126,
+          "y": 77
+        },
+        {
+          "id": "FIN-016",
+          "x": 1126,
+          "y": 115
+        },
+        {
+          "id": "FIN-012",
+          "x": 1126,
+          "y": 153
+        },
+        {
+          "id": "FIN-008",
+          "x": 1126,
+          "y": 191
+        },
+        {
+          "id": "EXES-011",
+          "x": 730,
+          "y": 255
+        },
+        {
+          "id": "EXES-006",
+          "x": 928,
+          "y": 255
+        },
+        {
+          "id": "EXES-010",
+          "x": 1126,
+          "y": 255
+        },
+        {
+          "id": "EXES-008",
+          "x": 1126,
+          "y": 293
+        },
+        {
+          "id": "EXES-012",
+          "x": 1126,
+          "y": 331
+        },
+        {
+          "id": "ITD-005",
+          "x": 136,
+          "y": 395
+        },
+        {
+          "id": "ITD-007",
+          "x": 730,
+          "y": 395
+        },
+        {
+          "id": "ITD-006",
+          "x": 1126,
+          "y": 395
+        },
+        {
+          "id": "QUAC-006",
+          "x": 730,
+          "y": 459
+        },
+        {
+          "id": "QUAC-008",
+          "x": 730,
+          "y": 497
+        },
+        {
+          "id": "QUAC-010",
+          "x": 1126,
+          "y": 459
+        }
+      ],
+      "titleBlock": {
+        "decisions": 23,
+        "departments": 4,
+        "stages": 6,
+        "avgPriority": "31.5"
+      }
+    },
+    "Purchase-to-pay": {
+      "spine": "Purchase-to-pay",
+      "stages": [
+        "Need & spec",
+        "Source & terms",
+        "Order",
+        "Import & receive",
+        "Invoice & pay",
+        "Review"
+      ],
+      "decisions": 23,
+      "lanes": [
+        {
+          "dept": "Procurement & Import",
+          "count": 10,
+          "y": 52,
+          "height": 216
+        },
+        {
+          "dept": "Supply Chain & Planning",
+          "count": 6,
+          "y": 268,
+          "height": 102
+        },
+        {
+          "dept": "Product & Category",
+          "count": 2,
+          "y": 370,
+          "height": 102
+        },
+        {
+          "dept": "IT & Data",
+          "count": 2,
+          "y": 472,
+          "height": 102
+        },
+        {
+          "dept": "Warehouse & Fulfilment",
+          "count": 1,
+          "y": 574,
+          "height": 64
+        },
+        {
+          "dept": "Finance",
+          "count": 1,
+          "y": 638,
+          "height": 64
+        },
+        {
+          "dept": "Quality & Compliance",
+          "count": 1,
+          "y": 702,
+          "height": 64
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1304,
+      "totalHeight": 766,
+      "placed": [
+        {
+          "id": "PROI-016",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "PROI-001",
+          "x": 334,
+          "y": 115
+        },
+        {
+          "id": "PROI-006",
+          "x": 334,
+          "y": 153
+        },
+        {
+          "id": "PROI-015",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "PROI-014",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "PROI-004",
+          "x": 730,
+          "y": 115
+        },
+        {
+          "id": "PROI-003",
+          "x": 730,
+          "y": 153
+        },
+        {
+          "id": "PROI-013",
+          "x": 730,
+          "y": 191
+        },
+        {
+          "id": "PROI-005",
+          "x": 730,
+          "y": 229
+        },
+        {
+          "id": "PROI-007",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "SUPC-008",
+          "x": 136,
+          "y": 293
+        },
+        {
+          "id": "SUPC-003",
+          "x": 136,
+          "y": 331
+        },
+        {
+          "id": "SUPC-010",
+          "x": 532,
+          "y": 293
+        },
+        {
+          "id": "SUPC-004",
+          "x": 532,
+          "y": 331
+        },
+        {
+          "id": "SUPC-011",
+          "x": 730,
+          "y": 293
+        },
+        {
+          "id": "SUPC-015",
+          "x": 730,
+          "y": 331
+        },
+        {
+          "id": "PROC-008",
+          "x": 334,
+          "y": 395
+        },
+        {
+          "id": "PROC-009",
+          "x": 334,
+          "y": 433
+        },
+        {
+          "id": "ITD-003",
+          "x": 1126,
+          "y": 497
+        },
+        {
+          "id": "ITD-008",
+          "x": 1126,
+          "y": 535
+        },
+        {
+          "id": "WARF-011",
+          "x": 334,
+          "y": 599
+        },
+        {
+          "id": "FIN-015",
+          "x": 928,
+          "y": 663
+        },
+        {
+          "id": "QUAC-007",
+          "x": 1126,
+          "y": 727
+        }
+      ],
+      "titleBlock": {
+        "decisions": 23,
+        "departments": 7,
+        "stages": 6,
+        "avgPriority": "38.0"
+      }
+    },
+    "Plan-to-fulfil": {
+      "spine": "Plan-to-fulfil",
+      "stages": [
+        "Forecast",
+        "Consensus",
+        "Stock policy",
+        "Capacity & network",
+        "Execute",
+        "Review"
+      ],
+      "decisions": 19,
+      "lanes": [
+        {
+          "dept": "Supply Chain & Planning",
+          "count": 9,
+          "y": 52,
+          "height": 140
+        },
+        {
+          "dept": "Warehouse & Fulfilment",
+          "count": 6,
+          "y": 192,
+          "height": 178
+        },
+        {
+          "dept": "Executive & Strategy",
+          "count": 1,
+          "y": 370,
+          "height": 64
+        },
+        {
+          "dept": "Product & Category",
+          "count": 1,
+          "y": 434,
+          "height": 64
+        },
+        {
+          "dept": "Pricing & Margin",
+          "count": 1,
+          "y": 498,
+          "height": 64
+        },
+        {
+          "dept": "Finance",
+          "count": 1,
+          "y": 562,
+          "height": 64
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1304,
+      "totalHeight": 626,
+      "placed": [
+        {
+          "id": "SUPC-001",
+          "x": 136,
+          "y": 77
+        },
+        {
+          "id": "SUPC-014",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "SUPC-002",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "SUPC-006",
+          "x": 532,
+          "y": 115
+        },
+        {
+          "id": "SUPC-012",
+          "x": 532,
+          "y": 153
+        },
+        {
+          "id": "SUPC-013",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "SUPC-005",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "SUPC-007",
+          "x": 1126,
+          "y": 77
+        },
+        {
+          "id": "SUPC-016",
+          "x": 1126,
+          "y": 115
+        },
+        {
+          "id": "WARF-009",
+          "x": 730,
+          "y": 217
+        },
+        {
+          "id": "WARF-001",
+          "x": 730,
+          "y": 255
+        },
+        {
+          "id": "WARF-004",
+          "x": 730,
+          "y": 293
+        },
+        {
+          "id": "WARF-003",
+          "x": 730,
+          "y": 331
+        },
+        {
+          "id": "WARF-002",
+          "x": 928,
+          "y": 217
+        },
+        {
+          "id": "WARF-006",
+          "x": 928,
+          "y": 255
+        },
+        {
+          "id": "EXES-009",
+          "x": 730,
+          "y": 395
+        },
+        {
+          "id": "PROC-012",
+          "x": 532,
+          "y": 459
+        },
+        {
+          "id": "PRIM-006",
+          "x": 1126,
+          "y": 523
+        },
+        {
+          "id": "FIN-018",
+          "x": 532,
+          "y": 587
+        }
+      ],
+      "titleBlock": {
+        "decisions": 19,
+        "departments": 6,
+        "stages": 6,
+        "avgPriority": "39.7"
+      }
+    },
+    "Idea-to-market": {
+      "spine": "Idea-to-market",
+      "stages": [
+        "Scan & select",
+        "Assess & approve",
+        "Source & cost",
+        "Enrich & list",
+        "Launch",
+        "Lifecycle"
+      ],
+      "decisions": 18,
+      "lanes": [
+        {
+          "dept": "Product & Category",
+          "count": 9,
+          "y": 52,
+          "height": 178
+        },
+        {
+          "dept": "Marketing",
+          "count": 5,
+          "y": 230,
+          "height": 178
+        },
+        {
+          "dept": "Quality & Compliance",
+          "count": 2,
+          "y": 408,
+          "height": 102
+        },
+        {
+          "dept": "Executive & Strategy",
+          "count": 1,
+          "y": 510,
+          "height": 64
+        },
+        {
+          "dept": "Supply Chain & Planning",
+          "count": 1,
+          "y": 574,
+          "height": 64
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1304,
+      "totalHeight": 638,
+      "placed": [
+        {
+          "id": "PROC-005",
+          "x": 136,
+          "y": 77
+        },
+        {
+          "id": "PROC-004",
+          "x": 136,
+          "y": 115
+        },
+        {
+          "id": "PROC-001",
+          "x": 136,
+          "y": 153
+        },
+        {
+          "id": "PROC-013",
+          "x": 136,
+          "y": 191
+        },
+        {
+          "id": "PROC-003",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "PROC-011",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "PROC-014",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "PROC-002",
+          "x": 1126,
+          "y": 77
+        },
+        {
+          "id": "PROC-010",
+          "x": 1126,
+          "y": 115
+        },
+        {
+          "id": "MAR-004",
+          "x": 730,
+          "y": 255
+        },
+        {
+          "id": "MAR-012",
+          "x": 928,
+          "y": 255
+        },
+        {
+          "id": "MAR-008",
+          "x": 928,
+          "y": 293
+        },
+        {
+          "id": "MAR-009",
+          "x": 928,
+          "y": 331
+        },
+        {
+          "id": "MAR-006",
+          "x": 928,
+          "y": 369
+        },
+        {
+          "id": "QUAC-002",
+          "x": 334,
+          "y": 433
+        },
+        {
+          "id": "QUAC-001",
+          "x": 334,
+          "y": 471
+        },
+        {
+          "id": "EXES-013",
+          "x": 136,
+          "y": 535
+        },
+        {
+          "id": "SUPC-009",
+          "x": 1126,
+          "y": 599
+        }
+      ],
+      "titleBlock": {
+        "decisions": 18,
+        "departments": 5,
+        "stages": 6,
+        "avgPriority": "38.6"
+      }
+    },
+    "Strategy": {
+      "spine": "Strategy",
+      "stages": [
+        "Diagnose",
+        "Choose",
+        "Fund",
+        "Govern",
+        "Review"
+      ],
+      "decisions": 13,
+      "lanes": [
+        {
+          "dept": "Executive & Strategy",
+          "count": 6,
+          "y": 52,
+          "height": 178
+        },
+        {
+          "dept": "IT & Data",
+          "count": 5,
+          "y": 230,
+          "height": 140
+        },
+        {
+          "dept": "Marketing",
+          "count": 1,
+          "y": 370,
+          "height": 64
+        },
+        {
+          "dept": "Quality & Compliance",
+          "count": 1,
+          "y": 434,
+          "height": 64
+        }
+      ],
+      "emptyStages": [
+        "Review"
+      ],
+      "totalWidth": 1106,
+      "totalHeight": 498,
+      "placed": [
+        {
+          "id": "EXES-005",
+          "x": 136,
+          "y": 77
+        },
+        {
+          "id": "EXES-003",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "EXES-001",
+          "x": 334,
+          "y": 115
+        },
+        {
+          "id": "EXES-002",
+          "x": 334,
+          "y": 153
+        },
+        {
+          "id": "EXES-004",
+          "x": 334,
+          "y": 191
+        },
+        {
+          "id": "EXES-007",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "ITD-010",
+          "x": 334,
+          "y": 255
+        },
+        {
+          "id": "ITD-001",
+          "x": 334,
+          "y": 293
+        },
+        {
+          "id": "ITD-002",
+          "x": 334,
+          "y": 331
+        },
+        {
+          "id": "ITD-004",
+          "x": 532,
+          "y": 255
+        },
+        {
+          "id": "ITD-009",
+          "x": 730,
+          "y": 255
+        },
+        {
+          "id": "MAR-007",
+          "x": 532,
+          "y": 395
+        },
+        {
+          "id": "QUAC-009",
+          "x": 532,
+          "y": 459
+        }
+      ],
+      "titleBlock": {
+        "decisions": 13,
+        "departments": 4,
+        "stages": 5,
+        "avgPriority": "30.6"
+      }
+    },
+    "Hire-to-retire": {
+      "spine": "Hire-to-retire",
+      "stages": [
+        "Plan",
+        "Attract",
+        "Onboard",
+        "Deploy",
+        "Develop & reward",
+        "Exit"
+      ],
+      "decisions": 12,
+      "lanes": [
+        {
+          "dept": "HR & People",
+          "count": 9,
+          "y": 52,
+          "height": 178
+        },
+        {
+          "dept": "Sales & Commercial",
+          "count": 2,
+          "y": 230,
+          "height": 64
+        },
+        {
+          "dept": "Warehouse & Fulfilment",
+          "count": 1,
+          "y": 294,
+          "height": 64
+        }
+      ],
+      "emptyStages": [
+        "Onboard"
+      ],
+      "totalWidth": 1304,
+      "totalHeight": 358,
+      "placed": [
+        {
+          "id": "HRP-001",
+          "x": 136,
+          "y": 77
+        },
+        {
+          "id": "HRP-005",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "HRP-007",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "HRP-004",
+          "x": 730,
+          "y": 115
+        },
+        {
+          "id": "HRP-002",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "HRP-006",
+          "x": 928,
+          "y": 115
+        },
+        {
+          "id": "HRP-009",
+          "x": 928,
+          "y": 153
+        },
+        {
+          "id": "HRP-008",
+          "x": 928,
+          "y": 191
+        },
+        {
+          "id": "HRP-003",
+          "x": 1126,
+          "y": 77
+        },
+        {
+          "id": "SALC-013",
+          "x": 136,
+          "y": 255
+        },
+        {
+          "id": "SALC-009",
+          "x": 928,
+          "y": 255
+        },
+        {
+          "id": "WARF-010",
+          "x": 730,
+          "y": 319
+        }
+      ],
+      "titleBlock": {
+        "decisions": 12,
+        "departments": 3,
+        "stages": 6,
+        "avgPriority": "28.2"
+      }
+    },
+    "Issue-to-resolution": {
+      "spine": "Issue-to-resolution",
+      "stages": [
+        "Prevent",
+        "Capture",
+        "Triage",
+        "Resolve",
+        "Recover",
+        "Learn"
+      ],
+      "decisions": 12,
+      "lanes": [
+        {
+          "dept": "Customer Service",
+          "count": 8,
+          "y": 52,
+          "height": 102
+        },
+        {
+          "dept": "Marketing",
+          "count": 1,
+          "y": 154,
+          "height": 64
+        },
+        {
+          "dept": "Procurement & Import",
+          "count": 1,
+          "y": 218,
+          "height": 64
+        },
+        {
+          "dept": "Warehouse & Fulfilment",
+          "count": 1,
+          "y": 282,
+          "height": 64
+        },
+        {
+          "dept": "Quality & Compliance",
+          "count": 1,
+          "y": 346,
+          "height": 64
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1304,
+      "totalHeight": 410,
+      "placed": [
+        {
+          "id": "CUSS-009",
+          "x": 136,
+          "y": 77
+        },
+        {
+          "id": "CUSS-001",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "CUSS-011",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "CUSS-006",
+          "x": 532,
+          "y": 115
+        },
+        {
+          "id": "CUSS-004",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "CUSS-010",
+          "x": 730,
+          "y": 115
+        },
+        {
+          "id": "CUSS-012",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "CUSS-005",
+          "x": 1126,
+          "y": 77
+        },
+        {
+          "id": "MAR-010",
+          "x": 1126,
+          "y": 179
+        },
+        {
+          "id": "PROI-010",
+          "x": 730,
+          "y": 243
+        },
+        {
+          "id": "WARF-008",
+          "x": 1126,
+          "y": 307
+        },
+        {
+          "id": "QUAC-003",
+          "x": 730,
+          "y": 371
+        }
+      ],
+      "titleBlock": {
+        "decisions": 12,
+        "departments": 5,
+        "stages": 6,
+        "avgPriority": "33.8"
+      }
+    },
+    "Source-to-contract": {
+      "spine": "Source-to-contract",
+      "stages": [
+        "Define need",
+        "Market & select",
+        "Negotiate",
+        "Contract",
+        "Manage & audit"
+      ],
+      "decisions": 8,
+      "lanes": [
+        {
+          "dept": "Product & Category",
+          "count": 4,
+          "y": 52,
+          "height": 102
+        },
+        {
+          "dept": "Procurement & Import",
+          "count": 3,
+          "y": 154,
+          "height": 64
+        },
+        {
+          "dept": "Quality & Compliance",
+          "count": 1,
+          "y": 218,
+          "height": 64
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1106,
+      "totalHeight": 282,
+      "placed": [
+        {
+          "id": "PROC-007",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "PROC-006",
+          "x": 334,
+          "y": 115
+        },
+        {
+          "id": "PROC-016",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "PROC-015",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "PROI-012",
+          "x": 136,
+          "y": 179
+        },
+        {
+          "id": "PROI-002",
+          "x": 532,
+          "y": 179
+        },
+        {
+          "id": "PROI-011",
+          "x": 928,
+          "y": 179
+        },
+        {
+          "id": "QUAC-004",
+          "x": 928,
+          "y": 243
+        }
+      ],
+      "titleBlock": {
+        "decisions": 8,
+        "departments": 3,
+        "stages": 5,
+        "avgPriority": "36.2"
+      }
+    },
+    "Quote-to-cash (Now and Next only)": {
+      "spine": "Quote-to-cash",
+      "stages": [
+        "Plan & target",
+        "Engage",
+        "Quote & price",
+        "Order & credit",
+        "Allocate & fulfil",
+        "Invoice & collect",
+        "Review & renew"
+      ],
+      "decisions": 29,
+      "lanes": [
+        {
+          "dept": "Sales & Commercial",
+          "count": 14,
+          "y": 52,
+          "height": 178
+        },
+        {
+          "dept": "Pricing & Margin",
+          "count": 7,
+          "y": 230,
+          "height": 254
+        },
+        {
+          "dept": "Customer Service",
+          "count": 4,
+          "y": 484,
+          "height": 102
+        },
+        {
+          "dept": "Marketing",
+          "count": 1,
+          "y": 586,
+          "height": 64
+        },
+        {
+          "dept": "Procurement & Import",
+          "count": 1,
+          "y": 650,
+          "height": 64
+        },
+        {
+          "dept": "Warehouse & Fulfilment",
+          "count": 1,
+          "y": 714,
+          "height": 64
+        },
+        {
+          "dept": "Finance",
+          "count": 1,
+          "y": 778,
+          "height": 64
+        }
+      ],
+      "emptyStages": [],
+      "totalWidth": 1502,
+      "totalHeight": 842,
+      "placed": [
+        {
+          "id": "SALC-003",
+          "x": 136,
+          "y": 77
+        },
+        {
+          "id": "SALC-015",
+          "x": 136,
+          "y": 115
+        },
+        {
+          "id": "SALC-020",
+          "x": 136,
+          "y": 153
+        },
+        {
+          "id": "SALC-005",
+          "x": 334,
+          "y": 77
+        },
+        {
+          "id": "SALC-004",
+          "x": 334,
+          "y": 115
+        },
+        {
+          "id": "SALC-006",
+          "x": 334,
+          "y": 153
+        },
+        {
+          "id": "SALC-021",
+          "x": 334,
+          "y": 191
+        },
+        {
+          "id": "SALC-008",
+          "x": 532,
+          "y": 77
+        },
+        {
+          "id": "SALC-022",
+          "x": 532,
+          "y": 115
+        },
+        {
+          "id": "SALC-010",
+          "x": 730,
+          "y": 77
+        },
+        {
+          "id": "SALC-023",
+          "x": 730,
+          "y": 115
+        },
+        {
+          "id": "SALC-016",
+          "x": 928,
+          "y": 77
+        },
+        {
+          "id": "SALC-012",
+          "x": 1126,
+          "y": 77
+        },
+        {
+          "id": "SALC-014",
+          "x": 1324,
+          "y": 77
+        },
+        {
+          "id": "PRIM-008",
+          "x": 532,
+          "y": 255
+        },
+        {
+          "id": "PRIM-004",
+          "x": 532,
+          "y": 293
+        },
+        {
+          "id": "PRIM-002",
+          "x": 532,
+          "y": 331
+        },
+        {
+          "id": "PRIM-011",
+          "x": 532,
+          "y": 369
+        },
+        {
+          "id": "PRIM-003",
+          "x": 532,
+          "y": 407
+        },
+        {
+          "id": "PRIM-005",
+          "x": 532,
+          "y": 445
+        },
+        {
+          "id": "PRIM-007",
+          "x": 1324,
+          "y": 255
+        },
+        {
+          "id": "CUSS-002",
+          "x": 136,
+          "y": 509
+        },
+        {
+          "id": "CUSS-003",
+          "x": 136,
+          "y": 547
+        },
+        {
+          "id": "CUSS-008",
+          "x": 730,
+          "y": 509
+        },
+        {
+          "id": "CUSS-007",
+          "x": 928,
+          "y": 509
+        },
+        {
+          "id": "MAR-005",
+          "x": 532,
+          "y": 611
+        },
+        {
+          "id": "PROI-008",
+          "x": 928,
+          "y": 675
+        },
+        {
+          "id": "WARF-005",
+          "x": 730,
+          "y": 739
+        },
+        {
+          "id": "FIN-001",
+          "x": 730,
+          "y": 803
+        }
+      ],
+      "titleBlock": {
+        "decisions": 29,
+        "departments": 7,
+        "stages": 7,
+        "avgPriority": "46.8"
+      }
+    }
+  },
+  "stepLabels": {
+    "Which market segments / verticals to prioritise for growth": [
+      "Which market segments /",
+      "verticals to prioritise…"
+    ],
+    "Rebate accrual": [
+      "Rebate accrual"
+    ],
+    "Whether to pre-buy ahead of a price rise or tariff change": [
+      "Whether to pre-buy",
+      "ahead of a price rise…"
+    ],
+    "Data quality remediation priorities — customer, item, supplier master": [
+      "Data quality",
+      "remediation priorities…"
+    ]
   },
   "scenarios": {
     "default": {
