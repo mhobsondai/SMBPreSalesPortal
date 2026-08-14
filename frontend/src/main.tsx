@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,6 +14,18 @@ import { SapQuoteGenerator } from './pages/tools/SapQuoteGenerator';
 import { NotFound } from './pages/NotFound';
 import './styles/tokens.css';
 import './styles/base.css';
+
+/*
+ * The only lazily-loaded route. It carries d3 and a 170 kB example dataset,
+ * which together are a third of the bundle — and nobody who came for a quote
+ * needs either. Same reasoning as the dynamic `docx`/`exceljs` imports: heavy
+ * things load when they are asked for.
+ */
+const DecisionConstellation = lazy(() =>
+  import('./pages/tools/DecisionConstellation').then((m) => ({
+    default: m.DecisionConstellation
+  }))
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +62,14 @@ createRoot(rootElement).render(
             <Route
               path="/tools/assessment-scoring"
               element={<AssessmentScoringEngine />}
+            />
+            <Route
+              path="/tools/decision-constellation"
+              element={
+                <Suspense fallback={<div className="page">Loading the constellation…</div>}>
+                  <DecisionConstellation />
+                </Suspense>
+              }
             />
             <Route
               path="/tools/fabric-data-calculator"

@@ -128,6 +128,14 @@ export const SECTIONS: Section[] = [
             to: '/tools/assessment-scoring'
           },
           {
+            id: 'decision-constellation',
+            title: 'Decision Constellation',
+            description:
+              'Map a client’s decisions to the departments, processes and systems behind them.',
+            status: 'live',
+            to: '/tools/decision-constellation'
+          },
+          {
             id: 'insight-spark-engine',
             title: 'Insight Spark Engine',
             description: 'Turns assessment results into talking points and themes.',

@@ -50,6 +50,25 @@ describe('live tiles', () => {
   });
 });
 
+describe('the Data & AI assessments group', () => {
+  const assessments = resolvePath(['data-ai', 'assessments'])!.section;
+
+  it('carries the Decision Constellation as a live tool', () => {
+    const tile = (assessments.tiles ?? []).find((t) => t.id === 'decision-constellation');
+    expect(tile?.status).toBe('live');
+    // The route registered in main.tsx. Renaming either breaks the tile
+    // silently — a live tile with a dead `to` still renders.
+    expect(tile?.to).toBe('/tools/decision-constellation');
+    expect(tile?.href).toBeUndefined();
+  });
+
+  it('keeps the client-facing questionnaire external and the tools internal', () => {
+    const tiles = assessments.tiles ?? [];
+    expect(tiles.find((t) => t.id === 'client-link')?.href).toMatch(/^https:\/\//);
+    expect(tiles.filter((t) => t.to).every((t) => t.to!.startsWith('/tools/'))).toBe(true);
+  });
+});
+
 describe('slugs', () => {
   it('are unique among siblings', () => {
     for (const section of [{ children: SECTIONS } as unknown as Section, ...allSections()]) {
