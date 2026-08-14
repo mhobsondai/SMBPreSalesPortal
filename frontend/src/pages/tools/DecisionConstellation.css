@@ -1,295 +1,383 @@
 /*
  * Decision Constellation.
  *
- * Two registers on one page, deliberately.
+ * This tool keeps the prototype's own look rather than the portal's: the
+ * dark ground, Barlow Condensed and IBM Plex, and the oxide / brass /
+ * verdigris palette it was designed in. That is a deliberate exception and
+ * a reversible one — the tool is wired into the portal in every other
+ * respect (route, tile, auth, tests), so restyling it to the portal palette
+ * later is a change to this file and to the colour constants in
+ * `config/decisionConstellationModel.ts`, and to nothing else. See AD-18.
  *
- * The three prose views are the portal: light surface, Plus Jakarta Sans
- * headings, orange accent, the same rules and spacing as every other tool.
- * Shared chrome (header, tabs, panels, buttons) comes from `tool.css` — only
- * what is specific to this tool is below.
+ * Everything here is prefixed `dc-`. The prototype used bare class names
+ * (`.topbar`, `.brand`, `.tab`, `.field`) that collide head-on with
+ * `TopBar.css`, `base.css` and `tool.css`, so none of them survive as-is.
  *
- * The map is a night sky. That is not decoration and not a second theme: a
- * force-directed graph of 240 nodes and 863 links is genuinely unreadable on
- * a white surface — the faint links disappear and the dense middle turns to
- * mud — and the artefact is called a constellation. The stage therefore has
- * its own dark ground with a static star field behind it, and every hue on
- * it is a portal accent lifted for a dark background rather than a new
- * palette: orange leads, and the bands keep the portal's status ordering of
- * orange, amber, green, blue.
- *
- * The line between the two is the stage border. Nothing dark leaks outside
- * it, and nothing inside it uses the light tokens.
+ * The portal's own top bar stays above this, which is the only way back to
+ * the rest of the portal. Everything below it is the prototype.
  */
 
-/* ─── Night-sky tokens, scoped to this tool ──────────────────────────── */
+/* The three fonts are requested by the page component, not `@import`ed here.
+   The reason is in the comment on `useConstellationFonts` and it is not a
+   style preference — an `@import` that fails renders this tool blank. */
 
-.dc-page {
-  --dc-ink: #0f1020;
-  --dc-panel: #171a2e;
-  --dc-panel-2: #1e2238;
-  --dc-rule: #2c3150;
-  --dc-chalk: #e8e9f2;
-  --dc-text: #c6c9dc;
-  --dc-muted: #8f96b6;
-  --dc-dim: #6b7297;
-  --dc-brass: #e3cb8c;
+.dc-app {
+  --dc-ground: #0e141b;
+  --dc-panel: #141c25;
+  --dc-panel-2: #1a242f;
+  --dc-rule: #26333f;
+  --dc-chalk: #e6e2d8;
+  --dc-muted: #8593a2;
+  --dc-dim: #5c6b7a;
+  --dc-oxide: #d2603f;
+  --dc-brass: #c79a4e;
+  --dc-verdigris: #5c8f86;
+  --dc-text: #d3cec4;
+
+  --dc-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --dc-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --dc-mono: 'IBM Plex Mono', ui-monospace, 'Courier New', monospace;
+
+  /* The portal top bar is 64px plus its 2px accent rule. */
+  height: calc(100vh - 66px);
+  display: flex;
+  flex-direction: column;
+  background: var(--dc-ground);
+  color: var(--dc-chalk);
+  font-family: var(--dc-body);
+  font-size: 14px;
+  overflow: hidden;
 }
 
-/* Tab panels. `hidden` does the hiding; this only stops a hidden panel
-   fighting the layout in browsers that style [hidden] loosely. */
+/* ─── Brand bar and tabs ─────────────────────────────────────────────── */
+
+.dc-topbar {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  gap: 26px;
+  flex-wrap: wrap;
+  padding: 13px 22px 0;
+  background: var(--dc-panel);
+  border-bottom: 1px solid var(--dc-rule);
+}
+
+.dc-brand {
+  padding-bottom: 11px;
+  margin-right: auto;
+}
+
+.dc-brand-mark {
+  font-family: var(--dc-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: block;
+  line-height: 1;
+  color: var(--dc-chalk);
+}
+
+.dc-brand-sub {
+  font-family: var(--dc-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dc-dim);
+}
+
+.dc-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.dc-tab {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--dc-muted);
+  font-family: var(--dc-display);
+  font-size: 14.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 9px 15px;
+  cursor: pointer;
+}
+
+.dc-tab:hover {
+  color: var(--dc-chalk);
+}
+
+.dc-tab.is-active {
+  color: var(--dc-oxide);
+  border-bottom-color: var(--dc-oxide);
+}
+
+.dc-tab:focus-visible {
+  outline: 2px solid var(--dc-brass);
+  outline-offset: -2px;
+}
+
+/* ─── Viewport and views ─────────────────────────────────────────────── */
+
+.dc-viewport {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.dc-view {
+  position: absolute;
+  inset: 0;
+}
+
 .dc-view[hidden] {
   display: none;
 }
 
-/* ─── Prose views ────────────────────────────────────────────────────── */
-
 .dc-prose {
-  max-width: 780px;
+  overflow-y: auto;
 }
 
-.dc-kicker {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin-bottom: 10px;
+.dc-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 40px 96px;
 }
+
+/* ─── Prose ──────────────────────────────────────────────────────────── */
 
 .dc-prose h2 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 30px;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  margin: 0 0 14px;
+  font-family: var(--dc-display);
+  font-weight: 600;
+  font-size: 27px;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  color: var(--dc-chalk);
 }
 
 .dc-prose h3 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 19px;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin: 40px 0 12px;
-  padding-top: 18px;
-  border-top: 2px solid var(--rule);
+  font-family: var(--dc-display);
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dc-brass);
+  margin: 36px 0 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--dc-rule);
 }
 
 .dc-prose h4 {
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink);
-  margin: 26px 0 6px;
+  font-family: var(--dc-body);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 22px 0 5px;
+  color: var(--dc-chalk);
+}
+
+.dc-kicker {
+  font-family: var(--dc-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dc-dim);
+  margin-bottom: 11px;
 }
 
 .dc-prose p {
-  color: var(--ink-2);
-  line-height: 1.7;
-  margin: 0 0 16px;
+  color: var(--dc-text);
+  line-height: 1.68;
+  margin: 0 0 15px;
 }
 
 .dc-prose .dc-lead {
-  font-size: 17px;
+  font-size: 16.5px;
   line-height: 1.6;
-  color: var(--ink);
-  margin-bottom: 22px;
+  color: var(--dc-chalk);
+  margin-bottom: 20px;
 }
 
 .dc-prose ul {
-  color: var(--ink-2);
-  line-height: 1.7;
-  padding-left: 22px;
-  margin: 0 0 16px;
+  color: var(--dc-text);
+  line-height: 1.66;
+  padding-left: 20px;
+  margin: 0 0 15px;
 }
 
 .dc-prose li {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.dc-prose strong {
-  color: var(--ink);
-  font-weight: 600;
+.dc-prose li strong,
+.dc-prose p strong {
+  color: var(--dc-chalk);
 }
 
 .dc-prose em {
-  color: var(--ink);
+  color: var(--dc-chalk);
+  font-style: italic;
 }
 
 .dc-table {
   border-collapse: collapse;
   width: 100%;
-  margin: 6px 0 24px;
-  font-size: 14px;
+  margin: 6px 0 20px;
+  font-size: 13px;
 }
 
 .dc-table th {
   text-align: left;
-  font-family: var(--font-mono);
-  font-size: 10px;
+  font-family: var(--dc-mono);
+  font-size: 9px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--ink-3);
-  padding: 8px 14px 8px 0;
-  border-bottom: 2px solid var(--rule);
+  color: var(--dc-dim);
+  padding: 7px 12px 7px 0;
+  border-bottom: 1px solid var(--dc-rule);
   font-weight: 400;
 }
 
 .dc-table td {
-  padding: 10px 14px 10px 0;
-  border-bottom: 1px solid var(--rule-soft);
-  color: var(--ink-2);
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid rgba(38, 51, 63, 0.55);
+  color: var(--dc-text);
   vertical-align: top;
-  line-height: 1.55;
 }
 
 .dc-table td:first-child {
-  color: var(--ink);
-  font-weight: 600;
+  color: var(--dc-chalk);
   width: 32%;
 }
 
 .dc-callout {
-  border-left: 3px solid var(--orange);
-  background: var(--orange-bg);
-  padding: 16px 20px;
-  margin: 8px 0 26px;
+  border-left: 2px solid var(--dc-brass);
+  background: var(--dc-panel-2);
+  padding: 14px 18px;
+  margin: 6px 0 22px;
 }
 
 .dc-callout p {
   margin: 0;
-  font-size: 14px;
-  color: var(--ink-2);
+  font-size: 13.5px;
 }
 
 .dc-callout p + p {
   margin-top: 10px;
 }
 
-.dc-fin {
-  color: var(--ink-3);
-  font-size: 13px;
-  line-height: 1.65;
-  margin-top: 38px;
-  padding-top: 18px;
-  border-top: 1px solid var(--rule);
-}
-
-.dc-fin p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--ink-3);
-}
-
 .dc-statrow {
   display: flex;
   flex-wrap: wrap;
   gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  margin: 6px 0 28px;
+  background: var(--dc-rule);
+  border: 1px solid var(--dc-rule);
+  margin: 4px 0 26px;
 }
 
 .dc-stat {
-  background: var(--white);
-  padding: 14px 18px;
+  background: var(--dc-panel);
+  padding: 11px 16px;
   flex: 1;
-  min-width: 110px;
+  min-width: 104px;
 }
 
 .dc-stat-n {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 28px;
+  font-family: var(--dc-display);
+  font-size: 25px;
   line-height: 1;
-  color: var(--orange);
-  letter-spacing: -0.02em;
+  color: var(--dc-oxide);
 }
 
 .dc-stat-l {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-family: var(--dc-mono);
+  font-size: 8.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-3);
-  margin-top: 7px;
+  color: var(--dc-dim);
+  margin-top: 5px;
 }
 
 .dc-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(238px, 1fr));
   gap: 12px;
-  margin: 8px 0 26px;
+  margin: 6px 0 24px;
 }
 
 .dc-card {
-  border: 1px solid var(--rule);
-  background: var(--white);
-  padding: 16px 18px 18px;
+  border: 1px solid var(--dc-rule);
+  background: var(--dc-panel);
+  padding: 15px 16px 16px;
 }
 
 .dc-card-t {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--ink);
-  margin-bottom: 8px;
+  font-family: var(--dc-display);
+  font-size: 15.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dc-chalk);
+  margin-bottom: 7px;
 }
 
 .dc-card p {
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.6;
   margin: 0;
-  color: var(--ink-2);
 }
 
 .dc-card-tag {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-family: var(--dc-mono);
+  font-size: 9px;
   letter-spacing: 0.11em;
   text-transform: uppercase;
-  color: var(--green);
+  color: var(--dc-verdigris);
   display: block;
-  margin-top: 10px;
+  margin-top: 9px;
 }
 
-/* ─── Map: workspace ─────────────────────────────────────────────────── */
+.dc-fin {
+  color: var(--dc-dim);
+  font-size: 12.5px;
+  line-height: 1.6;
+  margin-top: 34px;
+  padding-top: 16px;
+  border-top: 1px solid var(--dc-rule);
+}
+
+.dc-fin p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--dc-dim);
+}
+
+/* ─── Workspace ──────────────────────────────────────────────────────── */
 
 .dc-workspace {
   display: grid;
-  grid-template-columns: 274px minmax(0, 1fr);
-  height: clamp(560px, calc(100vh - 300px), 900px);
-  border: 1px solid var(--dc-rule);
-  background: var(--dc-ink);
+  grid-template-columns: 274px 1fr;
+  height: 100%;
   position: relative;
-  overflow: hidden;
 }
 
-.dc-stagenote {
-  font-size: 12.5px;
-  color: var(--ink-3);
-  margin: 12px 0 0;
-}
-
-/* ─── Map: filter rail ───────────────────────────────────────────────── */
+/* ─── Filter rail ────────────────────────────────────────────────────── */
 
 .dc-rail {
   background: var(--dc-panel);
   border-right: 1px solid var(--dc-rule);
   overflow-y: auto;
-  padding-bottom: 32px;
-  color: var(--dc-chalk);
+  padding: 0 0 32px;
 }
 
 .dc-rail-head {
-  padding: 20px 18px 16px;
+  padding: 20px 18px 14px;
   border-bottom: 1px solid var(--dc-rule);
 }
 
 .dc-rail-eyebrow {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 9.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -297,10 +385,12 @@
 }
 
 .dc-rail-head h2 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: -0.02em;
+  font-family: var(--dc-display);
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
   margin: 8px 0 6px;
   color: var(--dc-chalk);
 }
@@ -308,14 +398,14 @@
 .dc-rail-head p {
   margin: 0;
   font-size: 11.5px;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--dc-muted);
 }
 
 .dc-group {
   border: 0;
   margin: 0;
-  padding: 16px 18px 12px;
+  padding: 18px 18px 4px;
   border-bottom: 1px solid var(--dc-rule);
 }
 
@@ -324,7 +414,7 @@
 }
 
 .dc-group legend {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 9.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -335,8 +425,8 @@
 .dc-hint {
   font-size: 10.5px;
   color: var(--dc-dim);
-  margin: 8px 0 10px;
-  line-height: 1.5;
+  margin: 6px 0 10px;
+  line-height: 1.45;
 }
 
 .dc-chk {
@@ -346,16 +436,16 @@
   padding: 5px 0;
   cursor: pointer;
   font-size: 12.5px;
-  line-height: 1.3;
+  line-height: 1.25;
   color: var(--dc-chalk);
 }
 
 .dc-chk:hover {
-  color: var(--white);
+  color: #fff;
 }
 
 .dc-chk input {
-  accent-color: var(--orange);
+  accent-color: var(--dc-brass);
   width: 13px;
   height: 13px;
   flex: none;
@@ -376,7 +466,7 @@
 
 .dc-count {
   margin-left: auto;
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 10.5px;
   color: var(--dc-dim);
 }
@@ -390,28 +480,28 @@
   background: none;
   border: 1px solid var(--dc-rule);
   color: var(--dc-muted);
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 9.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 5px 9px;
+  padding: 4px 8px;
   cursor: pointer;
   margin: 8px 0 4px;
 }
 
 .dc-mini:hover {
-  border-color: var(--orange);
-  color: var(--orange-light);
+  border-color: var(--dc-brass);
+  color: var(--dc-brass);
 }
 
 .dc-search {
   width: 100%;
-  background: var(--dc-ink);
+  background: var(--dc-ground);
   border: 1px solid var(--dc-rule);
   color: var(--dc-chalk);
-  font-family: var(--font-body);
+  font-family: var(--dc-body);
   font-size: 12.5px;
-  padding: 9px 10px;
+  padding: 8px 10px;
   margin: 10px 0 4px;
 }
 
@@ -419,21 +509,21 @@
   color: var(--dc-dim);
 }
 
-.dc-workspace input[type='range'] {
+.dc-app input[type='range'] {
   width: 100%;
-  accent-color: var(--orange);
+  accent-color: var(--dc-brass);
   margin: 12px 0 2px;
 }
 
-.dc-workspace input:focus-visible,
-.dc-workspace button:focus-visible,
-.dc-workspace [tabindex]:focus-visible {
-  outline: 2px solid var(--orange-light);
+.dc-app input:focus-visible,
+.dc-app button:focus-visible,
+.dc-app [tabindex]:focus-visible {
+  outline: 2px solid var(--dc-brass);
   outline-offset: 2px;
 }
 
 .dc-rangeval {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 10.5px;
   color: var(--dc-muted);
 }
@@ -455,20 +545,18 @@
 }
 
 .dc-twist:hover {
-  color: var(--orange-light);
+  color: var(--dc-brass);
 }
 
 .dc-kids {
   padding-left: 20px;
 }
 
-/* ─── Map: stage ─────────────────────────────────────────────────────── */
+/* ─── Stage ──────────────────────────────────────────────────────────── */
 
 .dc-stage {
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 50% 45%, #1a1d38 0%, var(--dc-ink) 68%);
 }
 
 .dc-canvas {
@@ -505,16 +593,8 @@
   cursor: pointer;
 }
 
-/* The glow that makes a node read as a star rather than a dot. Drawn as a
-   scaled copy of the node's own shape rather than an SVG filter — a blur
-   filter over 240 nodes costs real frames on a laptop mid-meeting. */
-.dc-halo {
-  opacity: 0.16;
-  pointer-events: none;
-}
-
 .dc-shape {
-  stroke: var(--dc-ink);
+  stroke: var(--dc-ground);
   stroke-width: 1.2;
 }
 
@@ -523,25 +603,25 @@
 }
 
 .dc-hublabel {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.01em;
+  font-family: var(--dc-display);
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   fill: var(--dc-chalk);
   pointer-events: none;
   paint-order: stroke;
-  stroke: var(--dc-ink);
+  stroke: var(--dc-ground);
   stroke-width: 3.5px;
   stroke-linejoin: round;
 }
 
 .dc-declabel {
-  font-family: var(--font-body);
-  font-size: 11px;
+  font-family: var(--dc-body);
+  font-size: 10.5px;
   fill: var(--dc-chalk);
   pointer-events: none;
   paint-order: stroke;
-  stroke: var(--dc-ink);
+  stroke: var(--dc-ground);
   stroke-width: 3.5px;
   stroke-linejoin: round;
 }
@@ -551,23 +631,23 @@
   font-weight: 500;
 }
 
-/* ─── Map: overlays ──────────────────────────────────────────────────── */
+/* ─── Title block ────────────────────────────────────────────────────── */
 
 .dc-titleblock {
   position: absolute;
   left: 16px;
   bottom: 16px;
-  background: rgba(15, 16, 32, 0.9);
+  background: rgba(14, 20, 27, 0.9);
   border: 1px solid var(--dc-rule);
   display: grid;
-  grid-template-columns: repeat(4, minmax(64px, auto));
-  font-family: var(--font-mono);
+  grid-template-columns: repeat(4, minmax(62px, auto));
+  font-family: var(--dc-mono);
   backdrop-filter: blur(3px);
   pointer-events: none;
 }
 
 .dc-tb {
-  padding: 7px 13px 8px;
+  padding: 7px 12px 8px;
   border-right: 1px solid var(--dc-rule);
 }
 
@@ -584,7 +664,7 @@
 
 .dc-tb-v {
   font-size: 15px;
-  margin-top: 4px;
+  margin-top: 3px;
   color: var(--dc-chalk);
 }
 
@@ -595,16 +675,19 @@
 }
 
 .dc-tb--wide .dc-tb-v {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-family: var(--dc-display);
   font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
+
+/* ─── Legend ─────────────────────────────────────────────────────────── */
 
 .dc-legend {
   position: absolute;
   right: 16px;
   top: 16px;
-  background: rgba(15, 16, 32, 0.9);
+  background: rgba(14, 20, 27, 0.9);
   border: 1px solid var(--dc-rule);
   padding: 11px 13px;
   backdrop-filter: blur(3px);
@@ -612,12 +695,12 @@
 }
 
 .dc-legend-key {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 8.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--dc-dim);
-  margin-bottom: 8px;
+  margin-bottom: 7px;
 }
 
 .dc-legend-row {
@@ -635,15 +718,17 @@
   flex: none;
 }
 
+/* ─── Focus bar ──────────────────────────────────────────────────────── */
+
 .dc-focusbar {
   position: absolute;
   left: 50%;
   top: 16px;
   transform: translateX(-50%);
-  background: rgba(15, 16, 32, 0.92);
+  background: rgba(14, 20, 27, 0.92);
   border: 1px solid var(--dc-rule);
   padding: 8px 14px;
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -665,13 +750,13 @@
 .dc-focusbar button {
   background: none;
   border: 0;
-  color: var(--orange-light);
+  color: var(--dc-brass);
   font: inherit;
   cursor: pointer;
   padding: 0;
 }
 
-/* ─── Map: inspector ─────────────────────────────────────────────────── */
+/* ─── Inspector ──────────────────────────────────────────────────────── */
 
 .dc-inspector {
   position: absolute;
@@ -684,7 +769,6 @@
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
-  color: var(--dc-chalk);
   z-index: 6;
 }
 
@@ -699,19 +783,19 @@
 }
 
 .dc-insp-id {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 10px;
   letter-spacing: 0.12em;
   color: var(--dc-brass);
 }
 
 .dc-insp-head h3 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 19px;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  font-family: var(--dc-display);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.1;
   margin: 8px 0 0;
+  text-transform: uppercase;
   padding-right: 26px;
   color: var(--dc-chalk);
 }
@@ -719,7 +803,7 @@
 .dc-close {
   position: absolute;
   right: 14px;
-  top: 12px;
+  top: 14px;
   background: none;
   border: 0;
   color: var(--dc-dim);
@@ -735,11 +819,11 @@
 
 .dc-band {
   display: inline-block;
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 9.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 4px 9px;
+  padding: 3px 8px;
   margin-top: 12px;
   border: 1px solid currentColor;
 }
@@ -759,7 +843,7 @@
 }
 
 .dc-score-k {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 8px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -767,21 +851,20 @@
 }
 
 .dc-score-v {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 21px;
+  font-family: var(--dc-display);
+  font-size: 22px;
   line-height: 1;
-  margin-top: 6px;
+  margin-top: 5px;
   color: var(--dc-chalk);
 }
 
 .dc-field {
   padding: 11px 20px;
-  border-bottom: 1px solid var(--dc-panel-2);
+  border-bottom: 1px solid rgba(38, 51, 63, 0.6);
 }
 
 .dc-field-k {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 8.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -789,21 +872,21 @@
 }
 
 .dc-field-v {
-  margin-top: 5px;
+  margin-top: 4px;
   font-size: 13px;
-  line-height: 1.55;
-  color: var(--dc-text);
+  line-height: 1.5;
+  color: var(--dc-chalk);
 }
 
 .dc-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .dc-chip {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 10px;
   padding: 3px 7px;
   border: 1px solid var(--dc-rule);
@@ -816,18 +899,12 @@
 }
 
 .dc-hubrow {
-  padding: 6px 0;
-  border-bottom: 1px solid var(--dc-panel-2);
-  font-size: 12.5px;
-  line-height: 1.45;
-}
-
-.dc-hubrow:last-child {
-  border-bottom: 0;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(38, 51, 63, 0.5);
 }
 
 .dc-hubrow-pri {
-  font-family: var(--font-mono);
+  font-family: var(--dc-mono);
   font-size: 10px;
   margin-right: 8px;
 }
@@ -839,19 +916,19 @@
 .dc-act {
   width: 100%;
   background: none;
-  border: 1px solid var(--orange);
-  color: var(--orange-light);
-  font-family: var(--font-mono);
+  border: 1px solid var(--dc-brass);
+  color: var(--dc-brass);
+  font-family: var(--dc-mono);
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding: 11px;
+  padding: 10px;
   cursor: pointer;
 }
 
 .dc-act:hover {
-  background: var(--orange);
-  color: var(--white);
+  background: var(--dc-brass);
+  color: var(--dc-ground);
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────── */
@@ -860,9 +937,27 @@
   display: none;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 880px) {
   .dc-workspace {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: 1fr;
+  }
+
+  .dc-topbar {
+    padding: 11px 14px 0;
+    gap: 12px;
+  }
+
+  .dc-tabs {
+    overflow-x: auto;
+  }
+
+  .dc-tab {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .dc-inner {
+    padding: 28px 20px 80px;
   }
 
   .dc-rail {
@@ -886,10 +981,10 @@
     left: 12px;
     top: 12px;
     z-index: 21;
-    background: rgba(15, 16, 32, 0.92);
+    background: rgba(14, 20, 27, 0.92);
     border: 1px solid var(--dc-rule);
     color: var(--dc-chalk);
-    font-family: var(--font-mono);
+    font-family: var(--dc-mono);
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -920,8 +1015,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dc-inspector,
-  .dc-rail {
-    transition: none;
+  .dc-app * {
+    transition: none !important;
   }
 }

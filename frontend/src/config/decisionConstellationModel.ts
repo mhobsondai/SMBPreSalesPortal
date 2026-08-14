@@ -29,12 +29,11 @@
  *
  * ## Colour
  *
- * The prose views use the portal's light palette. The map does not: it is
- * rendered on a night sky, because a force-directed graph of 240 nodes is
- * unreadable on white and because "constellation" is the point being made.
- * The hues below are the portal's accents lifted for a dark ground rather
- * than a second palette — orange leads, and each band keeps the portal's
- * status ordering (orange → amber → green → blue).
+ * These are the prototype's own values, unchanged. The tool keeps its
+ * original look rather than the portal's — see the header comment on
+ * `pages/tools/DecisionConstellation.css` and AD-18. Restyling it to the
+ * portal palette later means changing these constants and that stylesheet,
+ * and nothing else: no other file names a colour.
  */
 
 import type { Band, ConstellationDataset, LinkKind, NodeType } from '../lib/constellation/types';
@@ -49,22 +48,22 @@ export const BAND_ORDER: readonly Band[] = ['Now', 'Next', 'Later', 'Watch'];
 export const DEFAULT_BANDS: readonly Band[] = ['Now', 'Next'];
 
 export const BAND_COLOUR: Record<Band, string> = {
-  Now: '#ff7a29',
-  Next: '#f0a830',
-  Later: '#3fbf8f',
-  Watch: '#5b8fd6'
+  Now: '#D2603F',
+  Next: '#C79A4E',
+  Later: '#5C8F86',
+  Watch: '#5E7791'
 };
 
 export const TYPE_COLOUR: Record<Exclude<NodeType, 'decision'>, string> = {
-  department: '#aab7dd',
-  system: '#e3cb8c',
-  process: '#7fd4c1'
+  department: '#9BB3C9',
+  system: '#C9A96A',
+  process: '#6FA69B'
 };
 
 export const LINK_COLOUR: Record<LinkKind, string> = {
-  department: '#4b5583',
-  system: '#7a6a45',
-  process: '#3e6259'
+  department: '#4A5D71',
+  system: '#7A6A45',
+  process: '#3E6259'
 };
 
 export const KIND_LABEL: Record<LinkKind, string> = {
@@ -73,8 +72,8 @@ export const KIND_LABEL: Record<LinkKind, string> = {
   process: 'Process spines'
 };
 
-/** Night-sky ground for the map stage. Referenced from CSS too. */
-export const STAGE_INK = '#0f1020';
+/** The stage ground. Kept in step with `--dc-ground` in the stylesheet. */
+export const STAGE_INK = '#0E141B';
 
 /**
  * Force-simulation tuning, transcribed from the prototype. Changing these

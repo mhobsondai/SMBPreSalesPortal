@@ -70,22 +70,11 @@ interface CanvasProps {
   onDismiss: () => void;
 }
 
-const STAR_COUNT = 190;
-
 /** Must match `.dc-inspector` in DecisionConstellation.css. */
 const INSPECTOR_WIDTH = 352;
 
 /** The breakpoint at which the inspector goes full width — same file. */
 const NARROW = '(max-width: 980px)';
-
-/** Deterministic, so the sky does not reshuffle on every render. */
-function seededRandom(seed: number): () => number {
-  let s = seed >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
-}
 
 function colourOf(node: ConstellationNode): string {
   return isDecision(node) ? BAND_COLOUR[node.band] : TYPE_COLOUR[node.type];
@@ -138,7 +127,6 @@ function createEngine(
   handlers: { current: { onSelect: (n: ConstellationNode) => void; onDismiss: () => void } }
 ) {
   const svg = select(svgEl);
-  const sky = svg.append('g').attr('class', 'dc-sky');
   const root = svg.append('g');
   const gLink = root.append('g');
   const gNode = root.append('g');
@@ -214,36 +202,8 @@ function createEngine(
     const changed = rect.width !== width || rect.height !== height;
     width = rect.width;
     height = rect.height;
-    if (changed) {
-      svg.attr('viewBox', `0 0 ${width} ${height}`);
-      drawSky();
-    }
+    if (changed) svg.attr('viewBox', `0 0 ${width} ${height}`);
     return true;
-  }
-
-  /**
-   * A static field of stars, drawn outside the zoom group so the sky stays
-   * put while the map moves across it.
-   */
-  function drawSky() {
-    const random = seededRandom(20260814);
-    const stars = Array.from({ length: STAR_COUNT }, () => ({
-      x: random() * width,
-      y: random() * height,
-      r: 0.4 + random() * 1.15,
-      o: 0.12 + random() * 0.42
-    }));
-    const sel = sky.selectAll<SVGCircleElement, (typeof stars)[number]>('circle').data(stars);
-    sel.exit().remove();
-    sel
-      .enter()
-      .append('circle')
-      .merge(sel)
-      .attr('cx', (s) => s.x)
-      .attr('cy', (s) => s.y)
-      .attr('r', (s) => s.r)
-      .attr('fill', '#ffffff')
-      .attr('opacity', (s) => s.o);
   }
 
   function tick() {
@@ -330,11 +290,6 @@ function createEngine(
 
   function paintNodes(selection: Selection<SVGGElement, SimNode, SVGGElement, unknown>) {
     selection
-      .select<SVGPathElement>('path.dc-halo')
-      .attr('d', (n) => nodeShapePath(n, n.shown))
-      .attr('fill', colourOf)
-      .attr('transform', 'scale(2.3)');
-    selection
       .select<SVGPathElement>('path.dc-shape')
       .attr('d', (n) => nodeShapePath(n, n.shown))
       .attr('fill', colourOf);
@@ -371,7 +326,6 @@ function createEngine(
       .attr('tabindex', 0)
       .attr('role', 'button')
       .attr('aria-label', (n) => n.label);
-    entered.append('path').attr('class', 'dc-halo');
     entered.append('path').attr('class', 'dc-shape');
     entered
       .on('click', (event: MouseEvent, n) => {
@@ -508,7 +462,6 @@ function createEngine(
         if (isDecision(n)) return;
         handlers.current.onSelect(n);
       });
-    entered.append('path').attr('class', 'dc-halo');
     entered.append('path').attr('class', 'dc-shape');
     paintNodes(entered);
 
